@@ -1,0 +1,42 @@
+[
+  {
+    "key": "turkce",
+    "title": "Türkçe",
+    "subtitle": "Dil Bilgisi ve Anlatım",
+    "icon": "&#9998;",
+    "pages": 52,
+    "w": 1400,
+    "h": 1980,
+    "color": "#7c5cff"
+  },
+  {
+    "key": "tarih",
+    "title": "Tarih",
+    "subtitle": "Osmanlı'dan Cumhuriyet'e",
+    "icon": "&#127963;",
+    "pages": 169,
+    "w": 1400,
+    "h": 2240,
+    "color": "#f4a261"
+  },
+  {
+    "key": "cografya",
+    "title": "Coğrafya",
+    "subtitle": "Türkiye ve Dünya Coğrafyası",
+    "icon": "&#127758;",
+    "pages": 130,
+    "w": 1400,
+    "h": 2023,
+    "color": "#2ec4b6"
+  },
+  {
+    "key": "vatandaslik",
+    "title": "Vatandaşlık",
+    "subtitle": "Vatandaşlık ve İnsan Hakları",
+    "icon": "&#9878;",
+    "pages": 43,
+    "w": 1400,
+    "h": 2030,
+    "color": "#ff5f6d"
+  }
+]

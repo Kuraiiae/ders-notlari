@@ -1,0 +1,82 @@
+﻿[
+  {
+    "key": "vatandaslik",
+    "file": "vatandaslik.pdf",
+    "pages": 43,
+    "size_mb": 15.4,
+    "rect": [
+      0,
+      0,
+      960,
+      1392
+    ],
+    "text_chars_p1": 0,
+    "images": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "key": "turkce",
+    "file": "turkce (1).pdf",
+    "pages": 52,
+    "size_mb": 17.5,
+    "rect": [
+      0,
+      0,
+      768,
+      1086
+    ],
+    "text_chars_p1": 0,
+    "images": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "key": "tarih",
+    "file": "tarih.pdf",
+    "pages": 169,
+    "size_mb": 68.1,
+    "rect": [
+      0,
+      0,
+      1032,
+      1651
+    ],
+    "text_chars_p1": 0,
+    "images": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  {
+    "key": "cografya",
+    "file": "cografya.pdf",
+    "pages": 130,
+    "size_mb": 55.6,
+    "rect": [
+      0,
+      0,
+      864,
+      1248
+    ],
+    "text_chars_p1": 0,
+    "images": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  }
+]

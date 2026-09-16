@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# Gelistirme ciktilari (tools/)
+tools/app.js
+tools/*.log
+tools/shot-*.png
+tools/d[0-9].txt
+
+# Isletim sistemi / editor
+.DS_Store
+Thumbs.db
+desktop.ini
