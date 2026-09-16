@@ -3,7 +3,7 @@
 Sira: Turkce -> Tarih -> Cografya -> Vatandaslik
 
 Dokunulan dosyalar:
-  - index.html        : LIBRARY dizisi (uygulamanin kullandigi sira, ilk ders acilis dersi)
+  - galeri.html       : LIBRARY dizisi (uygulamanin kullandigi sira, ilk ders acilis dersi)
   - oku.html          : LIBRARY dizisi (kitap modu okuma sirasi, ilk ders acilis dersi)
   - manifest.json     : ders listesi
   - tools/render.py   : SUBJECTS listesi (yeniden uretimde sira bozulmasin)
@@ -98,7 +98,7 @@ def fix_render_py():
 
 
 if __name__ == "__main__":
-    fix_library_in_html("index.html")
+    fix_library_in_html("galeri.html")
     fix_library_in_html("oku.html")
     fix_manifest()
     fix_render_py()

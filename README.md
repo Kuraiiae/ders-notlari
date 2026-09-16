@@ -50,11 +50,28 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
 Okunan sayfa, ayraçlar, ders, kâğıt, genişlik ve tema tercihleri tarayıcıda
 (`localStorage`) saklanır; kaldığınız yerden devam edersiniz.
 
+## Site (GitHub Pages)
+
+Canlı adres: **https://kuraiiae.github.io/ders-notlari/**
+
+| Sayfa | Rol |
+|---|---|
+| `/` (`index.html`) | Tanıtım + ders kartları (statik, JS yok) |
+| `/oku.html` | Kitap Modu (önerilen okuma) |
+| `/galeri.html` | Galeri görünümü (tek/çift sayfa, zum) |
+
+`oku.html?ders=tarih` gibi derin bağlantılar doğrudan ilgili dersi açar.
+Özel alan adı (`dersnotlari.com`) şu an **başkası tarafından kayıtlı**
+olduğu için kullanılamıyor; ileride boşalırsa: `CNAME` dosyası ekle +
+DNS'te apex `A` kayıtları (`185.199.108.153` … `.111.153`) veya `www`
+için `CNAME → kuraiiae.github.io`, sonra Pages ayarından doğrula.
+
 ## Yapı
 
 ```
-oku.html            Kitap Modu (önerilen giriş noktası: sürekli kaydırma + temiz sayfa)
-index.html          Galeri görünümü (tek/çift sayfa, zum, şerit)
+index.html          Tanıtım sayfası (statik, JS yok — sitenin giriş kapısı)
+oku.html            Kitap Modu (önerilen okuma: sürekli kaydırma + temiz sayfa)
+galeri.html         Galeri görünümü (tek/çift sayfa, zum, şerit)
 manifest.json     Ders listesi (sayfa sayısı, boyut, renk) - araçlar tarafından üretilir
 assets/<ders>/    page-NNN.jpg (1400px genişlik, JPEG q74) + thumbs/page-NNN.jpg (300px)
 assets/<ders>/clean/  Gri zemini bastırılmış ders çalışma sayfaları (JPEG q68, ~93 MB)

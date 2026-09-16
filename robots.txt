@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kuraiiae.github.io/ders-notlari/sitemap.xml
