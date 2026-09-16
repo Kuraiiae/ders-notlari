@@ -1,9 +1,10 @@
-"""Ders sirasini tek yerden yonetir ve uc dosyaya da uygular.
+"""Ders sirasini tek yerden yonetir ve dort dosyaya da uygular.
 
 Sira: Turkce -> Tarih -> Cografya -> Vatandaslik
 
 Dokunulan dosyalar:
   - index.html        : LIBRARY dizisi (uygulamanin kullandigi sira, ilk ders acilis dersi)
+  - oku.html          : LIBRARY dizisi (kitap modu okuma sirasi, ilk ders acilis dersi)
   - manifest.json     : ders listesi
   - tools/render.py   : SUBJECTS listesi (yeniden uretimde sira bozulmasin)
 
@@ -48,24 +49,24 @@ def ordered(blocks):
     return [b for _, b in pairs]
 
 
-def fix_index_html():
-    path = os.path.join(ROOT, "index.html")
+def fix_library_in_html(name):
+    path = os.path.join(ROOT, name)
     text, eol = read_text(path)
     m = re.search(r"(const LIBRARY = \[)(.*?)(\n\];)", text, re.S)
     if not m:
-        raise SystemExit("index.html icinde LIBRARY bulunamadi")
+        raise SystemExit(f"{name} icinde LIBRARY bulunamadi")
     body = m.group(2)
     lines = body.split("\n")
     entries = [l.rstrip() for l in lines if l.strip().startswith("{")]
     if len(entries) != len(ORDER):
-        raise SystemExit(f"LIBRARY icinde {len(entries)} kayit var, {len(ORDER)} bekleniyordu")
+        raise SystemExit(f"{name} LIBRARY icinde {len(entries)} kayit var, {len(ORDER)} bekleniyordu")
     # virgulleri yeniden dagit: sonda virgul olmaz (JSON/JS dizisi kurali)
     entries = [re.sub(r",$", "", e) for e in entries]
     entries = [e + "," for e in entries[:-1]] + [entries[-1]]
     yeni = "\n" + "\n".join(ordered(entries))
     text = text[:m.start(2)] + yeni + text[m.end(2):]
     write_text(path, text, eol)
-    print("index.html LIBRARY sirasi:",
+    print(f"{name} LIBRARY sirasi:",
           [re.search(r"key: '([a-z]+)'", b).group(1) for b in ordered(entries)])
 
 
@@ -97,7 +98,8 @@ def fix_render_py():
 
 
 if __name__ == "__main__":
-    fix_index_html()
+    fix_library_in_html("index.html")
+    fix_library_in_html("oku.html")
     fix_manifest()
     fix_render_py()
     print("sira uygulandi:", " -> ".join(ORDER))

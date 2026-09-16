@@ -4,9 +4,15 @@ __pycache__/
 
 # Gelistirme ciktilari (tools/)
 tools/app.js
+tools/oku.js
 tools/*.log
 tools/shot-*.png
 tools/d[0-9].txt
+tools/preview/
+
+# Kok gecici loglar
+temizle.log
+*.log
 
 # Isletim sistemi / editor
 .DS_Store
