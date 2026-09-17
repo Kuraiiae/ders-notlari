@@ -8,6 +8,7 @@
 <style>
 /* TEMEL */
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
 :root{
   --bg:#070a16; --panel:rgba(255,255,255,.055); --panel-2:rgba(255,255,255,.09);
   --stroke:rgba(255,255,255,.12); --text:#e9efff; --muted:#8f9dc0;
@@ -212,6 +213,36 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
 }
 .icon{display:inline-block;line-height:1}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- v2 okunabilirlik: telefon + masaüstü ---------- */
+.reader-top .title-wrap{font-size:14px}
+.hint{font-size:12.5px;line-height:1.9}
+.chip{min-height:40px}
+.paper{border-radius:14px}
+.stage{gap:14px}
+@media (max-width:900px){
+  header.bar{padding:8px 10px;gap:6px}
+  main#view{padding:8px}
+  .reader-top{top:56px}
+  .chip{min-height:44px;font-size:13px}
+  .thumb{width:52px;height:76px}
+  .thumb-wrap{height:98px}
+  .stage-inner{padding:10px}
+}
+@media (max-width:760px){
+  .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .seg::-webkit-scrollbar{display:none}
+  .seg .cap{display:none}
+}
+@media (max-width:620px){
+  .stage-inner{padding:6px}
+  .paper{border-radius:10px}
+}
+@media (min-width:1200px){
+  .stage{gap:20px}
+  .paper{border-radius:18px}
+  .stage-inner{padding:22px}
+}
 </style>
 </head>
 <body>
@@ -220,15 +251,16 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
 <div class="app">
   <header class="bar">
     <button class="chip icon burger" id="btnSide" title="Kütüphane (K)">&#9776;</button>
-    <div class="brand">
+    <a class="brand" href="index.html" title="Ana sayfa">
       <div class="mark">&#9782;</div>
       <div class="txt">
         <strong>Ders Notları</strong>
         <span>Dijital Kütüphane</span>
       </div>
-    </div>
+    </a>
     <div class="spacer"></div>
     <a class="chip primary" href="oku.html" title="Sürekli kaydırma ile kitap gibi oku">&#128214; Kitap Modu</a>
+    <a class="chip" href="turkce-ozet.html" title="Türkçe konu özetleri ve taktikler">&#128221; Türkçe Özet</a>
     <div class="seg" id="subjectSeg" role="tablist" aria-label="Dersler"></div>
     <button class="chip icon" id="btnThumbs" title="Sayfa şeridi (T)">&#9639;&#9640;</button>
     <button class="chip icon hide-sm" id="btnSpread" title="Çift sayfa görünümü (S)">&#9633;&#9633;</button>

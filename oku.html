@@ -9,6 +9,7 @@
 <title>Kitap Modu · Ders Notları</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
 :root{
   --bg:#070a16; --panel:rgba(255,255,255,.055); --panel-2:rgba(255,255,255,.09);
   --stroke:rgba(255,255,255,.12); --text:#e9efff; --muted:#8f9dc0;
@@ -34,7 +35,7 @@ html[data-theme="light"] .aurora b{opacity:.34;mix-blend-mode:normal;filter:blur
 .aurora b:nth-child(3){width:38vw;height:38vw;left:26vw;bottom:-16vw;background:#ff5f6d;animation-duration:37s;animation-delay:-12s}
 @keyframes float{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(6vw,4vh,0) scale(1.12)}66%{transform:translate3d(-5vw,6vh,0) scale(.92)}}
 .app{position:relative;z-index:2;display:flex;flex-direction:column;min-height:100dvh}
-header.bar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+header.bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   padding:10px clamp(10px,1.6vw,20px);backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);
   background:linear-gradient(180deg,var(--panel-2),var(--panel));border-bottom:1px solid var(--stroke)}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
@@ -53,7 +54,7 @@ a.chip:visited{color:inherit}
 .seg .chip.on{background:var(--accent)}
 .spacer{flex:1}
 input[type="range"]{accent-color:var(--accent);width:110px}
-.progress{position:sticky;top:0;z-index:31;height:4px;background:transparent}
+.progress{position:sticky;top:0;z-index:51;height:4px;background:transparent}
 .progress i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .25s var(--ease)}
 /* ---------- kitap govdesi ---------- */
 .wrap{flex:1;width:100%;display:flex;gap:18px;padding:18px clamp(10px,2vw,26px) 60px;align-items:flex-start;justify-content:center}
@@ -119,8 +120,90 @@ body.focus header.bar:hover{opacity:1}
 @media (max-width:920px){
   aside.lib{position:fixed;left:10px;top:70px;bottom:12px;z-index:40;width:min(80vw,300px);
     overflow-y:auto;border-radius:18px;transition:transform .3s var(--ease),opacity .25s}
-  body.no-lib aside.lib{transform:translateX(-118%);opacity:0}
+  body.no-lib aside.lib{transform:translateX(-118%);opacity:0;pointer-events:none}
   .burger{display:inline-flex}
+  /* baslik tek satir ve yatay kaydirilabilir: panel ile cakismaz, okuma alani buyur */
+  header.bar{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;
+    padding:8px 10px;gap:6px}
+  header.bar::-webkit-scrollbar{display:none}
+  .spacer{display:none}
+  header.bar .chip,header.bar .seg,header.bar .brand,header.bar label{flex:0 0 auto}
+}
+
+/* ---------- v2 okunabilirlik: telefon + masaüstü ---------- */
+.hint{font-size:12px;line-height:1.95}
+.crumb .muted{font-size:13.5px}
+.sub .meta strong{font-size:14px}
+.sub .meta span{font-size:11.5px}
+.pcap{font-size:13px}
+.pcap .mk{height:34px;font-size:12.5px}
+body.no-scroll{overflow:hidden}
+/* sınav yapısı kartı (sayfa listesinin başında) */
+.intro-card{margin:0 0 20px;padding:16px 18px;border-radius:18px;
+  border:1px solid color-mix(in srgb,var(--accent) 42%,transparent);
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));box-shadow:var(--shadow)}
+.intro-card h4{margin:0 0 8px;font-size:17px}
+.intro-card p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.9}
+.intro-card p b{color:var(--text)}
+.intro-card ul{margin:10px 0 0;padding-left:20px;color:var(--muted);font-size:14px;line-height:1.85}
+.intro-card .act{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.intro-card .trick{border-left:3px solid var(--accent-2);background:var(--panel);border-radius:0 10px 10px 0;
+  padding:9px 12px;margin:10px 0 0;font-size:14px;line-height:1.8}
+/* konu özeti çekmecesi */
+.drawer-mask{position:fixed;inset:0;z-index:65;background:rgba(4,7,16,.6);
+  opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
+.drawer-mask.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;z-index:66;top:0;right:0;bottom:0;width:min(640px,100%);display:flex;flex-direction:column;
+  border-left:1px solid var(--stroke);background:var(--panel-2);
+  backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);
+  box-shadow:var(--shadow);transform:translateX(104%);transition:transform .38s var(--ease)}
+.drawer.show{transform:none}
+.drawer-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--stroke)}
+.drawer-head .ic{width:34px;height:34px;flex:0 0 34px;border-radius:10px;display:grid;place-items:center;
+  background:var(--accent);color:#fff;font-size:16px}
+.drawer-head b{display:block;font-size:15.5px;line-height:1.35}
+.dsub{font-size:11.5px;color:var(--muted)}
+.drawer-body{overflow-y:auto;padding:14px 15px 48px}
+.oz{margin:0 0 12px;border:1px solid var(--stroke);border-radius:16px;background:var(--panel);overflow:hidden}
+.oz>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:13px 15px;
+  min-height:52px;font-weight:800;font-size:15px;touch-action:manipulation}
+.oz>summary::-webkit-details-marker{display:none}
+.oz>summary .n{flex:0 0 30px;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+  background:var(--accent);color:#fff;font-size:14px}
+.oz>summary .chev{margin-left:auto;color:var(--muted)}
+.oz[open]>summary{border-bottom:1px solid var(--stroke)}
+.oz .in{padding:12px 15px 16px}
+.oz h5{margin:14px 0 8px;font-size:14.5px}
+.oz h5:first-child{margin-top:2px}
+.oz p{margin:0 0 10px;color:var(--muted);font-size:14.5px;line-height:1.9}
+.oz p b,.oz ul b{color:var(--text)}
+.oz ul{margin:0;padding-left:20px;color:var(--muted);font-size:14.5px;line-height:1.9}
+.oz li{margin:8px 0}
+.oz .trick{border-left:3px solid var(--accent-2);background:var(--panel-2);border-radius:0 10px 10px 0;
+  padding:9px 12px;margin:10px 0 0;font-size:14px;line-height:1.8}
+.oz .trick b{color:var(--accent-2)}
+.chiprow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+@media (max-width:760px){
+  header.bar{padding:8px 9px;gap:6px}
+  .brand .mark{width:34px;height:34px;flex-basis:34px;font-size:16px}
+  .brand .txt strong{font-size:14px}
+  .chip{height:44px;padding:0 12px;font-size:13px}
+  .seg .chip{height:34px;padding:0 10px}
+  .wrap{padding:10px 9px 72px;gap:10px}
+  aside.lib{top:66px}
+  .page{margin:0 0 14px;border-radius:10px}
+  .intro-card{padding:14px}
+  .drawer{width:100%}
+  .drawer-body{padding:12px 11px 40px}
+  .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .seg::-webkit-scrollbar{display:none}
+  .seg .cap{display:none}
+}
+@media (max-width:620px){.hide-sm,.hide-xs{display:none}}
+@media (min-width:1200px){
+  aside.lib{width:320px;flex:0 0 320px}
+  .drawer{width:min(700px,100%)}
+  .crumb strong{font-size:18px}
 }
 </style>
 </head>
@@ -130,7 +213,7 @@ body.focus header.bar:hover{opacity:1}
   <div class="progress"><i id="progressBar"></i></div>
   <header class="bar">
     <button class="chip burger" id="btnLib" title="Panel (K)">&#9776;</button>
-    <a class="brand" href="./" title="Ana sayfaya dön">
+    <a class="brand" href="index.html" title="Ana sayfaya dön">
       <div class="mark">&#128214;</div>
       <div class="txt"><strong>Kitap Modu</strong><span>Ders Notları</span></div>
     </a>
@@ -142,11 +225,12 @@ body.focus header.bar:hover{opacity:1}
       <button class="chip" data-paper="sepya" title="Göz yormayan sıcak ton">Sepya</button>
       <button class="chip" data-paper="gece" title="Gece okuma (ters renk)">Gece</button>
     </div>
-    <label class="chip hide-focus" title="Sayfa genişliği">Genişlik <input type="range" id="widthRange" min="560" max="1100" step="20" value="860" aria-label="Sayfa genişliği"></label>
-    <a class="chip" href="./" title="Ana sayfa">&#8962;<span class="hide-sm"> Ana Sayfa</span></a>
+    <label class="chip hide-focus hide-xs" title="Sayfa genişliği">Genişlik <input type="range" id="widthRange" min="560" max="1100" step="20" value="860" aria-label="Sayfa genişliği"></label>
+    <a class="chip hide-xs" href="index.html" title="Ana sayfa">&#8962;<span class="hide-sm"> Ana Sayfa</span></a>
     <a class="chip" href="galeri.html" title="Galeri görünümü">&#9639;&#9640;<span class="hide-sm"> Galeri</span></a>
     <button class="chip hide-focus" id="btnClean" title="Temizlenmiş / orijinal sayfa (C)">&#10022; Temiz: açık</button>
     <button class="chip hide-focus" id="btnFocus" title="Odak modu (O)">&#9678; Odak</button>
+    <button class="chip" id="btnOzet" title="Türkçe konu özeti (Ö)" hidden>&#128221;<span class="hide-sm"> Özet</span></button>
     <button class="chip" id="btnTheme" title="Tema (D)">&#9789;</button>
   </header>
   <div class="wrap">
@@ -163,8 +247,9 @@ body.focus header.bar:hover{opacity:1}
         <h3>Kısayollar</h3>
         <div class="hint">
           <kbd>&uarr;</kbd><kbd>&darr;</kbd> kaydır &middot; <kbd>B</kbd> ayraç<br>
-          <kbd>C</kbd> temiz sayfa &middot; <kbd>O</kbd> odak &middot; <kbd>D</kbd> tema<br>
-          <kbd>1</kbd>…<kbd>4</kbd> ders &middot; <kbd>K</kbd> panel
+          <kbd>Ö</kbd> konu özeti &middot; <kbd>C</kbd> temiz sayfa<br>
+          <kbd>O</kbd> odak &middot; <kbd>D</kbd> tema &middot; <kbd>K</kbd> panel<br>
+          <kbd>1</kbd>…<kbd>4</kbd> ders &middot; <kbd>Esc</kbd> kapat
         </div>
       </div>
     </aside>
@@ -180,7 +265,306 @@ body.focus header.bar:hover{opacity:1}
     </main>
   </div>
 </div>
+<div class="drawer-mask" id="ozMask" hidden></div>
+<aside class="drawer" id="ozDrawer" hidden role="dialog" aria-label="Türkçe konu özeti">
+  <div class="drawer-head">
+    <span class="ic">&#128221;</span>
+    <span><b id="ozTitle">Türkçe Konu Özeti</b><span class="dsub" id="ozSub"></span></span>
+    <span class="spacer"></span>
+    <button class="chip" id="ozClose" title="Kapat (Esc)">&#10005;<span class="hide-sm"> Kapat</span></button>
+  </div>
+  <div class="drawer-body" id="ozBody"></div>
+</aside>
 <div class="toast" id="toast"></div>
+<!-- Konu özeti verisi: tools/ozet.py tarafından üretilir, elle düzenlemeyin. -->
+<!-- OZET-DATA-BEGIN -->
+<script type="application/json" id="ozetData">
+{
+ "turkce": {
+  "key": "turkce",
+  "baslik": "KPSS Türkçe Genel Tekrar Ders Notları",
+  "giris": "ÖSYM'nin son yıllardaki soru dağılımlarına bakıldığında KPSS Türkçe oturumu \u003cb>7 adet dil bilgisi sorusu\u003c/b> ve geri kalanı \u003cb>anlam/paragraf\u003c/b> soruları üzerine kuruludur.",
+  "not": "\u003cb>Not:\u003c/b> Fiilde çatı, anlatım bozukluğu ve cümle türleri uzun süredir ÖSYM tarafından sorulmamaktadır.",
+  "vurgu": [
+   "Ses Bilgisi",
+   "Yazım Kuralları",
+   "Noktalama İşaretleri",
+   "Sözcükte Yapı",
+   "Sözcük Türleri",
+   "Fiilimsiler"
+  ],
+  "bolumler": [
+   {
+    "no": "1",
+    "ad": "Dil Bilgisi",
+    "etiket": "7 soru",
+    "giris": "Dil bilgisi soruları temel olarak şu altı başlıktan gelmektedir: \u003cb>Ses Bilgisi, Yazım Kuralları, Noktalama İşaretleri, Sözcükte Yapı, Sözcük Türleri\u003c/b> (Sıfat, Zarf, Zamir, Edat/Bağlaç) ve \u003cb>Fiilimsiler\u003c/b>.",
+    "bloklar": [
+     {
+      "ad": "Ses Bilgisi",
+      "maddeler": [
+       {
+        "t": "Ünlü Düşmesi",
+        "d": "Sözcüğe ek geldiğinde ya da sözcük türerken ünlünün düşmesidir (şehir &gt; şehri, burun &gt; burnu, omuz &gt; omzu, beniz &gt; benziyor, ileri &gt; ilerliyor).",
+        "n": [
+         {
+          "tur": "Dipnot",
+          "d": "Ek eylem olan \u003cb>idi, imiş, ise\u003c/b> eklerinin başındaki \u003cb>i\u003c/b> harfinin düşmesi (büyüğü idi &gt; büyüdü) ünlü düşmesi olarak kabul edilir."
+         }
+        ]
+       },
+       {
+        "t": "Ünlü Daralması",
+        "d": "Temelde \u003cb>-yor\u003c/b> ekiyle yapılır.",
+        "n": [
+         {
+          "tur": "Pratik Yol",
+          "d": "\u003cb>-yor\u003c/b> ekini atıp yerine \u003cb>-mek/-mak\u003c/b> getirin ya da eylemin kökünün ünlüyle bitip bitmediğine bakın. Kök ünlüyle bitiyorsa daralma vardır (bekliyor &gt; bekle), ünsüzle bitiyorsa daralma yoktur (geliyor &gt; gel)."
+         }
+        ]
+       },
+       {
+        "t": "Ünsüz Yumuşaması (Değişimi)",
+        "d": "Sert ünsüzlerin (p, ç, t, k) ek aldığında yumuşak ünsüzlere (b, c, d, g, ğ) dönüşmesidir (dolap &gt; dolabı, renk &gt; rengi).",
+        "n": [
+         {
+          "tur": "Önemli Detay",
+          "d": "\u003cb>Sosyolog, psikolog, diyalog\u003c/b> gibi sözcüklerde son harf olan \u003cb>g\u003c/b> yumuşak g'ye dönüşmez; dolayısıyla bu sözcüklerde yumuşama yoktur."
+         }
+        ]
+       },
+       {
+        "t": "Ünsüz Benzeşmesi (Sertleşmesi)",
+        "d": "\u003cb>Fıstıkçı Şahap\u003c/b> (f, ç, s, t, k, ş, h) ile başlayan bir ekin bu harflerle biten bir sözcüğe gelmesiyle oluşur.",
+        "n": [
+         {
+          "tur": "Pratik Yol",
+          "d": "Yan yana gelen iki ünsüzün ikisi de fıstıkçı şahap harflerindense benzeşme vardır (çiçekçi, seçkin)."
+         }
+        ]
+       },
+       {
+        "t": "Ünsüz Türemesi",
+        "d": "Aynı harflerin yan yana gelmesidir (hissetti, zannetti).",
+        "n": [
+         {
+          "tur": "İstisna",
+          "d": "\u003cb>t\u003c/b> harflerinin yan yana gelmesi türeme değil, ünsüz benzeşmesidir (git-ti)."
+         }
+        ]
+       },
+       {
+        "t": "Ünsüz Düşmesi",
+        "d": "Genellikle \u003cb>-cik/-cük\u003c/b> ekini alan sözcüklerde \u003cb>k\u003c/b> harfinin düşmesidir (minik &gt; minicik, sıcak &gt; sıcacık)."
+       }
+      ],
+      "notlar": [
+       {
+        "tur": "Kritik Kural",
+        "d": "Türkçe bir sözcüğe ek gelmediği sürece (kök halindeyse) o sözcükte ses olayı aranmaz: \u003cb>nokta, kuvvet, millet\u003c/b>."
+       }
+      ]
+     },
+     {
+      "ad": "Yazım Kuralları",
+      "maddeler": [
+       {
+        "t": "Unvan ve Lakaplar",
+        "d": "Unvanlar, makam adları ve saygı bildiren sözcükler daima büyük yazılır (Vali Bey, Cumhurbaşkanı, Doktor Ahmet). Akrabalık adları lakap haline gelmişse büyük (Ramiz Dayı), akrabalık bildiriyorsa küçük yazılır."
+       },
+       {
+        "t": "Kesme İşareti",
+        "d": "Bir sözcükte \u003cb>yapım eki\u003c/b> varsa (Türkçe), asla kesme işareti konulmaz."
+       },
+       {
+        "t": "Coğrafi Terimler ve Varlıklar",
+        "d": "Özel ada dahil olan tür adları büyük yazılır (Van Gölü, Ağrı Dağı). Özel ada dahil olmayıp cins isim olarak kullanılanlar küçük yazılır (Van kedisi, antep baklavası). Taşınabilen tür adları küçük, coğrafi yapılar (göl, nehir, ova) büyük yazılır."
+       },
+       {
+        "t": "Birli Kelimeler",
+        "d": "\u003cb>Birkaç, biraz, hiçbir, birçok\u003c/b> bitişik yazılır."
+       },
+       {
+        "t": "Alt ve Üst Sözcükleri",
+        "d": "Somut olarak yer bildiriyorsa ayrı (toprak altı, su altı), soyut ve kalıcı bir durumu bildiriyorsa bitişik yazılır (suçüstü, akşamüstü)."
+       },
+       {
+        "t": "İkilemeler",
+        "d": "Daima ayrı yazılır. Tek istisnası \u003cb>gitgide\u003c/b> sözcüğünün bitişik olmasıdır."
+       },
+       {
+        "t": "Birleşik Fiiller",
+        "d": "İkinci kelimesi anlamını kaybedenler bitişik yazılır (birdenbire, zannetti, sabretti). Ses olayı (türeme veya düşme) olan yardımcı eylemler bitişik yazılır (hissetti), olmayanlar ayrı yazılır (fark etti, terk etti)."
+       }
+      ],
+      "notlar": []
+     },
+     {
+      "ad": "Virgülün Kullanılmadığı Yerler",
+      "giris": "\u003cb>Soru potansiyeli yüksek.\u003c/b> Şu dört yerde virgül gelmez:",
+      "maddeler": [
+       {
+        "t": "Şart eki (-se/-sa)",
+        "d": "Cümlede şart eki varsa ardına virgül gelmez."
+       },
+       {
+        "t": "Tek zarf-fiil eki",
+        "d": "Tek bir zarf-fiil ekinden sonra virgül gelmez."
+       },
+       {
+        "t": "İsim ve sıfat tamlaması",
+        "d": "İsim ve sıfat tamlamalarının arasına virgül gelmez."
+       },
+       {
+        "t": "Bağlaçlar",
+        "d": "Bağlaçların (ve, veya, hem... hem..., ne... ne...) önüne veya arkasına virgül gelmez."
+       }
+      ],
+      "notlar": []
+     },
+     {
+      "ad": "Noktalı Virgül ve İki Nokta Ayrımı",
+      "maddeler": [
+       {
+        "t": "Yüklem testi",
+        "d": "Boşluğa kadar olan yerde yüklem yoksa (cümlenin içi) adaylar virgül veya noktalı virgül; yüklem varsa (cümlenin sonu) adaylar nokta veya iki noktadır."
+       },
+       {
+        "t": "Tercih kuralı",
+        "d": "Cümlede virgül yoksa virgül, virgül varsa noktalı virgül tercih edilir."
+       },
+       {
+        "t": "İki nokta",
+        "d": "Boşluktan sonra örnekleme veya açıklama yapılıyorsa iki nokta (:) kullanılır."
+       }
+      ],
+      "notlar": []
+     },
+     {
+      "ad": "Sözcükte Yapı ve Ekler",
+      "maddeler": [
+       {
+        "t": "Kök",
+        "d": "Sözcüğün anlamlı en küçük kısmıdır. İsim kökü ve fiil kökü olarak ikiye ayrılır. Kök bulurken mekanik olarak \u003cb>-mek/-mak\u003c/b> eki getirmek yanıltabilir; mutlaka cümledeki anlamına bakılmalıdır."
+       },
+       {
+        "t": "Yapı Bakımından Sözcükler",
+        "d": "Basit, türemiş ve birleşik olmak üzere üçe ayrılır."
+       },
+       {
+        "t": "İyelik Ekleri ile Hâl Eklerinin Ayrımı",
+        "d": "Belirtme hâl eki (-i) ile 3. tekil şahıs iyelik ekini ayırt etmek için sözcüğün başına \u003cb>onun\u003c/b> getirilir. \u003cb>Onun + sözcük\u003c/b> uyuyorsa iyelik ekidir; uymuyorsa belirtme hâl ekidir. Ayrıca isim tamlamalarındaki tamlayan eki (-in) varsa, tamlanandaki ek kesinlikle iyelik ekidir.",
+        "n": [
+         {
+          "tur": "Test",
+          "d": "\u003cb>onun\u003c/b> kelimesini başa getir: \"onun kitabı\" uyuyor → iyelik; \"onun kitab-ı\" uymuyor → belirtme hâl eki."
+         }
+        ]
+       }
+      ],
+      "notlar": []
+     },
+     {
+      "ad": "Sözcük Türleri (Sıfat, Zarf, Zamir, Edat)",
+      "maddeler": [
+       {
+        "t": "Sıfatlar",
+        "d": "İsimlerden önce gelerek onları niteler veya belirtir. Sıfat olan her yerde sıfat tamlaması vardır (adlaşmış sıfatlar hariç)."
+       },
+       {
+        "t": "Zamir / Sıfat Ayrımı",
+        "d": "\u003cb>Bu, o, şu\u003c/b> sözcükleri isimden önce gelip ismi işaret ediyorsa işaret sıfatı, ismin yerini doğrudan tutuyorsa işaret zamiridir. Yanında virgül varsa genellikle zamirdir."
+       },
+       {
+        "t": "Zarflar",
+        "d": "Fiilleri, fiilimsileri, sıfatları ya da kendi türündeki sözcükleri durum, zaman, miktar veya yer-yön yönünden niteleyen sözcüklerdir."
+       },
+       {
+        "t": "Edat ve Bağlaç",
+        "d": "\u003cb>İle\u003c/b> sözcüğünün yerine \u003cb>ve\u003c/b> gelebiliyorsa bağlaç, gelemiyorsa edattır."
+       }
+      ],
+      "notlar": []
+     },
+     {
+      "ad": "Fiilimsiler (Eylemsiler)",
+      "giris": "Fiil kök ve gövdelerinden türeyen ancak fiil özelliklerinin tamamını taşımayan sözcüklerdir. Üçe ayrılır:",
+      "maddeler": [
+       {
+        "t": "İsim-Fiil",
+        "d": "\u003cb>-ma, -ış, -mak\u003c/b>"
+       },
+       {
+        "t": "Sıfat-Fiil",
+        "d": "\u003cb>-an, -ası, -mez, -ar, -dik, -ecek, -miş\u003c/b> (Anası mezar dikecekmiş)"
+       },
+       {
+        "t": "Zarf-Fiil",
+        "d": "\u003cb>-ken, -alı, -esiye, -meden, -ince, -ip, -arak, -dıkça\u003c/b> vb."
+       }
+      ],
+      "notlar": [
+       {
+        "tur": "Önemli Tuzak",
+        "d": "\u003cb>-miş, -ar, -ecek\u003c/b> ekleri hem sıfat-fiil eki hem de zaman eki olabilir. Sözcük adlaşmış veya bir ismi niteleyerek sıfat görevindeyse sıfat-fiil; yüklemde yer alıp zaman bildiriyorsa zaman ekidir."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "no": "2",
+    "ad": "Sözel Mantık Stratejileri",
+    "giris": "",
+    "bloklar": [
+     {
+      "maddeler": [
+       {
+        "t": "Tablo Kurulumu",
+        "d": "Soruda gün, tarih veya kronolojik bir sıralama varsa tablo kesinlikle sıralamadan (1, 2, 3... 7) kurulur. Sıralama yoksa tablo kişi/isimlerden kurulur."
+       },
+       {
+        "t": "Tabloyu Bölme",
+        "d": "Sıralama veya ana değişken yukarıya yerleştirildikten sonra tablo ortadan ikiye bölünerek diğer özellikler (branş, renk, hastalık) alt alta veya yan yana işlenir."
+       },
+       {
+        "t": "Elenenleri Silme Kuralı",
+        "d": "Öncüllerde kesin olarak yerine yerleştirilen her veri tablodan ve kenardaki listeden silinmelidir. Böylece kalan esnek elemanlar (değişkenler) net görülebilir."
+       }
+      ],
+      "notlar": []
+     }
+    ]
+   },
+   {
+    "no": "3",
+    "ad": "Paragraf Taktikleri",
+    "giris": "",
+    "bloklar": [
+     {
+      "maddeler": [
+       {
+        "t": "Ana Düşünce Soruları",
+        "d": "Genellikle paragrafın en başında veya en sonunda yer alır. Son cümledeki yargı, yazarın okuyucuya aktarmak istediği temel mesajdır."
+       },
+       {
+        "t": "Yardımcı Düşünce / \"Söylenemez\" Soruları",
+        "d": "Seçenekler önce okunmalı, ardından metin ikiye bölünerek taranmalıdır. Metinde kesin olarak ifade edilmeyen, yorum katılarak genellenen ifadeler genellikle çeldiricidir."
+       },
+       {
+        "t": "Akışı Bozan Cümle",
+        "d": "Paragrafın genel anlatım tonu, öznesi ve odak noktası takip edilir. Konunun akışını başka bir yöne eviren veya alakasız bir detay içeren cümle akışı bozar."
+       }
+      ],
+      "notlar": []
+     }
+    ]
+   }
+  ]
+ }
+}
+</script>
+<!-- OZET-DATA-END -->
 <script>
 /* Veri dogrudan gomulu: file:// uzerinden fetch/CORS calismaz. */
 const LIBRARY = [
@@ -201,6 +585,8 @@ const el = {
   progress: $('#progressBar'), toast: $('#toast'), bmList: $('#bmList'),
   subjTitle: $('#subjTitle'), subjSub: $('#subjSub'), subjDot: $('#subjDot'),
   resumeBtn: $('#resumeBtn'), tailInfo: $('#tailInfo'),
+  ozDrawer: $('#ozDrawer'), ozMask: $('#ozMask'), ozBody: $('#ozBody'),
+  ozTitle: $('#ozTitle'), ozSub: $('#ozSub'),
 };
 const state = {
   key: (() => { try {
@@ -213,6 +599,73 @@ const state = {
 };
 const subject = () => LIBRARY.find(s => s.key === state.key) || LIBRARY[0];
 const src = (key, n) => 'assets/' + key + '/' + (state.clean ? 'clean/' : '') + 'page-' + PAD(n) + '.jpg';
+
+/* ---------- Konu özetleri (veri: tools/ozet.py -> #ozetData) ---------- */
+const OZET_ALL = (() => {
+  try { return JSON.parse($('#ozetData').textContent || '{}') || {}; } catch (e) { return {}; }
+})();
+const ozetOf = key => OZET_ALL[key] || null;
+function ozNotes(list) {
+  return (list || []).map(n => '<div class="trick"><b>' + n.tur + ':</b> ' + n.d + '</div>').join('');
+}
+function ozBlockHTML(b) {
+  let h = '';
+  if (b.ad) h += '<h5>' + b.ad + '</h5>';
+  if (b.giris) h += '<p>' + b.giris + '</p>';
+  if (b.maddeler && b.maddeler.length) {
+    h += '<ul>' + b.maddeler.map(m => '<li><b>' + m.t + ':</b> ' + m.d + ozNotes(m.n) + '</li>').join('') + '</ul>';
+  }
+  h += ozNotes(b.notlar);
+  return h;
+}
+function ozHTML(key) {
+  const d = ozetOf(key);
+  if (!d) return '';
+  let h = '<div class="oz"><div class="in"><p>' + d.giris + '</p>';
+  if (d.vurgu && d.vurgu.length) {
+    h += '<div class="chiprow">' + d.vurgu.map(v => '<span class="chip">' + v + '</span>').join('') + '</div>';
+  }
+  h += '</div></div>';
+  h += '<div class="chiprow"><button class="chip" id="ozAll">Tümünü kapat</button>' +
+    '<a class="chip" href="turkce-ozet.html">Tam sayfa özet &#8599;</a></div>';
+  d.bolumler.forEach(b => {
+    h += '<details class="oz" open><summary><span class="n">' + b.no + '</span><span>' + b.ad + '</span>' +
+      (b.etiket ? '<span class="dsub">&nbsp;' + b.etiket + '</span>' : '') +
+      '<span class="chev">&#9662;</span></summary><div class="in">';
+    (b.bloklar || []).forEach(bl => { h += ozBlockHTML(bl); });
+    h += '</div></details>';
+  });
+  return h;
+}
+function ozToggle(force) {
+  const wrap = el.ozDrawer, mask = el.ozMask;
+  const want = force === undefined ? !!wrap.hidden : !!force;
+  if (want) {
+    const d = ozetOf(state.key);
+    if (!d) { toast('Bu ders için konu özeti henüz eklenmedi'); return; }
+    el.ozTitle.textContent = d.baslik;
+    el.ozSub.textContent = subject().title + ' · ' + d.bolumler.length + ' bölüm';
+    el.ozBody.innerHTML = ozHTML(state.key);
+    el.ozBody.scrollTop = 0;
+    const tog = $('#ozAll', el.ozBody);
+    if (tog) {
+      const all = $$('.oz', el.ozBody).filter(x => x.tagName === 'DETAILS');
+      tog.addEventListener('click', () => {
+        const open = all.some(x => !x.open);
+        all.forEach(x => { x.open = open; });
+        tog.textContent = open ? 'Tümünü kapat' : 'Tümünü aç';
+      });
+    }
+    wrap.hidden = false; mask.hidden = false;
+    requestAnimationFrame(() => { wrap.classList.add('show'); mask.classList.add('show'); });
+    document.body.classList.add('no-scroll');
+  } else {
+    wrap.classList.remove('show'); mask.classList.remove('show');
+    document.body.classList.remove('no-scroll');
+    clearTimeout(ozToggle._t);
+    ozToggle._t = setTimeout(() => { wrap.hidden = true; mask.hidden = true; }, 380);
+  }
+}
 function toast(msg) {
   el.toast.textContent = msg;
   el.toast.classList.add('show');
@@ -249,6 +702,7 @@ function buildSubjects() {
     const max = parseInt(STORE.get('max.' + s.key, '0'), 10) || 0;
     const b = document.createElement('button');
     b.className = 'sub' + (s.key === state.key ? ' on' : '');
+    b.dataset.key = s.key;
     b.style.setProperty('--c', s.color);
     b.innerHTML = '<span class="ic">' + s.icon + '</span><span class="meta"><strong>' + s.title +
       '</strong><span>' + s.subtitle + '</span><span class="bar"><i style="width:' +
@@ -258,6 +712,7 @@ function buildSubjects() {
     el.subjectList.appendChild(b);
     const t = document.createElement('button');
     t.className = 'chip' + (s.key === state.key ? ' on' : '');
+    t.dataset.key = s.key;
     t.textContent = (i + 1) + '. ' + s.title;
     t.addEventListener('click', () => selectSubject(s.key, false, true));
     el.subjectSeg.appendChild(t);
@@ -267,6 +722,18 @@ let observer = null;
 function buildPages() {
   const s = subject();
   el.pages.innerHTML = '';
+  const oz = ozetOf(s.key);
+  if (oz) {
+    const ic = document.createElement('div');
+    ic.className = 'intro-card';
+    ic.innerHTML = '<h4>' + oz.baslik + '</h4><p>' + oz.giris + '</p>' +
+      (oz.vurgu && oz.vurgu.length ? '<ul>' + oz.vurgu.map(v => '<li>' + v + '</li>').join('') + '</ul>' : '') +
+      (oz.not ? '<div class="trick">' + oz.not + '</div>' : '') +
+      '<div class="act"><button class="chip" id="introOzet">&#128221; Konu özetini aç</button>' +
+      '<a class="chip" href="turkce-ozet.html">Tam sayfa özet &#8599;</a></div>';
+    el.pages.appendChild(ic);
+    $('#introOzet', ic).addEventListener('click', () => ozToggle(true));
+  }
   const frag = document.createDocumentFragment();
   for (let n = 1; n <= s.pages; n++) {
     const d = document.createElement('article');
@@ -322,6 +789,8 @@ function applyHeader() {
   $('#nextSub').disabled = i === LIBRARY.length - 1;
   $('#btnClean').innerHTML = state.clean ? '&#10022; Temiz: açık' : '&#10022; Temiz: kapalı';
   $('#btnClean').classList.toggle('on', state.clean);
+  $('#btnOzet').hidden = !ozetOf(s.key);
+  if (!el.ozDrawer.hidden && !ozetOf(s.key)) ozToggle(false);
 }
 function selectSubject(key, noscroll, push) {
   const first = !el.pages.children.length;
@@ -339,8 +808,16 @@ function selectSubject(key, noscroll, push) {
   buildPages();
   updateResume();
   if (!noscroll && !first) window.scrollTo(0, 0);
+  syncLibBar();
+}
+/* Telefonda panel varsayilan olarak kapali gelsin. */
+function syncLibBar() {
   if (window.matchMedia('(max-width: 920px)').matches) document.body.classList.add('no-lib');
 }
+window.addEventListener('resize', () => {
+  if (window.matchMedia('(max-width: 920px)').matches) document.body.classList.add('no-lib');
+  else document.body.classList.remove('no-lib');
+});
 function goPage(n) {
   const p = $('.page[data-n="' + n + '"]', el.pages);
   if (p) p.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -394,6 +871,9 @@ function init() {
     if (c) setPaper(c.dataset.paper);
   });
   $('#btnClean').addEventListener('click', toggleClean);
+  $('#btnOzet').addEventListener('click', () => ozToggle());
+  $('#ozClose').addEventListener('click', () => ozToggle(false));
+  $('#ozMask').addEventListener('click', () => ozToggle(false));
   $('#btnFocus').addEventListener('click', () => {
     document.body.classList.toggle('focus');
     $('#btnFocus').classList.toggle('on', document.body.classList.contains('focus'));
@@ -421,6 +901,8 @@ function init() {
       case 'o': case 'O': $('#btnFocus').click(); break;
       case 'd': case 'D': $('#btnTheme').click(); break;
       case 'k': case 'K': $('#btnLib').click(); break;
+      case 'ö': case 'Ö': ozToggle(); break;
+      case 'Escape': ozToggle(false); break;
       case '1': case '2': case '3': case '4': {
         const s = LIBRARY[parseInt(e.key, 10) - 1];
         if (s) selectSubject(s.key, false, false);
@@ -431,6 +913,7 @@ function init() {
     e.preventDefault();
   });
   applyHeader();
+  syncLibBar();
   buildSubjects();
   renderBm();
   buildPages();

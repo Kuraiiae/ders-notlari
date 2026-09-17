@@ -19,6 +19,7 @@ for name, out in (("index.html", None), ("galeri.html", "app.js"), ("oku.html", 
     if name in STATIC:
         links = ("oku.html" in html and "galeri.html" in html
                  and "oku.html?ders=turkce" in html and "oku.html?ders=vatandaslik" in html
+                 and "turkce-ozet.html" in html
                  and "assets/turkce/clean/page-001.jpg" in html)
         print(name, "| chars:", len(html), "| statik: True | ders-linkleri:", links)
         assert links, f"{name} icinde ders baglantilari eksik"
@@ -32,7 +33,7 @@ for name, out in (("index.html", None), ("galeri.html", "app.js"), ("oku.html", 
     if name == "galeri.html":
         link_ok = "oku.html" in html
     if name == "oku.html":
-        link_ok = 'href="./"' in html and "galeri.html" in html
+        link_ok = "index.html" in html and "galeri.html" in html
     print(name, "| chars:", len(html), "| placeholder:", leftover, "| capraz-link:", link_ok)
 
 with open(os.path.join(ROOT, "manifest.json"), encoding="utf-8") as f:
@@ -51,3 +52,43 @@ print("eksik dosya:", len(missing))
 for x in missing[:20]:
     print("  -", x)
 print("dersler:", [(s["key"], s["pages"]) for s in manifest])
+
+# --- Konu ozeti: turkce-ozet.html + oku.html icindeki gomulu JSON ---
+with open(os.path.join(ROOT, "oku.html"), encoding="utf-8") as f:
+    oku = f.read()
+mb = re.search(r"OZET-DATA-BEGIN -->\s*<script[^>]*id=\"ozetData\">(.*?)</script>\s*<!-- OZET-DATA-END",
+               oku, re.S)
+assert mb, "oku.html icinde ozetData script blogu yok -> python tools/ozet.py"
+ozet = json.loads(mb.group(1))
+assert "turkce" in ozet, "ozet verisi ders anahtariyla sarilmali (turkce)"
+d = ozet["turkce"]
+assert d["key"] == "turkce", "ozet verisi turkce dersine bagli degil"
+assert len(d["bolumler"]) == 3, "ozet bolum sayisi 3 olmali"
+assert "</script" not in mb.group(1).lower(), "gomulu JSON script etiketini kirabilir"
+assert "<!--" not in mb.group(1), "gomulu JSON icinde HTML yorumu var (JSON.parse kirilir)"
+blok = sum(len(b.get("bloklar") or []) for b in d["bolumler"])
+madde = sum(len(x.get("maddeler") or []) for b in d["bolumler"] for x in (b.get("bloklar") or []))
+if "ozDrawer" not in oku or "ozToggle" not in oku:
+    raise AssertionError("oku.html icinde ozet cekmecesi kodu eksik")
+
+with open(os.path.join(ROOT, "turkce-ozet.html"), encoding="utf-8") as f:
+    sayfa = f.read()
+assert "__BODY__" not in sayfa, "turkce-ozet.html sablonu doldurulmamis"
+for anahtar in ("Ses Bilgisi", "Noktalama", "Fiilimsiler", "Sözel Mant", "Paragraf"):
+    assert anahtar in sayfa, f"turkce-ozet.html icinde eksik baslik: {anahtar}"
+
+# --- Capraz baglantilar: ozet sayfasi her giris noktasindan erisilebilmeli ---
+BEKLENEN = {
+    "index.html": ("oku.html", "galeri.html", "turkce-ozet.html"),
+    "galeri.html": ("index.html", "oku.html", "turkce-ozet.html"),
+    "oku.html": ("galeri.html", "turkce-ozet.html"),
+    "turkce-ozet.html": ("oku.html", "index.html"),
+}
+for ad, hedefler in BEKLENEN.items():
+    with open(os.path.join(ROOT, ad), encoding="utf-8") as f:
+        t = f.read()
+    for h in hedefler:
+        assert h in t, f"{ad} icinde {h} baglantisi yok"
+
+print("ozet: bolum", len(d["bolumler"]), "| blok", blok, "| madde", madde,
+      "| sayfa karakter", len(sayfa))

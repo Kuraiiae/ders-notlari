@@ -32,10 +32,12 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
 | `C` | Temizlenmiş / orijinal sayfa |
 | `O` | Odak modu |
 | `D` | Aydınlık / karanlık tema |
+| `Ö` | Türkçe konu özeti çekmecesi |
 | `K` | İçindekiler paneli |
+| `Esc` | Açık çekmeceyi kapat |
 | `1`–`4` | Ders seç (sırayla) |
 
-### Galeri kısayolları (`index.html`)
+### Galeri kısayolları (`galeri.html`)
 
 | Tuş | İşlev |
 |---|---|
@@ -59,6 +61,7 @@ Canlı adres: **https://kuraiiae.github.io/ders-notlari/**
 | `/` (`index.html`) | Tanıtım + ders kartları (statik, JS yok) |
 | `/oku.html` | Kitap Modu (önerilen okuma) |
 | `/galeri.html` | Galeri görünümü (tek/çift sayfa, zum) |
+| `/turkce-ozet.html` | Türkçe konu özetleri (yazdırılabilir çalışma sayfası) |
 
 `oku.html?ders=tarih` gibi derin bağlantılar doğrudan ilgili dersi açar.
 Özel alan adı (`dersnotlari.com`) şu an **başkası tarafından kayıtlı**
@@ -72,6 +75,7 @@ için `CNAME → kuraiiae.github.io`, sonra Pages ayarından doğrula.
 index.html          Tanıtım sayfası (statik, JS yok — sitenin giriş kapısı)
 oku.html            Kitap Modu (önerilen okuma: sürekli kaydırma + temiz sayfa)
 galeri.html         Galeri görünümü (tek/çift sayfa, zum, şerit)
+turkce-ozet.html    Türkçe konu özetleri (tools/ozet.py üretir, elle düzenlenmez)
 manifest.json     Ders listesi (sayfa sayısı, boyut, renk) - araçlar tarafından üretilir
 assets/<ders>/    page-NNN.jpg (1400px genişlik, JPEG q74) + thumbs/page-NNN.jpg (300px)
 assets/<ders>/clean/  Gri zemini bastırılmış ders çalışma sayfaları (JPEG q68, ~93 MB)
@@ -84,6 +88,7 @@ tools/            Yeniden üretim ve doğrulama araçları
 python tools/render.py          # PDF'lerden sayfa görselleri + küçük resimleri üretir
 python tools/render.py turkce   # yalnızca seçilen dersi yeniden üretir
 python tools/order.py           # ders sırasını dört dosyaya uygular (aşağıya bakın)
+python tools/ozet.py            # Türkçe konu özetini sayfaya + oku.html'e (JSON) uygular
 python tools/check.py           # script söz dizimini ayıklar + tüm görsellerin varlığını doğrular
 python tools/enhance.py --all             # temizlenmiş ders sayfalarını üretir (assets/*/clean/)
 python tools/enhance.py tarih 1           # tek sayfa önizleme -> tools/preview/ (depoya girmez)
@@ -91,6 +96,26 @@ python tools/enhance.py tarih 1           # tek sayfa önizleme -> tools/preview
 
 `tools/render.py` içindeki `SUBJECTS` listesi PDF yollarını tutar; PDF'ler depoda
 yer almaz. `tools/info.py` kaynak PDF'lerin sayfa/boyut bilgisini çıkarır.
+
+### Türkçe konu özetleri
+
+Özet metinlerinin **tek kaynağı** `tools/ozet.py` içindeki `BOLUM1` / `BOLUM2` /
+`BOLUM3` verisidir. Betik çalıştırıldığında bu veri iki yere uygulanır:
+
+1. `turkce-ozet.html` — bağımsız, yazdırılabilir çalışma sayfası.
+2. `oku.html` — `<!-- OZET-DATA-BEGIN -->` … `<!-- OZET-DATA-END -->` arasına JSON
+   olarak gömülür; Kitap Modu'nda `Ö` tuşuyla açılan çekmece ve Türkçe sayfa
+   listesinin başındaki "sınav yapısı" kartı bu veriyi kullanır.
+
+İçerik yapısı: 1. Bölüm Dil Bilgisi (7 soru) — ses bilgisi, yazım kuralları,
+noktalama işaretleri, sözcükte yapı, sözcük türleri, fiilimsiler; 2. Bölüm sözel
+mantık stratejileri; 3. Bölüm paragraf taktikleri. Madde altındaki "Dipnot /
+Pratik Yol / Kritik Kural / Önemli Tuzak" notları ayrı kutuda gösterilir.
+
+```
+python tools/ozet.py            # içeriği uygula
+python tools/check.py           # JSON + sayfa bütünlüğünü doğrula
+```
 
 ### Ders sırası
 

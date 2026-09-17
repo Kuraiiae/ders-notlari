@@ -37,7 +37,27 @@ img.cover{width:100%;border-radius:16px;border:1px solid rgba(255,255,255,.14);a
 .box h2{margin:0 0 8px;font-size:18px}
 .box p{margin:0;color:#aab6d8;font-size:14px;line-height:1.65}
 footer{color:#8f9dc0;font-size:12px;display:flex;gap:10px;align-items:center;max-width:1060px;width:100%;margin:0 auto;padding:0 20px 26px}
-@media(max-width:860px){.hero{grid-template-columns:1fr}h1{font-size:32px}.grid{grid-template-columns:repeat(2,1fr)}}
+p.lead{font-size:16px;line-height:1.8}
+.card{font-size:15px}
+.box p{font-size:15px;line-height:1.8}
+a.chip{min-height:40px;display:inline-flex;align-items:center}
+@media(min-width:1200px){
+  header,main,footer{max-width:1160px}
+  .grid{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:860px){
+  header{padding:12px 14px}
+  main{padding:20px 14px 48px}
+  .hero{grid-template-columns:1fr;gap:18px}
+  h1{font-size:31px}
+  p.lead{font-size:15.5px;line-height:1.8}
+  .grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .card{padding:14px}
+  a.btn{width:100%;display:inline-flex;align-items:center;justify-content:center;min-height:50px;text-align:center}
+  .row{gap:8px}
+  .nums{gap:16px;flex-wrap:wrap;font-size:12.5px}
+  footer{flex-wrap:wrap;padding:0 14px 22px}
+}
 </style>
 </head>
 <body>
@@ -47,6 +67,7 @@ footer{color:#8f9dc0;font-size:12px;display:flex;gap:10px;align-items:center;max
 <span class="sp"></span>
 <a class="chip" href="galeri.html">Galeri</a>
 <a class="chip" href="oku.html">Kitap Modu</a>
+<a class="chip" href="turkce-ozet.html">Türkçe Özet</a>
 </header>
 <main>
 <section class="hero">
@@ -80,6 +101,14 @@ footer{color:#8f9dc0;font-size:12px;display:flex;gap:10px;align-items:center;max
 <section class="box">
 <h2>Calisma ozellikleri</h2>
 <p>Temizlenmis sayfalar (gri zemin bastirildi, tek tusla orijinale donus) &middot; Beyaz / Sepya / Gece kagit &middot; Odak modu &middot; Ayraclar + kaldigin yerden devam.</p>
+</section>
+<section class="box">
+<h2>Türkçe konu özetleri</h2>
+<p>7 dil bilgisi sorusunun geldigi alti baslik — ses bilgisi, yazim kurallari, noktalama, sozcukte yapi, sozcuk turleri, fiilimsiler — sozel mantikta tablo taktigi ve paragraf soru tipleri tek sayfada toplandi. Kitap Modu'nda da <b>Ö</b> tusuyla acilir.</p>
+<div class="row" style="margin-top:14px">
+<a class="btn g" href="turkce-ozet.html">Türkçe Özet sayfası</a>
+<a class="btn g" href="oku.html?ders=turkce">Türkçe sayfaları oku</a>
+</div>
 </section>
 </main>
 <footer>
