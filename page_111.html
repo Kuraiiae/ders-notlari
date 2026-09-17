@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Ders Notu 111</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Caveat:wght@600;700&family=Comfortaa:wght@700&display=swap" rel="stylesheet">
+<style>
+
+
+  .table-box {
+    border: 2px solid #333;
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 19px;
+    line-height: 1.45;
+  }
+  .table-row {
+    display: flex;
+    border-bottom: 1px dashed #d1d5db;
+    padding: 3px 0;
+  }
+  .table-row:last-child {
+    border-bottom: none;
+  }
+  .table-col-left {
+    width: 48%;
+    font-weight: bold;
+    color: #111;
+  }
+  .table-col-right {
+    width: 52%;
+    color: #1e3a8a;
+  }
+  .culture-box {
+    border: 2px solid #e53935;
+    border-radius: 14px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 18.5px;
+    line-height: 1.42;
+  }
+  .culture-item {
+    margin-bottom: 4px;
+  }
+  .culture-name {
+    font-weight: bold;
+    color: #000;
+  }
+  .quote-highlight {
+    font-size: 19px;
+    line-height: 1.4;
+    margin: 14px 0;
+    color: #111;
+  }
+  .quote-highlight strong {
+    color: #0d47a1;
+  }
+  .section-title-blue {
+    font-size: 21px;
+    font-weight: bold;
+    color: #1565c0;
+    margin-bottom: 8px;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-title-red {
+    font-size: 21px;
+    font-weight: bold;
+    color: #b71c1c;
+    margin: 14px 0 8px 0;
+  }
+  .quote-box-note {
+    font-size: 18px;
+    color: #333;
+    padding: 8px 12px;
+    background: #fff8e1;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin-top: 10px;
+    line-height: 1.35;
+  }
+  .iskitler-banner {
+    text-align: center;
+    margin: 18px 0 10px 0;
+  }
+  .iskitler-title {
+    display: inline-block;
+    background: #e1bee7;
+    color: #4a148c;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 4px 35px;
+    border-radius: 20px;
+    letter-spacing: 1.5px;
+  }
+  .box-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #c62828;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px;
+    font-family: 'Patrick Hand', 'Comic Neue', cursive, sans-serif;
+    color: #1a1a2e;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    width: 860px;
+    min-height: 1220px;
+    background: #ffffff;
+    background-image: 
+      repeating-linear-gradient(transparent, transparent 27px, #e8edf5 28px);
+    position: relative;
+    padding: 35px 45px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+
+  /* Titles */
+  .top-banner {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0288d1;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .main-title-container {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .main-title-bg {
+    display: inline-block;
+    background: #b2ebf2;
+    padding: 4px 28px;
+    border-radius: 6px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+  }
+  .main-title-bg.yellow { background: #fff59d; }
+  .main-title-bg.pink { background: #f8bbd0; }
+  .main-title-bg.green { background: #c8e6c9; }
+  .main-title-bg.purple { background: #e1bee7; }
+  .main-title-bg.orange { background: #ffe0b2; }
+
+  .main-title {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0d47a1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .main-title.dark { color: #1a237e; }
+  .main-title.black { color: #212121; }
+
+  .sub-title-banner {
+    text-align: center;
+    margin: 14px 0 10px 0;
+  }
+  .sub-title-pill {
+    display: inline-block;
+    padding: 3px 24px;
+    border-radius: 18px;
+    font-size: 23px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+  }
+  .pill-purple { background: #e1bee7; color: #4a148c; }
+  .pill-blue { background: #b3e5fc; color: #01579b; }
+  .pill-yellow { background: #fff9c4; color: #f57f17; }
+  .pill-green { background: #c8e6c9; color: #1b5e20; }
+  .pill-pink { background: #f8bbd0; color: #880e4f; }
+  .pill-gray { background: #e0e0e0; color: #212121; }
+
+  /* Sections */
+  .section-heading-blue {
+    font-size: 20.5px;
+    font-weight: bold;
+    color: #1565c0;
+    margin: 10px 0 6px 0;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-heading-red {
+    font-size: 20px;
+    font-weight: bold;
+    color: #c62828;
+    margin: 10px 0 6px 0;
+  }
+  .section-heading-purple {
+    font-size: 20px;
+    font-weight: bold;
+    color: #6a1b9a;
+    margin: 10px 0 6px 0;
+  }
+
+  /* Grids & Layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .grid-2-asym {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Boxes */
+  .card-box {
+    border-radius: 12px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.75);
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-box.border-red { border: 2px solid #e53935; }
+  .card-box.border-blue { border: 2px solid #1e88e5; }
+  .card-box.border-dark { border: 2px solid #37474f; }
+  .card-box.border-green { border: 2px solid #43a047; }
+  .card-box.border-purple { border: 2px solid #8e24aa; }
+
+  /* Quotes & Notes */
+  .highlight-quote {
+    font-size: 18.5px;
+    line-height: 1.4;
+    margin: 8px 0;
+    color: #111;
+  }
+  .note-callout {
+    font-size: 17.5px;
+    color: #2e3842;
+    padding: 8px 12px;
+    background: #fffde7;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin: 8px 0;
+    line-height: 1.38;
+  }
+
+  /* Bullet lists */
+  .bullet-list {
+    list-style: none;
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .bullet-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 5px;
+  }
+  .bullet-list.square li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    color: #1e3a8a;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.red-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #d32f2f;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.blue-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #0288d1;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.arrow li::before {
+    content: "➔";
+    position: absolute;
+    left: 0;
+    color: #ef6c00;
+    font-size: 13px;
+    top: 1px;
+  }
+
+  /* Footer */
+  .footer-page {
+    position: absolute;
+    bottom: 12px;
+    right: 30px;
+    font-size: 16px;
+    color: #9e9e9e;
+    font-family: 'Comfortaa', cursive, sans-serif;
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="main-title-container">
+  <div class="main-title-bg purple">
+    <div class="main-title"><span>MUHAREBELER DÖNEMI</span></div>
+  </div>
+</div>
+
+<div class="note-callout">
+  Millî Mücadele Dönemi'nde Türkiye Doğu, Batı ve Güney Cepheleri olmak üzere üç ana cephede savaşmıştır.
+</div>
+
+<div class="main-title-container" style="margin-top: 15px;">
+  <div class="main-title-bg red">
+    <div class="main-title"><span>DOĞU CEPHESİ</span></div>
+  </div>
+</div>
+
+<ul class="bullet-list red-dot">
+  <li><strong>Doğu Cephesi</strong>'nde Kâzım Karabekir Paşa komutasındaki 15. Kolordu Ermenilere ve Gürcülere karşı savaşmıştır. TBMM'ye bağlı kuvvetler tarafından açılan ilk cephedir.</li>
+  <li>Mondros'tan sonra Kars ve çevresi İngilizlere buna tepki gösterilmiş ve Kars'ta "Şura" hükümeti kurulmuş. Kurulan bu hük. İngilizler tanımamış ve Kars ve çevresini Ermenilere verilmesini sağlamıştır.</li>
+  <li>Ermenilerin Gümrü Antlaşması'nı imzalamasıyla cephe kapanmıştır. (İlk kapanan cephe) katliam yapmıştır.</li>
+</ul>
+
+<div class="card-box border-blue" style="margin: 15px 0; text-align: center;">
+  <p style="font-weight: bold; margin-bottom: 10px;">[ Harita Şeması: Türkiye Sınırları, Kars, Erzurum, Ermenistan, Gürcü ]</p>
+  <div class="grid-2">
+    <div style="text-align: left;">
+      <ul class="bullet-list blue-dot">
+        <li>Ermeni + Gürcü</li>
+      </ul>
+    </div>
+    <div style="text-align: left;">
+      <ul class="bullet-list arrow">
+        <li>İlk askeri ve siyasi başarı Doğu Cephesi'nde kazanılmıştır. Buradaki başarılarından dolayı Kâzım Karabekir'e <mark style="background-color: #a3e4d7;">"Şark Fatihi"</mark> unvanı verilmiştir.</li>
+        <li>TBMM'yi resmi anlamda tanıyan ilk devlet Ermenistan'dır.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="sub-title-banner" style="margin-top: 20px;">
+  <div class="sub-title-pill pill-purple">GÜMRÜ ANTLAŞMASI (2-3 Aralık 1920)</div>
+</div>
+
+<ul class="bullet-list square">
+  <li>Sarıkamış, Kars, Kağızman, Iğdır ve Oltu Türk hükümetine bırakılacaktır.</li>
+  <li>Çıldır Gölü ve Aras Nehri TBMM ile Ermenistan arasında sınır olacaktır.</li>
+  <li>Ermeniler, Sevr'deki isteklerinden vazgeçecek ve Misakımilli'yi tanıyacaktır.</li>
+  <li>1915 Tehcir Kanunu ile göç ettirilen Ermenilerden Türklere karşı silah kullanmamış olanlar Türkiye'ye geri dönebileceklerdir.</li>
+</ul>
+
+<div class="sub-title-banner" style="margin-top: 15px;">
+  <div class="sub-title-pill pill-yellow">ÖNEMİ</div>
+</div>
+
+<ul class="bullet-list blue-dot">
+  <li>TBMM'nin <mark style="background-color: #a3e4d7;">uluslararası</mark> alanda imzaladığı ilk antlaşmadır.</li>
+  <li>İlk defa bir antlaşma metninde <mark style="background-color: #a3e4d7;">"Türkiye"</mark> ifadesi kullanılmıştır.</li>
+</ul>
+
+<div class="card-box border-purple" style="margin-top: 20px;">
+  <div class="section-heading-red">Doğu Sınırını Şekillendiren Antlaşmalar</div>
+  <ul class="bullet-list red-dot">
+    <li><strong>Gümrü</strong></li>
+    <li><strong>Batum</strong> $\rightarrow$ Gürcülerle imzalandı. Özellikle Artvin ve Batum bölgeleri geri alındı.</li>
+    <li><strong>Moskova</strong></li>
+    <li><strong>Kars</strong> $\rightarrow$ Doğu sınırı kesin halini almıştır.</li>
+  </ul>
+</div>
+  <div class="footer-page">UniNote 111</div>
+</div>
+</body>
+</html>

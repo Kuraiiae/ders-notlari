@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Ders Notu 45</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Caveat:wght@600;700&family=Comfortaa:wght@700&display=swap" rel="stylesheet">
+<style>
+
+
+  .table-box {
+    border: 2px solid #333;
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 19px;
+    line-height: 1.45;
+  }
+  .table-row {
+    display: flex;
+    border-bottom: 1px dashed #d1d5db;
+    padding: 3px 0;
+  }
+  .table-row:last-child {
+    border-bottom: none;
+  }
+  .table-col-left {
+    width: 48%;
+    font-weight: bold;
+    color: #111;
+  }
+  .table-col-right {
+    width: 52%;
+    color: #1e3a8a;
+  }
+  .culture-box {
+    border: 2px solid #e53935;
+    border-radius: 14px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 18.5px;
+    line-height: 1.42;
+  }
+  .culture-item {
+    margin-bottom: 4px;
+  }
+  .culture-name {
+    font-weight: bold;
+    color: #000;
+  }
+  .quote-highlight {
+    font-size: 19px;
+    line-height: 1.4;
+    margin: 14px 0;
+    color: #111;
+  }
+  .quote-highlight strong {
+    color: #0d47a1;
+  }
+  .section-title-blue {
+    font-size: 21px;
+    font-weight: bold;
+    color: #1565c0;
+    margin-bottom: 8px;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-title-red {
+    font-size: 21px;
+    font-weight: bold;
+    color: #b71c1c;
+    margin: 14px 0 8px 0;
+  }
+  .quote-box-note {
+    font-size: 18px;
+    color: #333;
+    padding: 8px 12px;
+    background: #fff8e1;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin-top: 10px;
+    line-height: 1.35;
+  }
+  .iskitler-banner {
+    text-align: center;
+    margin: 18px 0 10px 0;
+  }
+  .iskitler-title {
+    display: inline-block;
+    background: #e1bee7;
+    color: #4a148c;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 4px 35px;
+    border-radius: 20px;
+    letter-spacing: 1.5px;
+  }
+  .box-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #c62828;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px;
+    font-family: 'Patrick Hand', 'Comic Neue', cursive, sans-serif;
+    color: #1a1a2e;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    width: 860px;
+    min-height: 1220px;
+    background: #ffffff;
+    background-image: 
+      repeating-linear-gradient(transparent, transparent 27px, #e8edf5 28px);
+    position: relative;
+    padding: 35px 45px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+
+  /* Titles */
+  .top-banner {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0288d1;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .main-title-container {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .main-title-bg {
+    display: inline-block;
+    background: #b2ebf2;
+    padding: 4px 28px;
+    border-radius: 6px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+  }
+  .main-title-bg.yellow { background: #fff59d; }
+  .main-title-bg.pink { background: #f8bbd0; }
+  .main-title-bg.green { background: #c8e6c9; }
+  .main-title-bg.purple { background: #e1bee7; }
+  .main-title-bg.orange { background: #ffe0b2; }
+
+  .main-title {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0d47a1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .main-title.dark { color: #1a237e; }
+  .main-title.black { color: #212121; }
+
+  .sub-title-banner {
+    text-align: center;
+    margin: 14px 0 10px 0;
+  }
+  .sub-title-pill {
+    display: inline-block;
+    padding: 3px 24px;
+    border-radius: 18px;
+    font-size: 23px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+  }
+  .pill-purple { background: #e1bee7; color: #4a148c; }
+  .pill-blue { background: #b3e5fc; color: #01579b; }
+  .pill-yellow { background: #fff9c4; color: #f57f17; }
+  .pill-green { background: #c8e6c9; color: #1b5e20; }
+  .pill-pink { background: #f8bbd0; color: #880e4f; }
+  .pill-gray { background: #e0e0e0; color: #212121; }
+
+  /* Sections */
+  .section-heading-blue {
+    font-size: 20.5px;
+    font-weight: bold;
+    color: #1565c0;
+    margin: 10px 0 6px 0;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-heading-red {
+    font-size: 20px;
+    font-weight: bold;
+    color: #c62828;
+    margin: 10px 0 6px 0;
+  }
+  .section-heading-purple {
+    font-size: 20px;
+    font-weight: bold;
+    color: #6a1b9a;
+    margin: 10px 0 6px 0;
+  }
+
+  /* Grids & Layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .grid-2-asym {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Boxes */
+  .card-box {
+    border-radius: 12px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.75);
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-box.border-red { border: 2px solid #e53935; }
+  .card-box.border-blue { border: 2px solid #1e88e5; }
+  .card-box.border-dark { border: 2px solid #37474f; }
+  .card-box.border-green { border: 2px solid #43a047; }
+  .card-box.border-purple { border: 2px solid #8e24aa; }
+
+  /* Quotes & Notes */
+  .highlight-quote {
+    font-size: 18.5px;
+    line-height: 1.4;
+    margin: 8px 0;
+    color: #111;
+  }
+  .note-callout {
+    font-size: 17.5px;
+    color: #2e3842;
+    padding: 8px 12px;
+    background: #fffde7;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin: 8px 0;
+    line-height: 1.38;
+  }
+
+  /* Bullet lists */
+  .bullet-list {
+    list-style: none;
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .bullet-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 5px;
+  }
+  .bullet-list.square li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    color: #1e3a8a;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.red-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #d32f2f;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.blue-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #0288d1;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.arrow li::before {
+    content: "➔";
+    position: absolute;
+    left: 0;
+    color: #ef6c00;
+    font-size: 13px;
+    top: 1px;
+  }
+
+  /* Footer */
+  .footer-page {
+    position: absolute;
+    bottom: 12px;
+    right: 30px;
+    font-size: 16px;
+    color: #9e9e9e;
+    font-family: 'Comfortaa', cursive, sans-serif;
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="main-title-container">
+  <div class="main-title-bg pink">
+    <div class="main-title"><span>Sanat - Spor - Edebiyat</span></div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card-box border-red">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-pink">Hat</div></div>
+    <ul class="bullet-list red-dot">
+      <li>En büyük Osmanlı hattatı Şeyh Hamdullah'tır. (Kıbletül Küttaplık) Ahmet Karahisari, Kazasker Mustafa İzzet, Yeserizade Mustafa İzzet ve Hafız Osman önemli hattatlar arasındadır.</li>
+      <li>Hatları günümüze ulaşan tek Osmanlı Padişahı II. Mustafa'dır.</li>
+    </ul>
+  </div>
+
+  <div class="card-box border-red">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-pink">Minyatür (Tasvir Sanatı)</div></div>
+    <ul class="bullet-list red-dot">
+      <li>Bu sanat dolayısıyla uğraşanlara musavvir veya nakkaş denir. Levni, Matrakçı Nasuh ve Nakkas Sinan Bey bilinen musavvirlerdendir. Nakkaş Sinan Bey, "Gül Koklayan Fatih" eseriyle minyatür sanatını portre görünümüne geçirmiştir.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card-box border-red">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-pink">Resim</div></div>
+    <ul class="bullet-list red-dot">
+      <li>Resmini yaptıran ilk Osmanlı Padişahı Fatih Sultan Mehmet'tir. Resmini devlet dairesine astıran II. Mahmut'tur. Ressam yetiştirebilmek için Paris'te "Mekteb-i Osmani" adında kurum açıldı.</li>
+      <li>İlk resim sergisini açan Şeker Ahmed Paşa'dır. Süleyman Seyyid, Kaplumbağa Terbiyecisi ve Silah Tacirleri gibi tablolarıyla ünlenen Osman Hamdi Bey'dir. İlk kadın ressamı Mihri Müşfik'tir.</li>
+    </ul>
+  </div>
+
+  <div class="card-box border-red">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-pink">Müzik</div></div>
+    <ul class="bullet-list red-dot">
+      <li>Osmanlı Devleti'nde Abdülkadir Meragi müziğin öncüsü kabul edilir (II. Murat). Müzik alanında XVII. yy.da Buhurizade Mustafa Itri Efendi'dir. Segah makamındaki "Bayram Tekbiri" Itri'ye aittir.</li>
+      <li>XIX. yy.ın en önemli müzisyenleri arasında ise "Dede Efendi" vardır. II. Mahmut Zamanında kurulan Mızıka-yı Hümayun müzik alanında önemli çalışmalarda bulunmuştur. Ayrıca III. Selim suzidilara makamını bulmuştur.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card-box border-red">
+  <div class="sub-title-banner"><div class="sub-title-pill pill-pink">Geleneksel El Sanatları ve Diğerleri</div></div>
+  <ul class="bullet-list red-dot">
+    <li><strong>Çinicilik:</strong> İstanbul, İznik, Kütahya, Diyarbakır</li>
+    <li><strong>Ebru:</strong> Uğraşana "ebruzen" denir. (Bulut)</li>
+    <li><strong>Kalem İşi:</strong> Duvar süsleme sanatıdır.</li>
+    <li><strong>Telkari:</strong> Gümüş işlemeciliğidir.</li>
+    <li><strong>Mollakari:</strong> Duvar süsleme sanatıdır.</li>
+    <li><strong>Vitray:</strong> Cam süsleme sanatıdır.</li>
+    <li><strong>Ciltçilik:</strong> Uğraşana "mücellit" denir.</li>
+    <li><strong>Halıcılık:</strong> Uşak, Bünyon, Isparta, Hereke</li>
+    <li><strong>Maden İşlemeciliği:</strong> Eşyalar altın ile kaplanır. Bu işleme "Tombak" denir.</li>
+    <li><strong>Heykel:</strong> Heykelini tek yaptıran Sultan Abdülaziz</li>
+    <li><strong>Ahşap İşlemeciliği:</strong> Rohle, mihrap, voaz kürsülerinde uyg.</li>
+    <li><strong>Opera:</strong> "Milli Osmanlı Operet Kumpanyası" kuruluk (III. Selim Zamanı)</li>
+  </ul>
+</div>
+
+<div class="grid-2">
+  <div class="card-box border-red">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-pink">Spor</div></div>
+    <ul class="bullet-list red-dot">
+      <li>Orhan Bey Dönemi'nde ilk defa güreş tekkeleri açıldı. I. Murat Zamanında ise Edirne'de Kırkpınar Yağlı Güreşleri başladı.</li>
+      <li>V. Murat ve Sultan Abdülaziz güreş ile uğraşmış. Adalı Halil ve Koca Yusuf ünlü güreşçilerdir. Okculuk ile uğraşanlara "Kemankeş" denir. At binicilerine "Cündi" denir.</li>
+      <li>İlk müfredata giren ders jimnastiktir. İlk beden eğitimi öğretmeni Mehmet Faik Üstünidmandır. Milli Olimpiyat Komitesini kuran Selim Sırrı Tarcandır. Katıldığı ilk ve son olimpiyatlar 1912 Stockholm Olimpiyatlarıdır.</li>
+    </ul>
+  </div>
+
+  <div class="card-box border-red">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-pink">Tezhip</div></div>
+    <ul class="bullet-list red-dot">
+      <li>Bu sanatla uğraşanlara müzehhip denir. Kara Mehmet en ünlü temsilcisidir.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="grid-2-asym">
+  <div class="card-box border-blue">
+    <div class="section-heading-blue">Divan Edebiyatı</div>
+    <p>Baki ve Fuzuli</p>
+  </div>
+  <div class="card-box border-green">
+    <div class="section-heading-purple">Tasavvuf</div>
+    <p>Pir Sultan Abdal, Hacı Bayram, Akşemeddin</p>
+  </div>
+  <div class="card-box border-purple">
+    <div class="section-heading-red">Halk</div>
+    <p>Köroğlu, Öksüz, Hoyrat</p>
+  </div>
+</div>
+  <div class="footer-page">UniNote 45</div>
+</div>
+</body>
+</html>

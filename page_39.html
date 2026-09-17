@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Ders Notu 39</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Caveat:wght@600;700&family=Comfortaa:wght@700&display=swap" rel="stylesheet">
+<style>
+
+
+  .table-box {
+    border: 2px solid #333;
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 19px;
+    line-height: 1.45;
+  }
+  .table-row {
+    display: flex;
+    border-bottom: 1px dashed #d1d5db;
+    padding: 3px 0;
+  }
+  .table-row:last-child {
+    border-bottom: none;
+  }
+  .table-col-left {
+    width: 48%;
+    font-weight: bold;
+    color: #111;
+  }
+  .table-col-right {
+    width: 52%;
+    color: #1e3a8a;
+  }
+  .culture-box {
+    border: 2px solid #e53935;
+    border-radius: 14px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 18.5px;
+    line-height: 1.42;
+  }
+  .culture-item {
+    margin-bottom: 4px;
+  }
+  .culture-name {
+    font-weight: bold;
+    color: #000;
+  }
+  .quote-highlight {
+    font-size: 19px;
+    line-height: 1.4;
+    margin: 14px 0;
+    color: #111;
+  }
+  .quote-highlight strong {
+    color: #0d47a1;
+  }
+  .section-title-blue {
+    font-size: 21px;
+    font-weight: bold;
+    color: #1565c0;
+    margin-bottom: 8px;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-title-red {
+    font-size: 21px;
+    font-weight: bold;
+    color: #b71c1c;
+    margin: 14px 0 8px 0;
+  }
+  .quote-box-note {
+    font-size: 18px;
+    color: #333;
+    padding: 8px 12px;
+    background: #fff8e1;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin-top: 10px;
+    line-height: 1.35;
+  }
+  .iskitler-banner {
+    text-align: center;
+    margin: 18px 0 10px 0;
+  }
+  .iskitler-title {
+    display: inline-block;
+    background: #e1bee7;
+    color: #4a148c;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 4px 35px;
+    border-radius: 20px;
+    letter-spacing: 1.5px;
+  }
+  .box-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #c62828;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px;
+    font-family: 'Patrick Hand', 'Comic Neue', cursive, sans-serif;
+    color: #1a1a2e;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    width: 860px;
+    min-height: 1220px;
+    background: #ffffff;
+    background-image: 
+      repeating-linear-gradient(transparent, transparent 27px, #e8edf5 28px);
+    position: relative;
+    padding: 35px 45px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+
+  /* Titles */
+  .top-banner {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0288d1;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .main-title-container {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .main-title-bg {
+    display: inline-block;
+    background: #b2ebf2;
+    padding: 4px 28px;
+    border-radius: 6px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+  }
+  .main-title-bg.yellow { background: #fff59d; }
+  .main-title-bg.pink { background: #f8bbd0; }
+  .main-title-bg.green { background: #c8e6c9; }
+  .main-title-bg.purple { background: #e1bee7; }
+  .main-title-bg.orange { background: #ffe0b2; }
+
+  .main-title {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0d47a1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .main-title.dark { color: #1a237e; }
+  .main-title.black { color: #212121; }
+
+  .sub-title-banner {
+    text-align: center;
+    margin: 14px 0 10px 0;
+  }
+  .sub-title-pill {
+    display: inline-block;
+    padding: 3px 24px;
+    border-radius: 18px;
+    font-size: 23px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+  }
+  .pill-purple { background: #e1bee7; color: #4a148c; }
+  .pill-blue { background: #b3e5fc; color: #01579b; }
+  .pill-yellow { background: #fff9c4; color: #f57f17; }
+  .pill-green { background: #c8e6c9; color: #1b5e20; }
+  .pill-pink { background: #f8bbd0; color: #880e4f; }
+  .pill-gray { background: #e0e0e0; color: #212121; }
+
+  /* Sections */
+  .section-heading-blue {
+    font-size: 20.5px;
+    font-weight: bold;
+    color: #1565c0;
+    margin: 10px 0 6px 0;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-heading-red {
+    font-size: 20px;
+    font-weight: bold;
+    color: #c62828;
+    margin: 10px 0 6px 0;
+  }
+  .section-heading-purple {
+    font-size: 20px;
+    font-weight: bold;
+    color: #6a1b9a;
+    margin: 10px 0 6px 0;
+  }
+
+  /* Grids & Layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .grid-2-asym {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Boxes */
+  .card-box {
+    border-radius: 12px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.75);
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-box.border-red { border: 2px solid #e53935; }
+  .card-box.border-blue { border: 2px solid #1e88e5; }
+  .card-box.border-dark { border: 2px solid #37474f; }
+  .card-box.border-green { border: 2px solid #43a047; }
+  .card-box.border-purple { border: 2px solid #8e24aa; }
+
+  /* Quotes & Notes */
+  .highlight-quote {
+    font-size: 18.5px;
+    line-height: 1.4;
+    margin: 8px 0;
+    color: #111;
+  }
+  .note-callout {
+    font-size: 17.5px;
+    color: #2e3842;
+    padding: 8px 12px;
+    background: #fffde7;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin: 8px 0;
+    line-height: 1.38;
+  }
+
+  /* Bullet lists */
+  .bullet-list {
+    list-style: none;
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .bullet-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 5px;
+  }
+  .bullet-list.square li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    color: #1e3a8a;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.red-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #d32f2f;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.blue-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #0288d1;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.arrow li::before {
+    content: "➔";
+    position: absolute;
+    left: 0;
+    color: #ef6c00;
+    font-size: 13px;
+    top: 1px;
+  }
+
+  /* Footer */
+  .footer-page {
+    position: absolute;
+    bottom: 12px;
+    right: 30px;
+    font-size: 16px;
+    color: #9e9e9e;
+    font-family: 'Comfortaa', cursive, sans-serif;
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top-banner">e. Yönetici Grupları</div>
+
+<div class="main-title-container">
+  <div class="main-title-bg pink">
+    <div class="main-title"><span>Yönetici (Memur) Kesim</span></div>
+  </div>
+</div>
+
+<div class="grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;">
+  <div class="card-box border-red">
+    <div class="section-heading-red" style="text-align: center; margin-top: 0;">Seyfiye <span style="font-size: 0.8em; font-weight: normal;">→ Kılıç</span></div>
+    <div style="text-align: center; font-style: italic; margin-bottom: 10px; font-size: 0.9em;">(Ehl-i Seyf, Ehl-i Örf)</div>
+    <div style="text-align: center; font-weight: bold; margin-bottom: 8px; border-bottom: 1px dashed #ccc; padding-bottom: 4px;">Askerî Yönetim</div>
+    <ul class="bullet-list red-dot" style="font-size: 0.9em;">
+      <li>Padişah</li>
+      <li>Veziriazam</li>
+      <li>Vezirler</li>
+      <li>Tımarlı Sipahi</li>
+      <li>Subaşı</li>
+      <li>Yeniçeri Ağası</li>
+      <li>Kaptanderya</li>
+    </ul>
+  </div>
+
+  <div class="card-box border-purple">
+    <div class="section-heading-purple" style="text-align: center; margin-top: 0;">İlmiye</div>
+    <div style="text-align: center; font-style: italic; margin-bottom: 10px; font-size: 0.9em;">(Ehl-i İlim, Ehl-i Şer)</div>
+    <div style="text-align: center; font-weight: bold; margin-bottom: 8px; border-bottom: 1px dashed #ccc; padding-bottom: 4px;">Eğitim Din Hukuk</div>
+    <ul class="bullet-list blue-dot" style="font-size: 0.9em;">
+      <li>Şeyhülislam (Lider)</li>
+      <li>Kadı</li>
+      <li>Kazasker</li>
+      <li>Muid</li>
+      <li>Müderris</li>
+      <li>Nakibüleşraf</li>
+    </ul>
+  </div>
+
+  <div class="card-box border-blue">
+    <div class="section-heading-blue" style="text-align: center; margin-top: 0;">Kalemiye</div>
+    <div style="text-align: center; font-style: italic; margin-bottom: 10px; font-size: 0.9em;">(Ehl-i Kalem)</div>
+    <div style="text-align: center; font-weight: bold; margin-bottom: 8px; border-bottom: 1px dashed #ccc; padding-bottom: 4px;">Yazışma Bürokrasi Diplomasi</div>
+    <ul class="bullet-list blue-dot" style="font-size: 0.9em;">
+      <li>Nişancı</li>
+      <li>Defterdar</li>
+      <li>Reisülküttap</li>
+      <li>Vilayet Defterdarı</li>
+      <li>Kapan Emini</li>
+      <li>Gümrük ve Bac Emini</li>
+    </ul>
+  </div>
+</div>
+
+<div class="sub-title-banner" style="margin-top: 20px;">
+  <div class="sub-title-pill pill-pink">ORDU</div>
+</div>
+
+<div class="main-title-container" style="margin-top: 10px;">
+  <div class="main-title-bg green">
+    <div class="main-title"><span>OSMANLI ORDUSU</span></div>
+  </div>
+</div>
+
+<div class="grid-2" style="grid-template-columns: 1.2fr 0.8fr; gap: 20px;">
+  <div>
+    <div class="section-heading-blue" style="text-align: center;">Kara Kuvvetleri</div>
+    
+    <div style="margin-top: 10px;">
+      <div style="font-weight: bold; color: #d9534f; margin-bottom: 5px;">Kapıkulu Askerleri</div>
+      <div style="margin-left: 15px; margin-bottom: 15px;">
+        <div style="font-weight: bold; font-size: 0.95em; margin-bottom: 3px;">Kapıkulu Piyadeleri</div>
+        <ul class="bullet-list red-dot" style="columns: 2; font-size: 0.9em; margin-bottom: 10px;">
+          <li>Acemi Ocağı</li>
+          <li>Topçular</li>
+          <li>Yeniçeriler</li>
+          <li>Lağımcılar</li>
+          <li>Cebeciler</li>
+          <li>Bostancılar</li>
+          <li>Top Arabacıları</li>
+          <li>Humbaracılar</li>
+        </ul>
+
+        <div style="font-weight: bold; font-size: 0.95em; margin-top: 10px; margin-bottom: 3px;">Kapıkulu Süvarileri</div>
+        <ul class="bullet-list red-dot" style="columns: 2; font-size: 0.9em;">
+          <li>Silahtarlar</li>
+          <li>Sipahiler</li>
+          <li>Sağ Ulufeciler</li>
+          <li>Sol Ulufeciler</li>
+          <li>Sağ Garipler</li>
+          <li>Sol Garipler</li>
+        </ul>
+      </div>
+
+      <div style="font-weight: bold; color: #2e6da4; margin-bottom: 5px;">Yardımcı Kuvvetler</div>
+      <div class="note-callout" style="font-size: 0.9em; margin-bottom: 15px; padding: 8px 12px;">
+        Bağlı devlet ve beyliklerin gönderdiği kuvvetler
+      </div>
+
+      <div style="font-weight: bold; color: #d9534f; margin-bottom: 5px; text-align: center;">Eyalet Askerleri</div>
+      <ul class="bullet-list red-dot" style="columns: 2; font-size: 0.9em;">
+        <li>Tımarlı Sipahiler</li>
+        <li>Beşliler</li>
+        <li>Azeplər (Azaplar)</li>
+        <li>Turnalar</li>
+        <li>Deliler</li>
+        <li>Yörükler</li>
+        <li>Akıncılar</li>
+        <li>Yayalar ve Müsellemler</li>
+        <li>Sakalar</li>
+        <li>Tatarlar</li>
+        <li>Darbendci</li>
+        <li>Köprülüler</li>
+        <li>Cerahor</li>
+        <li>Martalas</li>
+        <li>Voynuk</li>
+      </ul>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-heading-blue" style="text-align: center;">Deniz Kuvvetleri (Donanma)</div>
+    
+    <ul class="bullet-list blue-dot" style="font-size: 0.9em; line-height: 1.5;">
+      <li>Karesioğulları'nın alınmasıyla faaliyetler başladı.</li>
+      <li>Komutanına kaptanderya, askerine leveat denir.</li>
+      <li>İlk kaptanderya Karamürsel Paşa'dır.</li>
+      <li>İlk tersane Karamürsel'de Orhan Bey zamanında açılmıştır.</li>
+      <li>Edirne, İzmit, İznik, Kefe, Trabzon, Sinop, İstanbul, Edincik, Gelibolu, Karamürsel, Samsun, Antalya'da tersaneler açıldı.</li>
+    </ul>
+
+    <div style="font-weight: bold; margin-top: 15px; margin-bottom: 8px; color: #333;">Yetişen ünlü denizciler:</div>
+    <ul class="bullet-list square" style="font-size: 0.9em; line-height: 1.4;">
+      <li>Ece Halil</li>
+      <li>Evrenas Gazi</li>
+      <li>Hacı İlbeyi</li>
+      <li>Barbaros Hayrettin Paşa</li>
+      <li>Piyale Paşa</li>
+      <li>Kemal Reis</li>
+      <li>Seydi Ali Reis</li>
+      <li>Galı Bey</li>
+      <li>Baltaoğlu Süleyman</li>
+      <li>Turgut Ali Reis</li>
+    </ul>
+  </div>
+</div>
+  <div class="footer-page">UniNote 39</div>
+</div>
+</body>
+</html>

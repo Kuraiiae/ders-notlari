@@ -695,11 +695,24 @@ function bind() {
   let rt;
   window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(layout, 120); });
 
-  /* tekerlek + ctrl ile yakinlastir */
+  /* tekerlek: ctrl ile yakinlastir, normalde tam sayfa gecisi yap */
+  let wheelAcc = 0, wheelT = null;
   el.stage.addEventListener('wheel', e => {
-    if (!e.ctrlKey) return;
     e.preventDefault();
-    zoomStep(e.deltaY < 0 ? 1.1 : 1 / 1.1);
+    if (e.ctrlKey) {
+      zoomStep(e.deltaY < 0 ? 1.1 : 1 / 1.1);
+      return;
+    }
+    wheelAcc += e.deltaY;
+    clearTimeout(wheelT);
+    wheelT = setTimeout(() => { wheelAcc = 0; }, 120);
+    if (wheelAcc >= 65) {
+      wheelAcc = 0;
+      step(1);
+    } else if (wheelAcc <= -65) {
+      wheelAcc = 0;
+      step(-1);
+    }
   }, { passive: false });
 
   /* yakinlasmisken fare ile gezinme */

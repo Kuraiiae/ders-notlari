@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Ders Notu 157</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Caveat:wght@600;700&family=Comfortaa:wght@700&display=swap" rel="stylesheet">
+<style>
+
+
+  .table-box {
+    border: 2px solid #333;
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 19px;
+    line-height: 1.45;
+  }
+  .table-row {
+    display: flex;
+    border-bottom: 1px dashed #d1d5db;
+    padding: 3px 0;
+  }
+  .table-row:last-child {
+    border-bottom: none;
+  }
+  .table-col-left {
+    width: 48%;
+    font-weight: bold;
+    color: #111;
+  }
+  .table-col-right {
+    width: 52%;
+    color: #1e3a8a;
+  }
+  .culture-box {
+    border: 2px solid #e53935;
+    border-radius: 14px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 18.5px;
+    line-height: 1.42;
+  }
+  .culture-item {
+    margin-bottom: 4px;
+  }
+  .culture-name {
+    font-weight: bold;
+    color: #000;
+  }
+  .quote-highlight {
+    font-size: 19px;
+    line-height: 1.4;
+    margin: 14px 0;
+    color: #111;
+  }
+  .quote-highlight strong {
+    color: #0d47a1;
+  }
+  .section-title-blue {
+    font-size: 21px;
+    font-weight: bold;
+    color: #1565c0;
+    margin-bottom: 8px;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-title-red {
+    font-size: 21px;
+    font-weight: bold;
+    color: #b71c1c;
+    margin: 14px 0 8px 0;
+  }
+  .quote-box-note {
+    font-size: 18px;
+    color: #333;
+    padding: 8px 12px;
+    background: #fff8e1;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin-top: 10px;
+    line-height: 1.35;
+  }
+  .iskitler-banner {
+    text-align: center;
+    margin: 18px 0 10px 0;
+  }
+  .iskitler-title {
+    display: inline-block;
+    background: #e1bee7;
+    color: #4a148c;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 4px 35px;
+    border-radius: 20px;
+    letter-spacing: 1.5px;
+  }
+  .box-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #c62828;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px;
+    font-family: 'Patrick Hand', 'Comic Neue', cursive, sans-serif;
+    color: #1a1a2e;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    width: 860px;
+    min-height: 1220px;
+    background: #ffffff;
+    background-image: 
+      repeating-linear-gradient(transparent, transparent 27px, #e8edf5 28px);
+    position: relative;
+    padding: 35px 45px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+
+  /* Titles */
+  .top-banner {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0288d1;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .main-title-container {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .main-title-bg {
+    display: inline-block;
+    background: #b2ebf2;
+    padding: 4px 28px;
+    border-radius: 6px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+  }
+  .main-title-bg.yellow { background: #fff59d; }
+  .main-title-bg.pink { background: #f8bbd0; }
+  .main-title-bg.green { background: #c8e6c9; }
+  .main-title-bg.purple { background: #e1bee7; }
+  .main-title-bg.orange { background: #ffe0b2; }
+
+  .main-title {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0d47a1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .main-title.dark { color: #1a237e; }
+  .main-title.black { color: #212121; }
+
+  .sub-title-banner {
+    text-align: center;
+    margin: 14px 0 10px 0;
+  }
+  .sub-title-pill {
+    display: inline-block;
+    padding: 3px 24px;
+    border-radius: 18px;
+    font-size: 23px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+  }
+  .pill-purple { background: #e1bee7; color: #4a148c; }
+  .pill-blue { background: #b3e5fc; color: #01579b; }
+  .pill-yellow { background: #fff9c4; color: #f57f17; }
+  .pill-green { background: #c8e6c9; color: #1b5e20; }
+  .pill-pink { background: #f8bbd0; color: #880e4f; }
+  .pill-gray { background: #e0e0e0; color: #212121; }
+
+  /* Sections */
+  .section-heading-blue {
+    font-size: 20.5px;
+    font-weight: bold;
+    color: #1565c0;
+    margin: 10px 0 6px 0;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-heading-red {
+    font-size: 20px;
+    font-weight: bold;
+    color: #c62828;
+    margin: 10px 0 6px 0;
+  }
+  .section-heading-purple {
+    font-size: 20px;
+    font-weight: bold;
+    color: #6a1b9a;
+    margin: 10px 0 6px 0;
+  }
+
+  /* Grids & Layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .grid-2-asym {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Boxes */
+  .card-box {
+    border-radius: 12px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.75);
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-box.border-red { border: 2px solid #e53935; }
+  .card-box.border-blue { border: 2px solid #1e88e5; }
+  .card-box.border-dark { border: 2px solid #37474f; }
+  .card-box.border-green { border: 2px solid #43a047; }
+  .card-box.border-purple { border: 2px solid #8e24aa; }
+
+  /* Quotes & Notes */
+  .highlight-quote {
+    font-size: 18.5px;
+    line-height: 1.4;
+    margin: 8px 0;
+    color: #111;
+  }
+  .note-callout {
+    font-size: 17.5px;
+    color: #2e3842;
+    padding: 8px 12px;
+    background: #fffde7;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin: 8px 0;
+    line-height: 1.38;
+  }
+
+  /* Bullet lists */
+  .bullet-list {
+    list-style: none;
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .bullet-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 5px;
+  }
+  .bullet-list.square li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    color: #1e3a8a;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.red-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #d32f2f;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.blue-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #0288d1;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.arrow li::before {
+    content: "➔";
+    position: absolute;
+    left: 0;
+    color: #ef6c00;
+    font-size: 13px;
+    top: 1px;
+  }
+
+  /* Footer */
+  .footer-page {
+    position: absolute;
+    bottom: 12px;
+    right: 30px;
+    font-size: 16px;
+    color: #9e9e9e;
+    font-family: 'Comfortaa', cursive, sans-serif;
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top-banner">Soğuk Savaş (1947 - 1990)</div>
+
+<div class="main-title-container">
+  <div class="main-title-bg pink">
+    <div class="main-title"><span>SOĞUK SAVAŞ</span></div>
+  </div>
+</div>
+
+<div class="note-callout" style="text-align: center; margin-bottom: 20px;">
+  Bernard Baruch tarafından ilk defa bu deyim kullanılmıştır.
+</div>
+
+<div class="section-heading-blue" style="text-align: center; font-size: 1.2rem; margin: 15px 0;">A. BLOKLARIN KURULMASI</div>
+
+<div class="grid-2">
+  <div class="card-box border-blue">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-blue">BATI BLOĞU (HÜR) (ABD)</div></div>
+    <ul class="bullet-list blue-dot">
+      <li><strong>1947:</strong> TRUMAN DOKTRİNİ (siyasi - eko)</li>
+      <li><strong>1947:</strong> MARSHALL PLANI (16 ülke - ekonomik)</li>
+      <li><strong>1948:</strong> BATI AVRUPA BİRLİĞİ (ilk askeri oluşum)</li>
+      <li><strong>1949:</strong> NATO (Kuzey Atlantik Savunma Örgütü)</li>
+      <li><strong>1949:</strong> Avrupa Konseyi (ekonomik, kültürel, siyasi)</li>
+    </ul>
+  </div>
+
+  <div class="card-box border-red">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-pink">DOĞU BLOĞU (KOMÜNİST) (SSCB)</div></div>
+    <ul class="bullet-list red-dot">
+      <li><strong>1947:</strong> COMINFORM (siyasi)</li>
+      <li><strong>1947:</strong> MOLOTOF PLANI (ekonomik)</li>
+      <li><strong>1949:</strong> COMECON (ekonomik)</li>
+      <li><strong>1955:</strong> VARŞOVA PAKTI (askeri)</li>
+    </ul>
+  </div>
+</div>
+
+<div style="text-align: center; margin: 20px 0;">
+  <div class="sub-title-banner" style="display: inline-block;"><div class="sub-title-pill pill-purple">BAĞLANTISIZLAR</div></div>
+</div>
+
+<div class="grid-2" style="margin-top: 15px;">
+  <div class="card-box border-purple">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-purple">AVRUPA EKONOMİK TOPLULUĞU</div></div>
+    <ul class="bullet-list square">
+      <li><strong>1950:</strong> Schuman Bildirisi <span style="font-size: 1.2rem;">➔</span> AKÇT</li>
+      <li><strong>1951:</strong> Avrupa Kömür ve Çelik Teşkilatı</li>
+      <li><strong>1957:</strong> Roma Antlaşması ile <span style="font-size: 1.2rem;">➔</span> AET <br><span style="margin-left: 20px; display:inline-block;">➔ Avrupa Ekonomik Topluluğu kuruldu.</span></li>
+    </ul>
+  </div>
+
+  <div class="card-box border-blue">
+    <div class="sub-title-banner"><div class="sub-title-pill pill-blue">SOSYALİST BLOKTA SARSILMALAR</div></div>
+    <ul class="bullet-list blue-dot">
+      <li><strong>1948:</strong> Yugoslavya Cominform'dan çıkarıldı.</li>
+      <li><strong>1953:</strong> İmre Nagy işçi grevleri sonucu Başbakan olmuştur.</li>
+      <li><strong>1967:</strong> Çekoslovakya'da Alexander Dubcek önderliğinde "İnsancıl Komünizm" başlamıştır.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card-box border-green" style="margin-top: 20px;">
+  <ul class="bullet-list square">
+    <li><strong>Çin:</strong> Mao Zedong geçti</li>
+    <li><strong>Küba:</strong> Fidel Castro</li>
+    <li><strong>Kore:</strong> Kore Halk Cumhuriyeti</li>
+  </ul>
+</div>
+
+<div class="main-title-container" style="margin-top: 30px;">
+  <div class="main-title-bg green">
+    <div class="main-title"><span>B. PAYLAŞILAMAYAN ORTA DOĞU</span></div>
+  </div>
+</div>
+
+<div style="position: relative;">
+  <div class="card-box border-red" style="position: absolute; right: 0; top: 0; width: 250px; z-index: 2; background-color: #fff0f5;">
+    <ul class="bullet-list red-dot" style="margin: 0; padding-left: 15px; font-size: 0.9rem;">
+      <li>İlk tanıyan dev. <strong>ABD</strong></li>
+      <li>İlk tanıyan müs. dev. <strong>Türkiye</strong></li>
+      <li>İlk tanıyan arap dev. <strong>Mısır</strong></li>
+    </ul>
+  </div>
+
+  <div class="sub-title-banner" style="margin-bottom: 15px;">
+    <div class="sub-title-pill pill-pink">1. İSRAİL'İN KURULUŞU</div>
+    <span style="margin-left: 15px; font-weight: bold; color: #d32f2f;">➔ Felaket Günü ➔ El Nakba</span>
+  </div>
+</div>
+
+<div class="card-box border-red" style="margin-top: 10px;">
+  <p>1917'de "Balfour Deklarasyonu" ile Filistin sorunu başladı. 1920'lerden itibaren Avrupa Filistin topraklarına büyük Yahudi göçü başladı. Yahudiler Haganah ve Irgun adında iki terör örgütü kurdular. 1947'de İngiltere Filistin üzerindeki mandasını kaldırdı. BM Genel Kurulu'nda "Çoğunluk ve Azınlık" adında iki plan yapıldı.</p>
+</div>
+
+<ul class="bullet-list red-dot" style="margin-top: 20px;">
+  <li><strong>1948 (Arap-İsrail):</strong> Temel nedeni: İsrail Dev. kurulmasıdır. Mülteci sorunu ortaya çıkmıştır.</li>
+  <li><strong>1956 (Mısır-İsrail):</strong> Sebebi: Mısır Dev. başkanı Cemal Abdünnasır'ın Süveyş Kanalı'nı millileştirdiğini açıklaması üzerine İsrail'in saldırmasıdır. (Eisenhower Doktrini yayımlanmış.)</li>
+  <li><strong>1967 (Arap-İsrail) (6 gün):</strong> Savaşı İsrail kazandı. Sina Yarımadası, Golan Tepeleri, Doğu Kudüs ve Gazze Şeridi'ni almıştır.</li>
+  <li><strong>1973 (Mısır-Suriye):</strong> İsrail kazanmıştır. Ancak ABD'nin araya girince ilk defa iki dev. arasında "101. Km Ant." imz. (İsrail)</li>
+  <li><strong>1973 (Petrol Krizi):</strong> Arap ülkeleri petrol fiyatlarını yükseltmiştir.</li>
+  <li><strong>1978 (Mekik Diplomasisi):</strong> 1973-77 yılları arası ABD Dışişleri Bakanı Henry Kissinger'ın Mısır ile İsrail arasındaki anlaşma olması için yürüttüğü politikalar sonucunda iki devlet arasında Camp David Ant. imzalandı. Mısır İsrail'i tanıyan ilk Arap ülkesi olmuştur ve Sina Yarımadası'nı geri vermiştir.</li>
+</ul>
+  <div class="footer-page">UniNote 157</div>
+</div>
+</body>
+</html>

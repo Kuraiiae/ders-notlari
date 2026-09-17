@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Ders Notu 32</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Caveat:wght@600;700&family=Comfortaa:wght@700&display=swap" rel="stylesheet">
+<style>
+
+
+  .table-box {
+    border: 2px solid #333;
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 19px;
+    line-height: 1.45;
+  }
+  .table-row {
+    display: flex;
+    border-bottom: 1px dashed #d1d5db;
+    padding: 3px 0;
+  }
+  .table-row:last-child {
+    border-bottom: none;
+  }
+  .table-col-left {
+    width: 48%;
+    font-weight: bold;
+    color: #111;
+  }
+  .table-col-right {
+    width: 52%;
+    color: #1e3a8a;
+  }
+  .culture-box {
+    border: 2px solid #e53935;
+    border-radius: 14px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 18.5px;
+    line-height: 1.42;
+  }
+  .culture-item {
+    margin-bottom: 4px;
+  }
+  .culture-name {
+    font-weight: bold;
+    color: #000;
+  }
+  .quote-highlight {
+    font-size: 19px;
+    line-height: 1.4;
+    margin: 14px 0;
+    color: #111;
+  }
+  .quote-highlight strong {
+    color: #0d47a1;
+  }
+  .section-title-blue {
+    font-size: 21px;
+    font-weight: bold;
+    color: #1565c0;
+    margin-bottom: 8px;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-title-red {
+    font-size: 21px;
+    font-weight: bold;
+    color: #b71c1c;
+    margin: 14px 0 8px 0;
+  }
+  .quote-box-note {
+    font-size: 18px;
+    color: #333;
+    padding: 8px 12px;
+    background: #fff8e1;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin-top: 10px;
+    line-height: 1.35;
+  }
+  .iskitler-banner {
+    text-align: center;
+    margin: 18px 0 10px 0;
+  }
+  .iskitler-title {
+    display: inline-block;
+    background: #e1bee7;
+    color: #4a148c;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 4px 35px;
+    border-radius: 20px;
+    letter-spacing: 1.5px;
+  }
+  .box-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #c62828;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px;
+    font-family: 'Patrick Hand', 'Comic Neue', cursive, sans-serif;
+    color: #1a1a2e;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    width: 860px;
+    min-height: 1220px;
+    background: #ffffff;
+    background-image: 
+      repeating-linear-gradient(transparent, transparent 27px, #e8edf5 28px);
+    position: relative;
+    padding: 35px 45px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+
+  /* Titles */
+  .top-banner {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0288d1;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .main-title-container {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .main-title-bg {
+    display: inline-block;
+    background: #b2ebf2;
+    padding: 4px 28px;
+    border-radius: 6px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+  }
+  .main-title-bg.yellow { background: #fff59d; }
+  .main-title-bg.pink { background: #f8bbd0; }
+  .main-title-bg.green { background: #c8e6c9; }
+  .main-title-bg.purple { background: #e1bee7; }
+  .main-title-bg.orange { background: #ffe0b2; }
+
+  .main-title {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0d47a1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .main-title.dark { color: #1a237e; }
+  .main-title.black { color: #212121; }
+
+  .sub-title-banner {
+    text-align: center;
+    margin: 14px 0 10px 0;
+  }
+  .sub-title-pill {
+    display: inline-block;
+    padding: 3px 24px;
+    border-radius: 18px;
+    font-size: 23px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+  }
+  .pill-purple { background: #e1bee7; color: #4a148c; }
+  .pill-blue { background: #b3e5fc; color: #01579b; }
+  .pill-yellow { background: #fff9c4; color: #f57f17; }
+  .pill-green { background: #c8e6c9; color: #1b5e20; }
+  .pill-pink { background: #f8bbd0; color: #880e4f; }
+  .pill-gray { background: #e0e0e0; color: #212121; }
+
+  /* Sections */
+  .section-heading-blue {
+    font-size: 20.5px;
+    font-weight: bold;
+    color: #1565c0;
+    margin: 10px 0 6px 0;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-heading-red {
+    font-size: 20px;
+    font-weight: bold;
+    color: #c62828;
+    margin: 10px 0 6px 0;
+  }
+  .section-heading-purple {
+    font-size: 20px;
+    font-weight: bold;
+    color: #6a1b9a;
+    margin: 10px 0 6px 0;
+  }
+
+  /* Grids & Layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .grid-2-asym {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Boxes */
+  .card-box {
+    border-radius: 12px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.75);
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-box.border-red { border: 2px solid #e53935; }
+  .card-box.border-blue { border: 2px solid #1e88e5; }
+  .card-box.border-dark { border: 2px solid #37474f; }
+  .card-box.border-green { border: 2px solid #43a047; }
+  .card-box.border-purple { border: 2px solid #8e24aa; }
+
+  /* Quotes & Notes */
+  .highlight-quote {
+    font-size: 18.5px;
+    line-height: 1.4;
+    margin: 8px 0;
+    color: #111;
+  }
+  .note-callout {
+    font-size: 17.5px;
+    color: #2e3842;
+    padding: 8px 12px;
+    background: #fffde7;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin: 8px 0;
+    line-height: 1.38;
+  }
+
+  /* Bullet lists */
+  .bullet-list {
+    list-style: none;
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .bullet-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 5px;
+  }
+  .bullet-list.square li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    color: #1e3a8a;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.red-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #d32f2f;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.blue-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #0288d1;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.arrow li::before {
+    content: "➔";
+    position: absolute;
+    left: 0;
+    color: #ef6c00;
+    font-size: 13px;
+    top: 1px;
+  }
+
+  /* Footer */
+  .footer-page {
+    position: absolute;
+    bottom: 12px;
+    right: 30px;
+    font-size: 16px;
+    color: #9e9e9e;
+    font-family: 'Comfortaa', cursive, sans-serif;
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="main-title-container">
+  <div class="main-title-bg pink">
+    <div class="main-title"><span>OSMANLI DEVLETİ</span></div>
+  </div>
+</div>
+<div style="text-align: center; font-weight: bold; font-size: 1.2rem; margin-top: -10px; margin-bottom: 15px; color: #444;">
+  KÜLTÜR VE MEDENİYETİ
+</div>
+
+<div class="section-heading-pink">MERKEZ TEŞKİLATI</div>
+
+<div style="text-align: center; margin: 15px 0;">
+  <div style="display: inline-block; background: #e0f2fe; padding: 10px 20px; border-radius: 20px; font-weight: bold; color: #0284c7;">
+    Osmanlı Devleti
+  </div>
+  <div style="font-size: 0.9rem; color: #555; margin-top: 5px;">
+    <span>Atman</span> &bull; 
+    <span>Ottoman</span> &bull; 
+    <span>Osmanlıye</span> &bull; 
+    <span>Gaziler</span> &bull; 
+    <span>Devlet-i Ali</span> &bull; 
+    <span>Devlet-i Aliyye</span> &bull; 
+    <span>Osmanoğulları</span>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-top: 20px;">
+  <div>
+    <div class="sub-title-banner" style="margin-bottom: 10px;">
+      <div class="sub-title-pill pill-blue">Devlet Oluşturan Etmenler</div>
+    </div>
+    <div class="card-box border-purple">
+      <ul class="bullet-list square" style="margin: 0; padding-left: 15px;">
+        <li>Halk</li>
+        <li>Ülke</li>
+        <li>Hâkimiyet</li>
+        <li>Teşkilat</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div>
+    <div class="card-box border-red">
+      <div style="font-weight: bold; margin-bottom: 8px; font-size: 0.95rem;">
+        Klasik Dönem Kültür Medeniyetinin Oluşumu ve Örnek Alınan Unsurlar:
+      </div>
+      <ul class="bullet-list arrow" style="margin: 0; padding-left: 15px;">
+        <li>Orta Asya Türk gelenekleri</li>
+        <li>İslam'ın getirdiği esaslar</li>
+        <li>Fethedilen bölgelerdeki kültürel esaslar</li>
+      </ul>
+      <div style="margin-top: 8px; font-size: 0.9rem; color: #b91c1c;">
+        ★ Türkiye Selçukluları ve İlhanlıları örnek almışlardır.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-heading-pink" style="margin-top: 25px;">HÜKÜMDAR</div>
+
+<div class="grid-2">
+  <div>
+    <div class="sub-title-banner" style="margin-bottom: 10px;">
+      <div class="sub-title-pill pill-purple">Unvanlar</div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+      <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">Emir</span>
+      <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">Padişah</span>
+      <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">Bey</span>
+      <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">Gazi</span>
+      <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">Han</span>
+      <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">Sultan</span>
+      <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">Rum</span>
+      <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px;">Hüdavendigar</span>
+    </div>
+  </div>
+
+  <div>
+    <div class="sub-title-banner" style="margin-bottom: 10px;">
+      <div class="sub-title-pill pill-green">San & Sembol</div>
+    </div>
+    <ul class="bullet-list blue-dot" style="margin: 0; padding-left: 15px; font-size: 0.9rem;">
+      <li><strong>Sahibul Usot</strong> (Uçların Hükümdarı)</li>
+      <li><strong>Merzban-ı Afak</strong> (Ufukların Bekçisi)</li>
+      <li><strong>Gazi oğlu Gazi</strong></li>
+      <li><strong>Pehlivan-ı Zaman</strong> (Zamanın Kahramanı)</li>
+    </ul>
+    <div style="margin-top: 8px; font-size: 0.85rem; color: #555;">
+      ~ Sembol ~ : Ok hariç HEPSİ
+    </div>
+  </div>
+</div>
+
+<div class="note-callout" style="margin-top: 15px;">
+  <strong>NOT:</strong> Osmanlı Devleti'nde sultan unvanını kullanan ilk Osmanlı padişahi "Orphan Bey" (Orhan Bey)'dir.<br>
+  &bull; <strong>Sultanü'l Guzat</strong> &rarr; Gazilerin Sultanı
+</div>
+
+<div class="section-heading-blue" style="margin-top: 20px;">Hükümdarın Görevleri</div>
+
+<div class="grid-2">
+  <ul class="bullet-list red-dot" style="margin: 0; padding-left: 15px;">
+    <li>Ordunun başında sefere çıkar.</li>
+    <li>Yazılı emir verir. (Ferman)</li>
+    <li>Yazılı beyan verir. (Hatt-ı Hümayun)</li>
+    <li>Herhangi bir şeyi yasaklar. (Yasakname)</li>
+    <li>Memur mallarına el koyar. (Müsadere)</li>
+  </ul>
+  
+  <ul class="bullet-list red-dot" style="margin: 0; padding-left: 15px;">
+    <li>Herhangi bir devşirmeyi öldürebilir. (Kulluk hakkı)</li>
+    <li>Azil ve atama yapar. (Beratname)</li>
+    <li>Herhangi bir bölgedeki haksızlığı giderir. (Adaletname)</li>
+    <li>Divan-ı Hümayuna başkanlık eder. (Fatih'e kadar)</li>
+    <li>Herhangi birini himayesi altına alır. (Amanname)</li>
+  </ul>
+</div>
+
+<div style="text-align: right; font-size: 0.8rem; color: #777; margin-top: 10px;">
+  ilk *FSM
+</div>
+  <div class="footer-page">UniNote 32</div>
+</div>
+</body>
+</html>

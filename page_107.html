@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Ders Notu 107</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Caveat:wght@600;700&family=Comfortaa:wght@700&display=swap" rel="stylesheet">
+<style>
+
+
+  .table-box {
+    border: 2px solid #333;
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 19px;
+    line-height: 1.45;
+  }
+  .table-row {
+    display: flex;
+    border-bottom: 1px dashed #d1d5db;
+    padding: 3px 0;
+  }
+  .table-row:last-child {
+    border-bottom: none;
+  }
+  .table-col-left {
+    width: 48%;
+    font-weight: bold;
+    color: #111;
+  }
+  .table-col-right {
+    width: 52%;
+    color: #1e3a8a;
+  }
+  .culture-box {
+    border: 2px solid #e53935;
+    border-radius: 14px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.7);
+    font-size: 18.5px;
+    line-height: 1.42;
+  }
+  .culture-item {
+    margin-bottom: 4px;
+  }
+  .culture-name {
+    font-weight: bold;
+    color: #000;
+  }
+  .quote-highlight {
+    font-size: 19px;
+    line-height: 1.4;
+    margin: 14px 0;
+    color: #111;
+  }
+  .quote-highlight strong {
+    color: #0d47a1;
+  }
+  .section-title-blue {
+    font-size: 21px;
+    font-weight: bold;
+    color: #1565c0;
+    margin-bottom: 8px;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-title-red {
+    font-size: 21px;
+    font-weight: bold;
+    color: #b71c1c;
+    margin: 14px 0 8px 0;
+  }
+  .quote-box-note {
+    font-size: 18px;
+    color: #333;
+    padding: 8px 12px;
+    background: #fff8e1;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin-top: 10px;
+    line-height: 1.35;
+  }
+  .iskitler-banner {
+    text-align: center;
+    margin: 18px 0 10px 0;
+  }
+  .iskitler-title {
+    display: inline-block;
+    background: #e1bee7;
+    color: #4a148c;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 4px 35px;
+    border-radius: 20px;
+    letter-spacing: 1.5px;
+  }
+  .box-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #c62828;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px;
+    font-family: 'Patrick Hand', 'Comic Neue', cursive, sans-serif;
+    color: #1a1a2e;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    width: 860px;
+    min-height: 1220px;
+    background: #ffffff;
+    background-image: 
+      repeating-linear-gradient(transparent, transparent 27px, #e8edf5 28px);
+    position: relative;
+    padding: 35px 45px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+
+  /* Titles */
+  .top-banner {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0288d1;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .main-title-container {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .main-title-bg {
+    display: inline-block;
+    background: #b2ebf2;
+    padding: 4px 28px;
+    border-radius: 6px;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+  }
+  .main-title-bg.yellow { background: #fff59d; }
+  .main-title-bg.pink { background: #f8bbd0; }
+  .main-title-bg.green { background: #c8e6c9; }
+  .main-title-bg.purple { background: #e1bee7; }
+  .main-title-bg.orange { background: #ffe0b2; }
+
+  .main-title {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0d47a1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .main-title.dark { color: #1a237e; }
+  .main-title.black { color: #212121; }
+
+  .sub-title-banner {
+    text-align: center;
+    margin: 14px 0 10px 0;
+  }
+  .sub-title-pill {
+    display: inline-block;
+    padding: 3px 24px;
+    border-radius: 18px;
+    font-size: 23px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+  }
+  .pill-purple { background: #e1bee7; color: #4a148c; }
+  .pill-blue { background: #b3e5fc; color: #01579b; }
+  .pill-yellow { background: #fff9c4; color: #f57f17; }
+  .pill-green { background: #c8e6c9; color: #1b5e20; }
+  .pill-pink { background: #f8bbd0; color: #880e4f; }
+  .pill-gray { background: #e0e0e0; color: #212121; }
+
+  /* Sections */
+  .section-heading-blue {
+    font-size: 20.5px;
+    font-weight: bold;
+    color: #1565c0;
+    margin: 10px 0 6px 0;
+    text-decoration: underline wavy #90caf9;
+  }
+  .section-heading-red {
+    font-size: 20px;
+    font-weight: bold;
+    color: #c62828;
+    margin: 10px 0 6px 0;
+  }
+  .section-heading-purple {
+    font-size: 20px;
+    font-weight: bold;
+    color: #6a1b9a;
+    margin: 10px 0 6px 0;
+  }
+
+  /* Grids & Layouts */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .grid-2-asym {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Boxes */
+  .card-box {
+    border-radius: 12px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.75);
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-box.border-red { border: 2px solid #e53935; }
+  .card-box.border-blue { border: 2px solid #1e88e5; }
+  .card-box.border-dark { border: 2px solid #37474f; }
+  .card-box.border-green { border: 2px solid #43a047; }
+  .card-box.border-purple { border: 2px solid #8e24aa; }
+
+  /* Quotes & Notes */
+  .highlight-quote {
+    font-size: 18.5px;
+    line-height: 1.4;
+    margin: 8px 0;
+    color: #111;
+  }
+  .note-callout {
+    font-size: 17.5px;
+    color: #2e3842;
+    padding: 8px 12px;
+    background: #fffde7;
+    border-left: 4px solid #fbc02d;
+    border-radius: 4px;
+    margin: 8px 0;
+    line-height: 1.38;
+  }
+
+  /* Bullet lists */
+  .bullet-list {
+    list-style: none;
+    font-size: 18px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .bullet-list li {
+    position: relative;
+    padding-left: 18px;
+    margin-bottom: 5px;
+  }
+  .bullet-list.square li::before {
+    content: "■";
+    position: absolute;
+    left: 0;
+    color: #1e3a8a;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.red-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #d32f2f;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.blue-dot li::before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #0288d1;
+    font-size: 12px;
+    top: 2px;
+  }
+  .bullet-list.arrow li::before {
+    content: "➔";
+    position: absolute;
+    left: 0;
+    color: #ef6c00;
+    font-size: 13px;
+    top: 1px;
+  }
+
+  /* Footer */
+  .footer-page {
+    position: absolute;
+    bottom: 12px;
+    right: 30px;
+    font-size: 16px;
+    color: #9e9e9e;
+    font-family: 'Comfortaa', cursive, sans-serif;
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top-banner">I. TBMM Dönemi</div>
+
+<div class="note-callout">
+  Meclis genel olarak I. grup (Mustafa Kemal yanlıları) ve II. grup (Mustafa Kemal karşıtları) olarak ikiye ayrılmıştır.
+</div>
+
+<div class="grid-2">
+  <div class="card-box border-blue">
+    <div class="sub-title-banner">
+      <div class="sub-title-pill pill-blue">24 Nisan Önergesi (1 Numaralı Karar)</div>
+    </div>
+    <ul class="bullet-list blue-dot">
+      <li>Büyük Millet Meclisinin üstünde hiçbir güç yoktur.</li>
+      <li>Padişah veya göndereceği bir kişi hükümet başkanı olamayacaktır.</li>
+      <li>Meclis sürekli olacaktır.</li>
+      <li>Padişah kurtarıldıktan sonra TBMM'nin çıkaracağı bir kanunla yerini alacaktır.</li>
+      <li>Hükümet kurmak zorunludur.</li>
+    </ul>
+  </div>
+
+  <div class="card-box border-purple">
+    <div class="sub-title-banner">
+      <div class="sub-title-pill pill-purple">İlk Hükümet (İcra Vekilleri)</div>
+    </div>
+    <ul class="bullet-list square">
+      <li><strong>Meclis Başkanı:</strong> Mustafa Kemal</li>
+      <li><strong>Maarif Bakanı:</strong> Dr. Rıza Nur</li>
+      <li><strong>Sağlık Bakanı:</strong> Adnan Adıvar</li>
+      <li><strong>Milli Sav. Bakanı:</strong> Fevzi Çakmak</li>
+      <li><strong>Dışişleri Bakanı:</strong> Bekir Sami Bey</li>
+      <li><strong>Genelkurmay Baş.:</strong> İsmet İnönü</li>
+    </ul>
+  </div>
+</div>
+
+<div class="main-title-container">
+  <div class="main-title-bg blue">
+    <div class="main-title"><span>Çıkardığı Önemli Kanunlar</span></div>
+  </div>
+</div>
+
+<ul class="bullet-list red-dot">
+  <li><strong>Aşnam Vergisinin Artırılması:</strong> İlk çıkarılan kanundur.</li>
+  <li><strong>Düzenli Ordu Yasası:</strong> Düzenli ordu kurulmuştur.</li>
+  <li><strong>Teşkilat-ı Esasiye Kanunu:</strong> 1921 Anayasası kabul edilmiştir.</li>
+  <li><strong>İstiklal Marşı'nın Kabulü:</strong> Milli marş kabul edilmiştir.</li>
+  <li><strong>Firarlar Kanunu:</strong> Asker kaçakları engellenmek istenmiştir.</li>
+  <li><strong>İstiklal Mahkemelerinin Kurulması:</strong> I. TBMM yargı yetkisini kullanarak otoritesini artırmıştır.</li>
+  <li><strong>Başkomutanlık Kanunu:</strong> Mustafa Kemal askerlik mesleğine dönmüştür.</li>
+  <li><strong>Hıyanet-i Vataniye Kanunu:</strong> Vatana ihanet kanunu çıkarıldı.</li>
+  <li><strong>Nisab-ı Müzakere Kanunu:</strong> Meclis çalışma prensipleri hakkında.</li>
+  <li><strong>Men-i İsrafat Kanunu:</strong> İsraf önlenmeye çalışılmıştır.</li>
+  <li><strong>Men-i Müskirat Kanunu:</strong> Sarhoşluk veren maddelerin satışı yasaklanmıştır.</li>
+</ul>
+
+<div class="grid-2">
+  <div class="card-box border-red">
+    <p><strong>Tekalif-i Milliye Emirleri ve Takrir-i Sükun Kanunu</strong> I. TBMM'de çıkarılmamıştır.</p>
+  </div>
+  <div class="card-box border-green">
+    <p>İnkılapların yoğun olduğu <strong>1923-1927 (II. TBMM)</strong> dir.</p>
+  </div>
+</div>
+  <div class="footer-page">UniNote 107</div>
+</div>
+</body>
+</html>
