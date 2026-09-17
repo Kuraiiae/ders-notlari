@@ -336,11 +336,14 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
 /* Veri dogrudan gomulu: dosya yerelden (file://) acildiginda fetch/CORS calismaz. */
 const LIBRARY = [
   { key: 'turkce',      title: 'Türkçe',      subtitle: 'Dil Bilgisi ve Anlatım',        icon: '&#9998;',  pages: 52,  w: 1400, h: 1980, color: '#7c5cff' },
+  { key: 'turkce-test', title: 'Türkçe Testleri', subtitle: 'Video Ders Notları ve Testler', icon: '&#128221;', pages: 97, w: 1400, h: 1980, color: '#a855f7' },
+  { key: 'turkce-cikmis', title: 'Türkçe Çıkmış Sorular', subtitle: 'Son 10 Yıl Konu Konu', icon: '&#127919;', pages: 46, w: 1400, h: 1958, color: '#f59e0b' },
   { key: 'tarih',       title: 'Tarih',       subtitle: "Osmanlı'dan Cumhuriyet'e",      icon: '&#127963;', pages: 169, w: 1400, h: 2240, color: '#f4a261' },
   { key: 'cografya',    title: 'Coğrafya',    subtitle: 'Türkiye ve Dünya Coğrafyası',   icon: '&#127758;', pages: 130, w: 1400, h: 2023, color: '#2ec4b6' },
-  { key: 'vatandaslik', title: 'Vatandaşlık', subtitle: 'Vatandaşlık ve İnsan Hakları', icon: '&#9878;',  pages: 43,  w: 1400, h: 2030, color: '#ff5f6d' }
+  { key: 'vatandaslik', title: 'Vatandaşlık', subtitle: 'Vatandaşlık ve İnsan Hakları', icon: '&#9878;',  pages: 43,  w: 1400, h: 2030, color: '#ff5f6d' },
+  { key: 'deneme',      title: 'KPSS Tam Deneme', subtitle: 'Karışık Deneme Bölmesi',   icon: '&#128202;', pages: 102, w: 1400, h: 1947, color: '#ef4444' }
 ];
-const ACCENT2 = { vatandaslik:'#7c5cff', turkce:'#2ec4b6', tarih:'#ff5f6d', cografya:'#4a7dff' };
+const ACCENT2 = { vatandaslik:'#7c5cff', turkce:'#2ec4b6', tarih:'#ff5f6d', cografya:'#4a7dff', 'turkce-test':'#a855f7', 'turkce-cikmis':'#f59e0b', deneme:'#ef4444' };
 const $  = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const PAD = n => String(n).padStart(3, '0');

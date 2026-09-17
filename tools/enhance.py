@@ -19,7 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ASSETS = os.path.join(ROOT, "assets")
 PREVIEW = os.path.join(os.path.dirname(os.path.abspath(__file__)), "preview")
 
-KEYS = ["turkce", "tarih", "cografya", "vatandaslik"]
+KEYS = ["turkce", "turkce-test", "turkce-cikmis", "tarih", "cografya", "vatandaslik", "deneme"]
 CLEAN_Q = int(os.environ.get("CLEAN_Q", "68"))
 
 
@@ -54,9 +54,13 @@ def process_file(src, dst):
 
 def main():
     args = sys.argv[1:]
-    if args == ["--all"]:
+    if args and args[0] == "--all":
+        secili = args[1:] or KEYS
+        bilinmeyen = [k for k in secili if k not in KEYS]
+        if bilinmeyen:
+            raise SystemExit("bilinmeyen ders: " + ", ".join(bilinmeyen))
         total = 0
-        for key in KEYS:
+        for key in secili:
             srcdir = os.path.join(ASSETS, key)
             pages = sorted(f for f in os.listdir(srcdir) if f.startswith("page-") and f.endswith(".jpg"))
             for f in pages:

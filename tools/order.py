@@ -1,6 +1,7 @@
 """Ders sirasini tek yerden yonetir ve dort dosyaya da uygular.
 
-Sira: Turkce -> Tarih -> Cografya -> Vatandaslik
+Sira: Turkce -> Turkce Testleri -> Turkce Cikmis Sorular -> Tarih
+     -> Cografya -> Vatandaslik -> KPSS Tam Deneme
 
 Dokunulan dosyalar:
   - galeri.html       : LIBRARY dizisi (uygulamanin kullandigi sira, ilk ders acilis dersi)
@@ -17,7 +18,7 @@ import re
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-ORDER = ["turkce", "tarih", "cografya", "vatandaslik"]
+ORDER = ["turkce", "turkce-test", "turkce-cikmis", "tarih", "cografya", "vatandaslik", "deneme"]
 
 
 def read_text(path):
@@ -41,7 +42,7 @@ def rank(key):
 
 def ordered(blocks):
     """Bloklari ORDER'a gore dizer; bilinmeyen anahtarlar sona duser."""
-    keys = [re.search(r"key['\"]?\s*[:=]\s*['\"]([a-z]+)['\"]", b).group(1) for b in blocks]
+    keys = [re.search(r"key['\"]?\s*[:=]\s*['\"]([a-z-]+)['\"]", b).group(1) for b in blocks]
     pairs = sorted(zip(keys, blocks), key=lambda p: rank(p[0]))
     sonuc = [k for k, _ in pairs]
     if sonuc != sorted(sonuc, key=rank):
@@ -67,7 +68,7 @@ def fix_library_in_html(name):
     text = text[:m.start(2)] + yeni + text[m.end(2):]
     write_text(path, text, eol)
     print(f"{name} LIBRARY sirasi:",
-          [re.search(r"key: '([a-z]+)'", b).group(1) for b in ordered(entries)])
+          [re.search(r"key: '([a-z-]+)'", b).group(1) for b in ordered(entries)])
 
 
 def fix_manifest():
@@ -94,7 +95,7 @@ def fix_render_py():
     text = text[:m.start(2)] + yeni + text[m.end(2):]
     write_text(path, text, eol)
     print("render.py SUBJECTS sirasi:",
-          [re.search(r'"key": "([a-z]+)"', b).group(1) for b in ordered(blocks)])
+          [re.search(r'"key": "([a-z-]+)"', b).group(1) for b in ordered(blocks)])
 
 
 if __name__ == "__main__":

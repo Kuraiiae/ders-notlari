@@ -249,7 +249,7 @@ body.no-scroll{overflow:hidden}
           <kbd>&uarr;</kbd><kbd>&darr;</kbd> kaydır &middot; <kbd>B</kbd> ayraç<br>
           <kbd>Ö</kbd> konu özeti &middot; <kbd>C</kbd> temiz sayfa<br>
           <kbd>O</kbd> odak &middot; <kbd>D</kbd> tema &middot; <kbd>K</kbd> panel<br>
-          <kbd>1</kbd>…<kbd>4</kbd> ders &middot; <kbd>Esc</kbd> kapat
+          <kbd>1</kbd>…<kbd>7</kbd> bölüm &middot; <kbd>Esc</kbd> kapat
         </div>
       </div>
     </aside>
@@ -569,9 +569,12 @@ body.no-scroll{overflow:hidden}
 /* Veri dogrudan gomulu: file:// uzerinden fetch/CORS calismaz. */
 const LIBRARY = [
   { key: 'turkce',      title: 'Türkçe',      subtitle: 'Dil Bilgisi ve Anlatım',      icon: '&#9998;',  pages: 52,  color: '#7c5cff' },
+  { key: 'turkce-test', title: 'Türkçe Testleri', subtitle: 'Video Ders Notları ve Testler', icon: '&#128221;', pages: 97, color: '#a855f7' },
+  { key: 'turkce-cikmis', title: 'Türkçe Çıkmış Sorular', subtitle: 'Son 10 Yıl Konu Konu', icon: '&#127919;', pages: 46, color: '#f59e0b' },
   { key: 'tarih',       title: 'Tarih',       subtitle: "Osmanlı'dan Cumhuriyet'e",    icon: '&#127963;', pages: 169, color: '#f4a261' },
   { key: 'cografya',    title: 'Coğrafya',    subtitle: 'Türkiye ve Dünya Coğrafyası', icon: '&#127758;', pages: 130, color: '#2ec4b6' },
-  { key: 'vatandaslik', title: 'Vatandaşlık', subtitle: 'Vatandaşlık ve İnsan Hakları', icon: '&#9878;', pages: 43,  color: '#ff5f6d' }
+  { key: 'vatandaslik', title: 'Vatandaşlık', subtitle: 'Vatandaşlık ve İnsan Hakları', icon: '&#9878;', pages: 43,  color: '#ff5f6d' },
+  { key: 'deneme',      title: 'KPSS Tam Deneme', subtitle: 'Karışık Deneme Bölmesi',  icon: '&#128202;', pages: 102, color: '#ef4444' }
 ];
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -903,7 +906,7 @@ function init() {
       case 'k': case 'K': $('#btnLib').click(); break;
       case 'ö': case 'Ö': ozToggle(); break;
       case 'Escape': ozToggle(false); break;
-      case '1': case '2': case '3': case '4': {
+      case '1': case '2': case '3': case '4': case '5': case '6': case '7': {
         const s = LIBRARY[parseInt(e.key, 10) - 1];
         if (s) selectSubject(s.key, false, false);
         break;

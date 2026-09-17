@@ -6,10 +6,13 @@ KPSS ders notlarının (taranmış PDF) tarayıcıda dergi gibi okunmasını sa�
 | Ders | Sayfa | Sıra |
 |---|---|---|
 | Türkçe | 52 | 1 |
-| Tarih | 169 | 2 |
-| Coğrafya | 130 | 3 |
-| Vatandaşlık | 43 | 4 |
-| **Toplam** | **394** | |
+| Türkçe Testleri | 97 | 2 |
+| Türkçe Çıkmış Sorular | 46 | 3 |
+| Tarih | 169 | 4 |
+| Coğrafya | 130 | 5 |
+| Vatandaşlık | 43 | 6 |
+| KPSS Tam Deneme | 102 | 7 |
+| **Toplam** | **639** | |
 
 ## Kullanım
 
@@ -35,7 +38,7 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
 | `Ö` | Türkçe konu özeti çekmecesi |
 | `K` | İçindekiler paneli |
 | `Esc` | Açık çekmeceyi kapat |
-| `1`–`4` | Ders seç (sırayla) |
+| `1`–`7` | Bölüm seç (sırayla) |
 
 ### Galeri kısayolları (`galeri.html`)
 
@@ -78,7 +81,7 @@ galeri.html         Galeri görünümü (tek/çift sayfa, zum, şerit)
 turkce-ozet.html    Türkçe konu özetleri (tools/ozet.py üretir, elle düzenlenmez)
 manifest.json     Ders listesi (sayfa sayısı, boyut, renk) - araçlar tarafından üretilir
 assets/<ders>/    page-NNN.jpg (1400px genişlik, JPEG q74) + thumbs/page-NNN.jpg (300px)
-assets/<ders>/clean/  Gri zemini bastırılmış ders çalışma sayfaları (JPEG q68, ~93 MB)
+assets/<ders>/clean/  Gri zemini bastırılmış ders çalışma sayfaları (JPEG q68)
 tools/            Yeniden üretim ve doğrulama araçları
 ```
 
@@ -119,7 +122,7 @@ python tools/check.py           # JSON + sayfa bütünlüğünü doğrula
 
 ### Ders sırası
 
-Okuma sırası **Türkçe → Tarih → Coğrafya → Vatandaşlık** olarak sabittir ve tek
+Okuma sırası **Türkçe → Türkçe Testleri → Türkçe Çıkmış Sorular → Tarih → Coğrafya → Vatandaşlık → KPSS Tam Deneme** olarak sabittir ve tek
 kaynaktan yönetilir: `tools/order.py` içindeki `ORDER` listesi. Sırayı
 değiştirmek için bu listeyi güncelleyip betiği çalıştırın; sıra `index.html`
 (`LIBRARY`), `oku.html` (`LIBRARY`), `manifest.json` ve `tools/render.py`
@@ -128,6 +131,6 @@ değiştirmek için bu listeyi güncelleyip betiği çalıştırın; sıra `inde
 ## Notlar
 
 - Orijinal taramalar sayfa başına ~130 KB; temizlenmiş sayfalar ~240 KB
-  (tam boy, keskinleştirilmiş). Toplam depo ~194 MB (orijinal ~101 MB dahildir).
+  (tam boy, keskinleştirilmiş).
 - Kaynak PDF'ler telif nedeniyle depoda bulunmaz, yalnızca türetilmiş sayfa
   görselleri yer alır.

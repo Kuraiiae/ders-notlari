@@ -10,6 +10,26 @@
     "color": "#7c5cff"
   },
   {
+    "key": "turkce-test",
+    "title": "Türkçe Testleri",
+    "subtitle": "Video Ders Notları ve Testler",
+    "icon": "&#128221;",
+    "pages": 97,
+    "w": 1400,
+    "h": 1980,
+    "color": "#a855f7"
+  },
+  {
+    "key": "turkce-cikmis",
+    "title": "Türkçe Çıkmış Sorular",
+    "subtitle": "Son 10 Yıl Konu Konu",
+    "icon": "&#127919;",
+    "pages": 46,
+    "w": 1400,
+    "h": 1958,
+    "color": "#f59e0b"
+  },
+  {
     "key": "tarih",
     "title": "Tarih",
     "subtitle": "Osmanlı'dan Cumhuriyet'e",
@@ -38,5 +58,15 @@
     "w": 1400,
     "h": 2030,
     "color": "#ff5f6d"
+  },
+  {
+    "key": "deneme",
+    "title": "KPSS Tam Deneme",
+    "subtitle": "Karışık Deneme Bölmesi",
+    "icon": "&#128202;",
+    "pages": 102,
+    "w": 1400,
+    "h": 1947,
+    "color": "#ef4444"
   }
 ]

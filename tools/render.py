@@ -19,6 +19,20 @@ SUBJECTS = [
         "file": r"C:\Users\KURAI\Downloads\turkce (1).pdf",
     },
     {
+        "key": "turkce-test",
+        "title": "Türkçe Testleri",
+        "subtitle": "Video Ders Notları ve Testler",
+        "icon": "&#128221;",
+        "file": r"C:\Users\KURAI\Downloads\Turkce.pdf",
+    },
+    {
+        "key": "turkce-cikmis",
+        "title": "Türkçe Çıkmış Sorular",
+        "subtitle": "Son 10 Yıl Konu Konu",
+        "icon": "&#127919;",
+        "file": r"C:\Users\KURAI\Downloads\paraf-akademi-kpss-lisans-son-10-yil-konu-konu-turkce-cikmis-sorular.pdf",
+    },
+    {
         "key": "tarih",
         "title": "Tarih",
         "subtitle": "Osmanlı'dan Cumhuriyet'e",
@@ -38,6 +52,13 @@ SUBJECTS = [
         "subtitle": "Vatandaşlık ve İnsan Hakları",
         "icon": "&#9878;",
         "file": r"C:\Users\KURAI\Downloads\vatandaslik.pdf",
+    },
+    {
+        "key": "deneme",
+        "title": "KPSS Tam Deneme",
+        "subtitle": "Karışık Deneme Bölmesi",
+        "icon": "&#128202;",
+        "file": r"C:\Users\KURAI\Downloads\türkçe 2.pdf",
     },
 ]
 
@@ -115,8 +136,11 @@ def main():
         info["color"] = {
             "vatandaslik": "#ff5f6d",
             "turkce": "#7c5cff",
+            "turkce-test": "#a855f7",
+            "turkce-cikmis": "#f59e0b",
             "tarih": "#f4a261",
             "cografya": "#2ec4b6",
+            "deneme": "#ef4444",
         }[subject["key"]]
         existing[subject["key"]] = info
         result.append(info)
