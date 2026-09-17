@@ -1,7 +1,7 @@
 """Ders sirasini tek yerden yonetir ve dort dosyaya da uygular.
 
-Sira: Turkce -> Turkce Testleri -> Turkce Cikmis Sorular -> Tarih
-     -> Cografya -> Vatandaslik -> KPSS Tam Deneme
+Sira: Dersler (Turkce -> Tarih -> Cografya -> Vatandaslik)
+     + Denemeler (Turkce Testleri -> Turkce Cikmis Sorular -> KPSS Tam Deneme)
 
 Dokunulan dosyalar:
   - galeri.html       : LIBRARY dizisi (uygulamanin kullandigi sira, ilk ders acilis dersi)
@@ -18,7 +18,7 @@ import re
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-ORDER = ["turkce", "turkce-test", "turkce-cikmis", "tarih", "cografya", "vatandaslik", "deneme"]
+ORDER = ["turkce", "tarih", "cografya", "vatandaslik", "turkce-test", "turkce-cikmis", "deneme"]
 
 
 def read_text(path):

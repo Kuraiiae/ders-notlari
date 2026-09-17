@@ -5,13 +5,13 @@ KPSS ders notlarının (taranmış PDF) tarayıcıda dergi gibi okunmasını sa�
 
 | Ders | Sayfa | Sıra |
 |---|---|---|
-| Türkçe | 52 | 1 |
-| Türkçe Testleri | 97 | 2 |
-| Türkçe Çıkmış Sorular | 46 | 3 |
-| Tarih | 169 | 4 |
-| Coğrafya | 130 | 5 |
-| Vatandaşlık | 43 | 6 |
-| KPSS Tam Deneme | 102 | 7 |
+| Türkçe | 52 | Dersler 1 |
+| Tarih | 169 | Dersler 2 |
+| Coğrafya | 130 | Dersler 3 |
+| Vatandaşlık | 43 | Dersler 4 |
+| Türkçe Testleri | 97 | Denemeler 1 |
+| Türkçe Çıkmış Sorular | 46 | Denemeler 2 |
+| KPSS Tam Deneme | 102 | Denemeler 3 |
 | **Toplam** | **639** | |
 
 ## Kullanım
@@ -38,7 +38,7 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
 | `Ö` | Türkçe konu özeti çekmecesi |
 | `K` | İçindekiler paneli |
 | `Esc` | Açık çekmeceyi kapat |
-| `1`–`7` | Bölüm seç (sırayla) |
+| `1`–`7` | Bölüm seç: 1–4 Dersler, 5–7 Denemeler |
 
 ### Galeri kısayolları (`galeri.html`)
 
@@ -122,7 +122,9 @@ python tools/check.py           # JSON + sayfa bütünlüğünü doğrula
 
 ### Ders sırası
 
-Okuma sırası **Türkçe → Türkçe Testleri → Türkçe Çıkmış Sorular → Tarih → Coğrafya → Vatandaşlık → KPSS Tam Deneme** olarak sabittir ve tek
+Okuma sırası iki gruptur — **Dersler: Türkçe → Tarih → Coğrafya → Vatandaşlık**,
+ardından **Denemeler: Türkçe Testleri → Türkçe Çıkmış Sorular → KPSS Tam Deneme** —
+ve tek
 kaynaktan yönetilir: `tools/order.py` içindeki `ORDER` listesi. Sırayı
 değiştirmek için bu listeyi güncelleyip betiği çalıştırın; sıra `index.html`
 (`LIBRARY`), `oku.html` (`LIBRARY`), `manifest.json` ve `tools/render.py`

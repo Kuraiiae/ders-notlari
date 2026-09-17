@@ -81,6 +81,10 @@ aside.lib{position:sticky;top:76px;width:288px;flex:0 0 288px;display:flex;flex-
 .empty{font-size:12.5px;color:var(--muted);padding:4px 6px;line-height:1.7}
 .hint{font-size:11px;color:var(--muted);line-height:2}
 kbd{display:inline-block;min-width:20px;text-align:center;padding:1px 6px;border-radius:6px;border:1px solid var(--stroke);background:var(--panel-2);font-size:10.5px;font-family:inherit}
+.grp{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:800;padding:10px 6px 4px}
+.grp:first-child{padding-top:2px}
+#subjectSeg .grp{align-self:center;padding:0 2px 0 8px;white-space:nowrap}
+#subjectSeg .grp:first-child{padding-left:2px}
 .col{flex:1;min-width:0;max-width:var(--colw);width:100%}
 .crumb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 2px 14px}
 .crumb .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
@@ -568,13 +572,13 @@ body.no-scroll{overflow:hidden}
 <script>
 /* Veri dogrudan gomulu: file:// uzerinden fetch/CORS calismaz. */
 const LIBRARY = [
-  { key: 'turkce',      title: 'Türkçe',      subtitle: 'Dil Bilgisi ve Anlatım',      icon: '&#9998;',  pages: 52,  color: '#7c5cff' },
-  { key: 'turkce-test', title: 'Türkçe Testleri', subtitle: 'Video Ders Notları ve Testler', icon: '&#128221;', pages: 97, color: '#a855f7' },
-  { key: 'turkce-cikmis', title: 'Türkçe Çıkmış Sorular', subtitle: 'Son 10 Yıl Konu Konu', icon: '&#127919;', pages: 46, color: '#f59e0b' },
-  { key: 'tarih',       title: 'Tarih',       subtitle: "Osmanlı'dan Cumhuriyet'e",    icon: '&#127963;', pages: 169, color: '#f4a261' },
-  { key: 'cografya',    title: 'Coğrafya',    subtitle: 'Türkiye ve Dünya Coğrafyası', icon: '&#127758;', pages: 130, color: '#2ec4b6' },
-  { key: 'vatandaslik', title: 'Vatandaşlık', subtitle: 'Vatandaşlık ve İnsan Hakları', icon: '&#9878;', pages: 43,  color: '#ff5f6d' },
-  { key: 'deneme',      title: 'KPSS Tam Deneme', subtitle: 'Karışık Deneme Bölmesi',  icon: '&#128202;', pages: 102, color: '#ef4444' }
+  { key: 'turkce',      title: 'Türkçe',      subtitle: 'Dil Bilgisi ve Anlatım',      icon: '&#9998;',  pages: 52,  color: '#7c5cff', group: 'ders' },
+  { key: 'tarih',       title: 'Tarih',       subtitle: "Osmanlı'dan Cumhuriyet'e",    icon: '&#127963;', pages: 169, color: '#f4a261', group: 'ders' },
+  { key: 'cografya',    title: 'Coğrafya',    subtitle: 'Türkiye ve Dünya Coğrafyası', icon: '&#127758;', pages: 130, color: '#2ec4b6', group: 'ders' },
+  { key: 'vatandaslik', title: 'Vatandaşlık', subtitle: 'Vatandaşlık ve İnsan Hakları', icon: '&#9878;', pages: 43,  color: '#ff5f6d', group: 'ders' },
+  { key: 'turkce-test', title: 'Türkçe Testleri', subtitle: 'Video Ders Notları ve Testler', icon: '&#128221;', pages: 97, color: '#a855f7', group: 'deneme' },
+  { key: 'turkce-cikmis', title: 'Türkçe Çıkmış Sorular', subtitle: 'Son 10 Yıl Konu Konu', icon: '&#127919;', pages: 46, color: '#f59e0b', group: 'deneme' },
+  { key: 'deneme',      title: 'KPSS Tam Deneme', subtitle: 'Karışık Deneme Bölmesi',  icon: '&#128202;', pages: 102, color: '#ef4444', group: 'deneme' }
 ];
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -701,24 +705,35 @@ function renderBm() {
 function buildSubjects() {
   el.subjectList.innerHTML = '';
   el.subjectSeg.innerHTML = '';
-  LIBRARY.forEach((s, i) => {
-    const max = parseInt(STORE.get('max.' + s.key, '0'), 10) || 0;
-    const b = document.createElement('button');
-    b.className = 'sub' + (s.key === state.key ? ' on' : '');
-    b.dataset.key = s.key;
-    b.style.setProperty('--c', s.color);
-    b.innerHTML = '<span class="ic">' + s.icon + '</span><span class="meta"><strong>' + s.title +
-      '</strong><span>' + s.subtitle + '</span><span class="bar"><i style="width:' +
-      Math.round(max / s.pages * 100) + '%"></i></span></span>' +
-      '<span class="pc">' + max + '/' + s.pages + '</span>';
-    b.addEventListener('click', () => selectSubject(s.key, false, true));
-    el.subjectList.appendChild(b);
-    const t = document.createElement('button');
-    t.className = 'chip' + (s.key === state.key ? ' on' : '');
-    t.dataset.key = s.key;
-    t.textContent = (i + 1) + '. ' + s.title;
-    t.addEventListener('click', () => selectSubject(s.key, false, true));
-    el.subjectSeg.appendChild(t);
+  const GRUPS = [['ders', 'Dersler'], ['deneme', 'Denemeler']];
+  GRUPS.forEach(([g, ad]) => {
+    const h = document.createElement('div');
+    h.className = 'grp';
+    h.textContent = ad;
+    el.subjectList.appendChild(h);
+    const hs = document.createElement('span');
+    hs.className = 'grp';
+    hs.textContent = ad;
+    el.subjectSeg.appendChild(hs);
+    LIBRARY.filter(s => (s.group || 'ders') === g).forEach((s) => {
+      const max = parseInt(STORE.get('max.' + s.key, '0'), 10) || 0;
+      const b = document.createElement('button');
+      b.className = 'sub' + (s.key === state.key ? ' on' : '');
+      b.dataset.key = s.key;
+      b.style.setProperty('--c', s.color);
+      b.innerHTML = '<span class="ic">' + s.icon + '</span><span class="meta"><strong>' + s.title +
+        '</strong><span>' + s.subtitle + '</span><span class="bar"><i style="width:' +
+        Math.round(max / s.pages * 100) + '%"></i></span></span>' +
+        '<span class="pc">' + max + '/' + s.pages + '</span>';
+      b.addEventListener('click', () => selectSubject(s.key, false, true));
+      el.subjectList.appendChild(b);
+      const t = document.createElement('button');
+      t.className = 'chip' + (s.key === state.key ? ' on' : '');
+      t.dataset.key = s.key;
+      t.textContent = s.title;
+      t.addEventListener('click', () => selectSubject(s.key, false, true));
+      el.subjectSeg.appendChild(t);
+    });
   });
 }
 let observer = null;
@@ -907,7 +922,8 @@ function init() {
       case 'ö': case 'Ö': ozToggle(); break;
       case 'Escape': ozToggle(false); break;
       case '1': case '2': case '3': case '4': case '5': case '6': case '7': {
-        const s = LIBRARY[parseInt(e.key, 10) - 1];
+        const sira = ['turkce', 'tarih', 'cografya', 'vatandaslik', 'turkce-test', 'turkce-cikmis', 'deneme'];
+        const s = LIBRARY.find(x => x.key === sira[parseInt(e.key, 10) - 1]);
         if (s) selectSubject(s.key, false, false);
         break;
       }

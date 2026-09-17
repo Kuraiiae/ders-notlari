@@ -28,6 +28,10 @@ a.btn.g{border:1px solid rgba(255,255,255,.16);color:#e9efff;background:rgba(255
 .nums b{display:block;font-size:22px;color:#e9efff}
 img.cover{width:100%;border-radius:16px;border:1px solid rgba(255,255,255,.14);aspect-ratio:16/10;object-fit:cover;object-position:top;background:#0b1024}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0}
+.grid-head{margin:26px 0 0}
+.grid-head h2{margin:0;font-size:20px}
+.grid-head p{margin:4px 0 0;color:#8f9dc0;font-size:13.5px}
+.grid-head + .grid{margin-top:12px}
 .card{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);border-radius:14px;padding:16px;text-decoration:none;color:#e9efff}
 .card b{display:block;font-size:15px;margin:8px 0 2px}
 .card small{color:#8f9dc0}
@@ -73,14 +77,14 @@ a.chip{min-height:40px;display:inline-flex;align-items:center}
 <section class="hero">
 <div>
 <h1>KPSS ders notlarin, <em>kitap rahatliginda</em> cebinde.</h1>
-<p class="lead">Taranmis defter sayfalari gri zeminden arindirildi, el yazisi netlestirildi. Turkce, Turkce testleri, cikmis sorular, Tarih, Cografya, Vatandaslik ve KPSS tam deneme sirasiyla kaldigin yerden devam et, ayrac birak, Sepya ya da Gece kagidinda calis.</p>
+<p class="lead">Taranmis defter sayfalari gri zeminden arindirildi, el yazisi netlestirildi. once Dersler (Turkce, Tarih, Cografya, Vatandaslik), sonra Denemeler (testler, cikmis sorular, tam deneme) sirasiyla kaldigin yerden devam et, ayrac birak, Sepya ya da Gece kagidinda calis.</p>
 <div class="row">
 <a class="btn p" href="oku.html">Hemen Okumaya Basla</a>
 <a class="btn g" href="galeri.html">Galeri gorunumu</a>
 </div>
 <div class="nums">
 <div><b>639</b>temiz sayfa</div>
-<div><b>7</b>bolum, sirali</div>
+<div><b>4+3</b>ders ve deneme</div>
 <div><b>%100</b>ucretsiz</div>
 </div>
 </div>
@@ -88,14 +92,18 @@ a.chip{min-height:40px;display:inline-flex;align-items:center}
 <a href="oku.html"><img class="cover" src="assets/turkce/clean/page-001.jpg" alt="Turkce ders notu kapak onizlemesi"></a>
 </div>
 </section>
+<section class="grid-head"><h2>Dersler</h2><p>Konu anlatimi - sirayla calis</p></section>
 <section class="grid">
 <a class="card" href="oku.html?ders=turkce"><span class="dot" style="background:#7c5cff">&#9998;</span><b>1 - Turkce</b><small>Dil Bilgisi ve Anlatim</small><span class="m"><span>52 sayfa</span><span>Oku &rarr;</span></span></a>
-<a class="card" href="oku.html?ders=turkce-test"><span class="dot" style="background:#a855f7">&#128221;</span><b>2 - Turkce Testleri</b><small>Video Ders Notlari ve Testler</small><span class="m"><span>97 sayfa</span><span>Oku &rarr;</span></span></a>
-<a class="card" href="oku.html?ders=turkce-cikmis"><span class="dot" style="background:#f59e0b">&#127919;</span><b>3 - Turkce Cikmis Sorular</b><small>Son 10 Yil Konu Konu</small><span class="m"><span>46 sayfa</span><span>Oku &rarr;</span></span></a>
-<a class="card" href="oku.html?ders=tarih"><span class="dot" style="background:#f4a261">&#127963;</span><b>4 - Tarih</b><small>Osmanli'dan Cumhuriyet'e</small><span class="m"><span>169 sayfa</span><span>Oku &rarr;</span></span></a>
-<a class="card" href="oku.html?ders=cografya"><span class="dot" style="background:#2ec4b6">&#127758;</span><b>5 - Cografya</b><small>Turkiye ve Dunya Cografyasi</small><span class="m"><span>130 sayfa</span><span>Oku &rarr;</span></span></a>
-<a class="card" href="oku.html?ders=vatandaslik"><span class="dot" style="background:#ff5f6d">&#9878;</span><b>6 - Vatandaslik</b><small>Vatandaslik ve Insan Haklari</small><span class="m"><span>43 sayfa</span><span>Oku &rarr;</span></span></a>
-<a class="card" href="oku.html?ders=deneme"><span class="dot" style="background:#ef4444">&#128202;</span><b>7 - KPSS Tam Deneme</b><small>Karisik Deneme Bolmesi</small><span class="m"><span>102 sayfa</span><span>Oku &rarr;</span></span></a>
+<a class="card" href="oku.html?ders=tarih"><span class="dot" style="background:#f4a261">&#127963;</span><b>2 - Tarih</b><small>Osmanli'dan Cumhuriyet'e</small><span class="m"><span>169 sayfa</span><span>Oku &rarr;</span></span></a>
+<a class="card" href="oku.html?ders=cografya"><span class="dot" style="background:#2ec4b6">&#127758;</span><b>3 - Cografya</b><small>Turkiye ve Dunya Cografyasi</small><span class="m"><span>130 sayfa</span><span>Oku &rarr;</span></span></a>
+<a class="card" href="oku.html?ders=vatandaslik"><span class="dot" style="background:#ff5f6d">&#9878;</span><b>4 - Vatandaslik</b><small>Vatandaslik ve Insan Haklari</small><span class="m"><span>43 sayfa</span><span>Oku &rarr;</span></span></a>
+</section>
+<section class="grid-head"><h2>Denemeler</h2><p>Test ve cikmis sorular - pratik yap</p></section>
+<section class="grid">
+<a class="card" href="oku.html?ders=turkce-test"><span class="dot" style="background:#a855f7">&#128221;</span><b>Turkce Testleri</b><small>Video Ders Notlari ve Testler</small><span class="m"><span>97 sayfa</span><span>Oku &rarr;</span></span></a>
+<a class="card" href="oku.html?ders=turkce-cikmis"><span class="dot" style="background:#f59e0b">&#127919;</span><b>Turkce Cikmis Sorular</b><small>Son 10 Yil Konu Konu</small><span class="m"><span>46 sayfa</span><span>Oku &rarr;</span></span></a>
+<a class="card" href="oku.html?ders=deneme"><span class="dot" style="background:#ef4444">&#128202;</span><b>KPSS Tam Deneme</b><small>Karisik Deneme Bolmesi</small><span class="m"><span>102 sayfa</span><span>Oku &rarr;</span></span></a>
 </section>
 <section class="box">
 <h2>3 adimda basla</h2>
