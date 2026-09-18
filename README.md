@@ -127,9 +127,14 @@ yer almaz. `tools/info.py` kaynak PDF'lerin sayfa/boyut bilgisini çıkarır.
    listesinin başındaki "sınav yapısı" kartı bu veriyi kullanır.
 
 İçerik yapısı: 1. Bölüm Dil Bilgisi (7 soru) — ses bilgisi, yazım kuralları,
-noktalama işaretleri, sözcükte yapı, sözcük türleri, fiilimsiler; 2. Bölüm sözel
-mantık stratejileri; 3. Bölüm paragraf taktikleri. Madde altındaki "Dipnot /
-Pratik Yol / Kritik Kural / Önemli Tuzak" notları ayrı kutuda gösterilir.
+noktalama işaretleri, sözcükte yapı ve her biri kendi başlığı olan sözcük türü
+blokları (Sıfat, Zamir, Zarf, Edat, Bağlaç, Ayrımlar) ile fiilimsi blokları
+(Fiilimsiler, Adlaşma/Kalıcı İsim/Tuzaklar); 2. Bölüm sözel mantık stratejileri;
+3. Bölüm paragraf taktikleri. Madde altındaki "Dipnot / Pratik Yol / Kritik Kural /
+Önemli Tuzak" notları ayrı kutuda gösterilir. Özet sayfasında her blok `<h4>`,
+Kitap Modu çekmecesinde `<h5>` başlığı olarak listelenir; yeni bir konu eklemek için
+`tools/ozet.py` içindeki ilgili `*_BLOKLAR` listesine `{"ad": ..., "giris": ...,
+"maddeler": [...], "notlar": [...]}` biçiminde yeni bir blok eklemek yeterlidir.
 
 ```
 python tools/ozet.py            # içeriği uygula

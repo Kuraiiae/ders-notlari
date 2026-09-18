@@ -158,38 +158,220 @@ YAPI_BLOKLAR = [{
 }]
 
 TUR_BLOKLAR = [{
-    "ad": "Sözcük Türleri (Sıfat, Zarf, Zamir, Edat)",
+    "ad": "Sıfat (Ön Ad)",
+    "giris": "İsimlerden önce gelerek onları niteleyen veya belirten sözcüklerdir. Sıfatın "
+             "yanında mutlaka bir isim bulunur; isim kullanılmazsa sözcük adlaşır.",
     "maddeler": [
-        {"t": "Sıfatlar",
-         "d": "İsimlerden önce gelerek onları niteler veya belirtir. Sıfat olan her yerde sıfat "
-              "tamlaması vardır (adlaşmış sıfatlar hariç)."},
-        {"t": "Zamir / Sıfat Ayrımı",
-         "d": "<b>Bu, o, şu</b> sözcükleri isimden önce gelip ismi işaret ediyorsa işaret sıfatı, "
-              "ismin yerini doğrudan tutuyorsa işaret zamiridir. Yanında virgül varsa genellikle "
-              "zamirdir."},
-        {"t": "Zarflar",
-         "d": "Fiilleri, fiilimsileri, sıfatları ya da kendi türündeki sözcükleri durum, zaman, "
-              "miktar veya yer-yön yönünden niteleyen sözcüklerdir."},
-        {"t": "Edat ve Bağlaç",
-         "d": "<b>İle</b> sözcüğünün yerine <b>ve</b> gelebiliyorsa bağlaç, gelemiyorsa edattır."},
+        {"t": "Niteleme Sıfatı",
+         "d": "İsmin <b>nasıl olduğunu</b> bildirir; sorusu <b>nasıl?</b> → güzel ev, büyük "
+              "bina, mavi gömlek, çalışkan öğrenci, uzun yol."},
+        {"t": "İşaret Sıfatı",
+         "d": "<b>bu, şu, o, öteki, beriki</b> ismi işaret ederek belirtir: bu kitap, şu ev, o "
+              "çocuk, öteki öğrenci."},
+        {"t": "Asıl Sayı Sıfatı", "d": "İsmin sayısını bildirir: iki kitap, beş öğrenci."},
+        {"t": "Sıra Sayı Sıfatı", "d": "İsmin sırasını bildirir: ikinci kat, üçüncü sıra."},
+        {"t": "Üleştirme Sayı Sıfatı",
+         "d": "İsmin eşit olarak paylaştırıldığını bildirir: ikişer kalem, beşer kişi."},
+        {"t": "Kesir Sayı Sıfatı",
+         "d": "İsmi kesirli olarak belirtir: yarım ekmek, çeyrek altın."},
+        {"t": "Belgisiz Sıfat",
+         "d": "<b>bazı, birkaç, birçok, kimi, her, hiçbir, herhangi bir</b> ismi kesin olmayan "
+              "miktarda veya belirsiz biçimde belirtir: bazı insanlar, birkaç kitap, her gün."},
+        {"t": "Soru Sıfatı",
+         "d": "<b>hangi, kaç, kaçıncı, nasıl</b> ismi soru yoluyla belirtir: hangi kitap?, kaç "
+              "kişi?, kaçıncı sınıf?, nasıl bir ev?"},
     ],
-    "notlar": [],
+    "notlar": [{"tur": "Kural",
+                "d": "Belirtme sıfatları <b>işaret, sayı, belgisiz ve soru</b> olmak üzere dört "
+                     "gruptur; sayı sıfatı da <b>asıl, sıra, üleştirme ve kesir</b> olarak "
+                     "ayrılır."}],
+}, {
+    "ad": "Zamir (Adıl)",
+    "giris": "İsmin yerini tutan sözcüklerdir. Temel ayrım: <b>sıfat ismin yanında bulunur, "
+             "zamir ismin yerine geçer.</b>",
+    "maddeler": [
+        {"t": "Kişi Zamiri",
+         "d": "<b>ben, sen, o, biz, siz, onlar</b> insan isimlerinin yerini tutar: \"Ahmet "
+              "bugün gelmedi.\" → \"<b>O</b> bugün gelmedi.\""},
+        {"t": "İşaret Zamiri",
+         "d": "<b>bu, şu, o, bunlar, şunlar, onlar</b> varlıkların yerini işaret yoluyla tutar: "
+              "\"Bu kalemi al.\" (sıfat) / \"<b>Bunu</b> al.\" (zamir)."},
+        {"t": "Belgisiz Zamir",
+         "d": "<b>biri, birisi, bazıları, kimisi, çoğu, hepsi, herkes, hiçbiri</b> ismin yerini "
+              "belirsiz biçimde tutar: Bazıları geldi, hiçbiri gelmedi."},
+        {"t": "Soru Zamiri",
+         "d": "<b>kim, ne, hangisi, kaçı</b> ismin yerini soru yoluyla tutar: Kim geldi? "
+              "Hangisini aldın?"},
+        {"t": "İlgi Zamiri",
+         "d": "<b>-ki</b> ekiyle yapılır ve daha önce söylenen bir ismin yerini tutar: \"Benim "
+              "kalemim kırmızı, <b>seninki</b> mavi.\" → seninki = senin kalemin."},
+    ],
+    "notlar": [{"tur": "Sıfat mı, Zamir mi?",
+                "d": "Yanında isim varsa sıfat, ismin yerini tutuyorsa zamirdir. \"<b>Bu kitap</b> "
+                     "benim.\" → sıfat / \"<b>Bu</b> benim.\" → zamir. \"Bazı insanlar\" → sıfat / "
+                     "\"Bazıları\" → zamir."}],
+}, {
+    "ad": "Zarf (Belirteç)",
+    "giris": "Fiilleri, fiilimsileri, sıfatları veya başka zarfları <b>durum, zaman, miktar, "
+             "yer-yön ve soru</b> bakımından belirten sözcüklerdir. Zarf genellikle fiili belirtir.",
+    "maddeler": [
+        {"t": "Durum Zarfı",
+         "d": "Fiilin <b>nasıl</b> yapıldığını bildirir; sorusu <b>nasıl?</b> → hızlı koştu, "
+              "güzel konuştu, sessizce girdi, yavaş yürüdü."},
+        {"t": "Zaman Zarfı",
+         "d": "Fiilin <b>ne zaman</b> yapıldığını bildirir; sorusu <b>ne zaman?</b> → bugün "
+              "geldim, dün aradı, yarın gideceğiz, sabah uyandım."},
+        {"t": "Miktar (Azlık-Çokluk) Zarfı",
+         "d": "Fiilin, sıfatın veya başka bir zarfın <b>miktarını/derecesini</b> belirtir: "
+              "\"<b>Çok</b> çalıştı.\" (fiil), \"Çok <b>güzel</b> ev.\" (sıfat), \"<b>Oldukça</b> "
+              "hızlı koşuyor.\" (zarf)."},
+        {"t": "Yer-Yön Zarfı",
+         "d": "<b>içeri, dışarı, ileri, geri, aşağı, yukarı, öte, beri</b> sözcükleri hâl eki "
+              "almadan kullanıldığında yön bildirir: İçeri girdi, yukarı çıktı, geri döndü."},
+        {"t": "Soru Zarfı",
+         "d": "<b>nasıl, ne zaman, niçin, neden, niye, ne kadar</b> fiil hakkında soru sorar: "
+              "Nasıl geldin? Ne zaman gideceksin? Ne kadar çalıştın?"},
+    ],
+    "notlar": [
+        {"tur": "Yer-yön tuzağı",
+         "d": "Yer-yön sözcükleri <b>hâl eki alırsa zarf olmaktan çıkar ve isim olur</b>: "
+              "\"İçeri girdi.\" (zarf) / \"İçeriye girdi.\" (isim). Aynı şekilde dışarı/dışarıya, "
+              "yukarı/yukarıya, aşağı/aşağıya, ileri/ileriye, geri/geriye."},
+        {"tur": "Miktar zarfı",
+         "d": "Yalnızca fiili değil, sıfat ve zarfı da belirtebilir: \"Çok güzel konuştu.\" "
+              "cümlesinde <b>çok</b> zarfı <b>güzel</b> zarfını belirtir."},
+    ],
+}, {
+    "ad": "Edat (İlgeç)",
+    "giris": "Tek başına tam bir anlamı olmayan, başka sözcüklerle birlikte kullanılarak "
+             "<b>anlam ilişkisi kuran</b> sözcüklerdir. Edat sözcüğe \"ilişki\", bağlaç "
+             "\"bağlama\" görevi yapar.",
+    "maddeler": [
+        {"t": "Benzerlik", "d": "<b>gibi</b> → \"Çocuk gibi sevindi.\""},
+        {"t": "Amaç / Neden", "d": "<b>için</b> → \"Ders çalışmak için kütüphaneye gitti.\""},
+        {"t": "Görelik", "d": "<b>göre</b> → \"Bana göre haklı.\""},
+        {"t": "Karşılaştırma / Sınır", "d": "<b>kadar</b> → \"Senin kadar hızlı değil.\""},
+        {"t": "Araç / Birliktelik", "d": "<b>ile</b> → \"Kalem ile yazdı.\""},
+        {"t": "Diğer Edatlar",
+         "d": "<b>üzere, dolayı, ötürü, karşı, doğru, beri, dek, değin</b>"},
+    ],
+    "notlar": [{"tur": "Edat – Bağlaç farkı",
+                "d": "Edat sözcükler arasında <b>anlam ilişkisi kurar</b>, bağlaç sözcük veya "
+                     "cümleleri <b>birbirine bağlar</b>. \"Senin gibi düşünüyorum.\" → edat / "
+                     "\"Ali ve Veli geldi.\" → bağlaç."}],
+}, {
+    "ad": "Bağlaç",
+    "giris": "Eş görevli sözcükleri, sözcük gruplarını veya cümleleri <b>birbirine bağlayan</b> "
+             "sözcüklerdir. Temel görevleri bağlamaktır.",
+    "maddeler": [
+        {"t": "\"ve\" Bağlacı",
+         "d": "Sözcükleri ve cümleleri bağlar: \"Ali ve Ahmet geldi.\", \"Kitap okudu ve uyudu.\""},
+        {"t": "\"ile\" Bağlacı",
+         "d": "Yerine <b>ve</b> getirilebiliyorsa bağlaçtır: \"Ali ile Veli geldi.\" → Ali ve Veli "
+              "geldi. Araç/birliktelik anlamı varsa edattır: \"Kalem ile yazdı.\""},
+        {"t": "\"de / da\" Bağlacı",
+         "d": "Ayrı yazılan <b>de/da</b> bağlaçtır: \"Ben de geleceğim.\", \"Ali de geldi.\" "
+              "Cümleden çıkarıldığında temel anlam bozulmaz: \"Ben de geldim.\" → \"Ben geldim.\""},
+        {"t": "\"-de / -da\" Hâl Eki (Karıştırma)",
+         "d": "Bitişik yazılan <b>-de/-da</b> bulunma hâli ekidir: \"Evde oturuyorum.\" → "
+              "\"Ev oturuyorum.\" olmaz, bu nedenle buradaki <b>-de</b> hâl ekidir."},
+        {"t": "\"ki\" Bağlacı",
+         "d": "Bağlaç olan <b>ki ayrı yazılır</b>: \"Biliyorum ki başarılı olacaksın.\", \"Duydum "
+              "ki yarın geliyormuş.\""},
+        {"t": "\"-ki\" Eki (Karıştırma)",
+         "d": "\"-ki\" her zaman bağlaç değildir: \"Seninki daha güzel.\" → ilgi zamiri, "
+              "\"Evdeki kitaplar\" → sıfat yapan ek."},
+        {"t": "Diğer Bağlaçlar",
+         "d": "<b>ama, fakat, lakin, ancak, çünkü, veya, ya da, yahut, ise, ne...ne, hem...hem, "
+              "gerek...gerek</b>"},
+    ],
+    "notlar": [{"tur": "Altın test",
+                "d": "\"ile\" yerine <b>ve</b> geliyorsa bağlaç, araç/birliktelik ilişkisi "
+                     "kuruyorsa edattır. Ayrı yazılan <b>de/da</b> ile ayrı yazılan <b>ki</b> "
+                     "bağlaçtır."}],
+}, {
+    "ad": "Sıfat – Zamir – Zarf – Edat – Bağlaç Ayrımı",
+    "giris": "Sınavda en çok karıştırılan sözcük türü ayrımları ve kısa formülleri:",
+    "maddeler": [
+        {"t": "Sıfat – Zamir",
+         "d": "\"Bu kitap benim.\" → bu = sıfat / \"Bu benim.\" → bu = zamir."},
+        {"t": "Belgisiz Sıfat – Belgisiz Zamir",
+         "d": "\"Bazı öğrenciler geldi.\" → bazı = sıfat / \"Bazıları geldi.\" → bazıları = zamir."},
+        {"t": "Soru Sıfatı – Soru Zamiri",
+         "d": "\"Hangi kitabı aldın?\" → hangi = sıfat / \"Hangisini aldın?\" → hangisini = zamir."},
+        {"t": "Sıfat – Zarf",
+         "d": "İsmi belirtiyorsa sıfat, fiili belirtiyorsa zarftır: \"Güzel kız.\" → sıfat / "
+              "\"Güzel konuştu.\" → zarf."},
+        {"t": "Yer-Yön Zarfı – İsim",
+         "d": "Ek almamışsa yer-yön zarfı, hâl eki almışsa isimdir: içeri / içeriye, yukarı / "
+              "yukarıya, aşağı / aşağıya."},
+        {"t": "Edat – Bağlaç",
+         "d": "\"Kalem ile yazdı.\" → ile = edat (araç) / \"Ali ile Veli geldi.\" → ile = bağlaç "
+              "(ve)."},
+        {"t": "Bağlaç – Hâl Eki",
+         "d": "\"Ben de geldim.\" → de = bağlaç / \"Evde kaldım.\" → -de = bulunma hâl eki."},
+    ],
+    "notlar": [
+        {"tur": "Sıfat", "d": "İsmi niteler veya belirtir; ismin yanında bulunur."},
+        {"tur": "Zamir", "d": "İsmin yerini tutar."},
+        {"tur": "Zarf", "d": "Fiili, fiilimsiyi, sıfatı veya başka bir zarfı belirtir."},
+        {"tur": "Edat", "d": "Sözcükler arasında anlam ilişkisi kurar."},
+        {"tur": "Bağlaç", "d": "Sözcükleri veya cümleleri birbirine bağlar."},
+    ],
 }]
 
 FIILIMSI_BLOKLAR = [{
     "ad": "Fiilimsiler (Eylemsiler)",
-    "giris": "Fiil kök ve gövdelerinden türeyen ancak fiil özelliklerinin tamamını taşımayan "
-             "sözcüklerdir. Üçe ayrılır:",
+    "giris": "Fiil kök ve gövdelerinden türeyen ancak <b>çekimli fiil olmayan</b>; cümlede isim, "
+             "sıfat veya zarf görevinde kullanılan sözcüklerdir. Kip ve kişi eki alıp çekimli "
+             "fiil hâline gelmezler. Üçe ayrılır:",
     "maddeler": [
-        {"t": "İsim-Fiil", "d": "<b>-ma, -ış, -mak</b>"},
-        {"t": "Sıfat-Fiil", "d": "<b>-an, -ası, -mez, -ar, -dik, -ecek, -miş</b> "
-                                 "(Anası mezar dikecekmiş)"},
-        {"t": "Zarf-Fiil", "d": "<b>-ken, -alı, -esiye, -meden, -ince, -ip, -arak, -dıkça</b> vb."},
+        {"t": "İsim-Fiil (Mastar)",
+         "d": "Fiili isim gibi kullanır. Ekleri: <b>-ma / -me, -mak / -mek, -ış / -iş / -uş / "
+              "-üş</b> → \"Kitap <b>okumak</b> faydalıdır.\", \"ders <b>çalışma</b> alışkanlığı\", "
+              "\"onun <b>gülüşü</b>\"."},
+        {"t": "Sıfat-Fiil (Ortaç)",
+         "d": "Fiili sıfat görevine sokar, ismi niteler. Ekleri: <b>-an / -en, -ası / -esi, -maz / "
+              "-mez, -ar / -er, -dik / -dık, -acak / -ecek, -mış / -miş</b> (Anası mezar "
+              "dikecekmiş) → <b>gülen</b> çocuk, <b>bitmez</b> işler, <b>gelecek</b> günler, "
+              "<b>okunacak</b> kitap."},
+        {"t": "Zarf-Fiil (Ulaç / Bağ-Fiil)",
+         "d": "Fiili zarf görevine sokar; fiilin nasıl, ne zaman, hangi şartla gerçekleştiğini "
+              "belirtir. Ekleri: <b>-ken, -alı, -esiye, -meden, -ince, -ip, -arak, -dıkça, "
+              "-maksızın, -casına</b> → \"<b>Gülerek</b> konuştu.\", \"<b>Eve gelince</b> beni "
+              "ara.\""},
     ],
-    "notlar": [{"tur": "Önemli Tuzak",
-                "d": "<b>-miş, -ar, -ecek</b> ekleri hem sıfat-fiil eki hem de zaman eki olabilir. "
-                     "Sözcük adlaşmış veya bir ismi niteleyerek sıfat görevindeyse sıfat-fiil; "
-                     "yüklemde yer alıp zaman bildiriyorsa zaman ekidir."}],
+    "notlar": [{"tur": "Kısa formül",
+                "d": "İsim-fiil <b>isim</b>, sıfat-fiil <b>ismi niteleyen sıfat</b>, zarf-fiil "
+                     "<b>fiili belirten zarf</b> görevindedir."}],
+}, {
+    "ad": "Fiilimsilerde Adlaşma, Kalıcı İsim ve Tuzaklar",
+    "giris": "Fiilimsi ekleri her zaman aynı görevi üstlenmez; sözcüğün cümledeki görevi ve "
+             "kullanımı belirleyicidir.",
+    "maddeler": [
+        {"t": "Adlaşmış Sıfat-Fiil",
+         "d": "Sıfat-fiil, nitelediği isim olmadan kullanılırsa adlaşır: \"<b>Gelen</b> öğrenciler "
+              "içeri girdi.\" → sıfat-fiil / \"<b>Gelenler</b> içeri girdi.\" → adlaşmış sıfat-fiil."},
+        {"t": "Kalıcı İsim",
+         "d": "Bazı fiilimsi ekleri zamanla kalıcı isim olur: <b>dondurma, yemek, çakmak, kazma, "
+              "danışma</b>. \"Dondurma aldım.\" → kalıcı isim / \"Dondurma yapmak zor.\" → isim-fiil."},
+        {"t": "\"-ar / -er\" Tuzağı",
+         "d": "İsmi niteliyorsa sıfat-fiil, yüklemde zaman bildiriyorsa geniş zaman ekidir: "
+              "\"<b>Güler</b> yüzlü insanlar\" → sıfat-fiil / \"O her gün <b>güler</b>.\" → geniş "
+              "zaman."},
+        {"t": "\"-mış / -miş\" Tuzağı",
+         "d": "\"<b>Gelmiş</b> misafirler bekliyor.\" → sıfat-fiil / \"Ahmet <b>gelmiş</b>.\" → "
+              "öğrenilen (duyulan) geçmiş zaman eki."},
+        {"t": "\"-acak / -ecek\" Tuzağı",
+         "d": "\"<b>Gelecek</b> günleri düşünüyorum.\" → sıfat-fiil / \"Yarın <b>gelecek</b>.\" → "
+              "gelecek zaman eki."},
+        {"t": "Üç Türün Bir Arada Görünümü",
+         "d": "\"<b>Koşarak</b> gelen çocuk kitap <b>okumayı</b> seviyor.\" → koşarak = zarf-fiil, "
+              "gelen = sıfat-fiil, okumayı = isim-fiil."},
+    ],
+    "notlar": [{"tur": "Altın kural",
+                "d": "<b>-ar/-er, -mış/-miş, -acak/-ecek</b> bir ismi niteliyor veya belirtiyorsa "
+                     "<b>sıfat-fiil</b>; yüklem olup zaman bildiriyorsa <b>zaman eki</b>dir."}],
 }]
 
 BOLUM2 = {

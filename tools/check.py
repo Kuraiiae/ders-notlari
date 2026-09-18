@@ -77,6 +77,20 @@ assert "__BODY__" not in sayfa, "turkce-ozet.html sablonu doldurulmamis"
 for anahtar in ("Ses Bilgisi", "Noktalama", "Fiilimsiler", "Sözel Mant", "Paragraf"):
     assert anahtar in sayfa, f"turkce-ozet.html icinde eksik baslik: {anahtar}"
 
+# Ayri basliklara bolunmus sozcuk turu / fiilimsi konulari kaybolmasin.
+TUR_BASLIKLARI = ("Sıfat (Ön Ad)", "Zamir (Adıl)", "Zarf (Belirteç)", "Edat (İlgeç)",
+                  "Bağlaç", "Sıfat – Zamir – Zarf – Edat – Bağlaç Ayrımı",
+                  "Fiilimsiler (Eylemsiler)",
+                  "Fiilimsilerde Adlaşma, Kalıcı İsim ve Tuzaklar")
+for anahtar in TUR_BASLIKLARI:
+    assert anahtar in sayfa, f"turkce-ozet.html icinde eksik konu basligi: {anahtar}"
+adlar = [x.get("ad") for b in d["bolumler"] for x in (b.get("bloklar") or [])]
+for anahtar in TUR_BASLIKLARI:
+    if anahtar.startswith("Fiilimsiler"):
+        continue
+    assert anahtar in adlar, f"gomulu JSON icinde eksik konu blogu: {anahtar}"
+assert adlar.count("Fiilimsiler (Eylemsiler)") == 1, "fiilimsi blogu tek olmali"
+
 # --- Capraz baglantilar: ozet sayfasi her giris noktasindan erisilebilmeli ---
 BEKLENEN = {
     "index.html": ("oku.html", "galeri.html", "turkce-ozet.html"),
