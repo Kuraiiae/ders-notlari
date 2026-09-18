@@ -10,7 +10,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DST = os.path.join(ROOT, "assets", "cover.jpg")
+DST = os.path.join(ROOT, "assets", "cover-v2.jpg")
 
 ARIAL_B = "C:/Windows/Fonts/arialbd.ttf"
 ARIAL = "C:/Windows/Fonts/arial.ttf"
