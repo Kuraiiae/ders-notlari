@@ -55,9 +55,12 @@ html[data-theme="light"] .grain{opacity:.45;background-image:radial-gradient(rgb
 /* UST BAR */
 header.bar{display:flex;align-items:center;gap:10px;padding:10px clamp(10px,1.6vw,20px);
   backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);
+  /* gece modunda da okunabilir: opak zemin, asla tam seffaf degil */
   background:linear-gradient(180deg,var(--panel-2),var(--panel));
   border-bottom:1px solid var(--stroke);box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:5;
   overflow:hidden;max-height:120px;transition:max-height .38s cubic-bezier(.22,.75,.25,1),padding .3s,opacity .3s}
+html[data-theme="dark"] header.bar{background:linear-gradient(180deg,rgba(13,18,36,.97),rgba(9,13,28,.97))}
+html[data-theme="light"] header.bar{background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(244,247,255,.95))}
 body.hide-top header.bar{max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-bottom-width:0}
 /* Kenar oku: sol panelin sag kenarina yapisik bir tutamak gibi durur.
    Konumu (left/top) JS ile her karede panelden olculur; panel kayarken ok da onunla hareket eder. */
@@ -234,6 +237,11 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
   body.no-side .side{margin-left:0;transform:translateX(-118%);opacity:0}
   .side{transform:none}
   .burger{display:inline-flex}
+  /* telefon: baslik kisa, marka yazisi gizli, ders seridi kaldirilmis */
+  .brand .txt{display:none}
+  .brand .mark{width:34px;height:34px;flex-basis:34px;font-size:16px}
+  header.bar{padding:7px 8px;gap:6px}
+  .hide-m{display:none!important}
   .reader-top .title-wrap{font-size:13.5px}
   .chip.hide-sm{display:none}
   .thumb{width:44px;height:66px}
@@ -253,6 +261,28 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
 .reader-top .title-wrap{font-size:14px}
 .hint{font-size:12.5px;line-height:1.9}
 .chip{min-height:40px}
+/* ---------- akordeon grup başlıkları (Dersler / Denemeler) ---------- */
+.grpbtn{display:flex;align-items:center;gap:8px;width:calc(100% - 12px);margin:10px 6px 2px;text-align:left;
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.grpbtn .chev{display:inline-block;transition:transform .25s var(--ease);font-size:12px}
+.grpbtn[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+.grpbtn .cnt{margin-left:auto;font-size:10.5px;letter-spacing:.02em;font-weight:700}
+.grpnav{display:flex;flex-direction:column;gap:6px}
+body.grp-ders-kapali #subjectListDers,body.grp-deneme-kapali #subjectListDeneme{display:none}
+/* ---------- yardımcı balon (sol alt, açılır/kapanır) ---------- */
+.fab{position:fixed;left:12px;bottom:12px;z-index:70;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.fab-main{width:52px;height:52px;border-radius:50%;font-size:22px;color:#fff;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--accent),var(--accent-2));box-shadow:0 14px 34px rgba(0,0,0,.5)}
+.fab-menu{display:none;flex-direction:column;gap:6px;padding:10px;border-radius:16px;min-width:210px;
+  border:1px solid var(--stroke);background:var(--panel-2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--shadow)}
+.fab.open .fab-menu{display:flex}
+.fab-menu .row{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600}
+.fab-menu .row .t{flex:1;text-align:left}
+.fab-menu button.mini{min-width:34px;height:30px;padding:0 10px;border-radius:9px;border:1px solid var(--stroke);
+  background:var(--panel);color:var(--text);font-size:12px;font-weight:700}
+.fab-menu button.mini.on{background:var(--accent);border-color:transparent;color:#fff}
+.fab-menu a.mini{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;padding:0 10px;
+  border-radius:9px;border:1px solid var(--stroke);background:var(--panel);font-size:12px;font-weight:700;text-decoration:none;color:inherit}
 .paper{border-radius:14px}
 .stage{gap:14px}
 @media (max-width:900px){
@@ -299,14 +329,14 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
       </div>
     </a>
     <div class="spacer"></div>
-    <a class="chip primary" href="oku.html" title="Sürekli kaydırma ile kitap gibi oku">&#128214; Kitap Modu</a>
-    <a class="chip" href="turkce-ozet.html" title="Türkçe konu özetleri ve taktikler">&#128221; Türkçe Özet</a>
-    <div class="seg" id="subjectSeg" role="tablist" aria-label="Dersler"></div>
+    <a class="chip primary hide-m" href="oku.html" title="Sürekli kaydırma ile kitap gibi oku">&#128214; Kitap Modu</a>
+    <a class="chip hide-m" href="turkce-ozet.html" title="Türkçe konu özetleri ve taktikler">&#128221; Türkçe Özet</a>
+    <div class="seg hide-m" id="subjectSeg" role="tablist" aria-label="Dersler"></div>
     <button class="chip icon" id="btnThumbs" title="Sayfa şeridi (T)">&#9639;&#9640;</button>
-    <button class="chip icon hide-sm" id="btnSpread" title="Çift sayfa görünümü (S)">&#9633;&#9633;</button>
+    <button class="chip icon hide-sm hide-m" id="btnSpread" title="Çift sayfa görünümü (S)">&#9633;&#9633;</button>
     <button class="chip" id="btnBm" title="Bu sayfaya ayraç koy / kaldır (B)">&#128278;<span class="hide-sm"> Ayraç</span></button>
-    <button class="chip icon" id="btnTheme" title="Tema (D)">&#9789;</button>
-    <button class="chip icon" id="btnFull" title="Tam ekran (F)">&#9974;</button>
+    <button class="chip icon hide-m" id="btnTheme" title="Tema (D)">&#9789;</button>
+    <button class="chip icon hide-m" id="btnFull" title="Tam ekran (F)">&#9974;</button>
   </header>
   <main id="view">
     <button class="edge-tab" id="edgeLeft" aria-controls="side" aria-expanded="true"
@@ -316,16 +346,38 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
         <span>Kütüphane</span>
         <span class="badge" id="totalBadge">—</span>
       </div>
-      <nav class="subjects" id="subjectList"></nav>
+      <nav class="subjects">
+        <button class="grpbtn" data-grp="ders" aria-expanded="true"><span class="chev">&#9662;</span><span>Dersler</span><span class="cnt" id="cntDers"></span></button>
+        <nav class="grpnav" id="subjectListDers"></nav>
+        <button class="grpbtn" data-grp="deneme" aria-expanded="true"><span class="chev">&#9662;</span><span>Denemeler</span><span class="cnt" id="cntDeneme"></span></button>
+        <nav class="grpnav" id="subjectListDeneme"></nav>
+      </nav>
       <div class="side-head">
         <span>Ayraçlarım</span>
         <span class="badge" id="bmCount">0</span>
       </div>
       <div class="bm-list" id="bmList"></div>
+      <div class="side-head">
+        <span>Sayfa Ayarları</span>
+      </div>
+      <div class="side-foot" style="border-top:0;padding-top:0">
+        <div class="hint" style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="chip" data-fit="width" title="Genişliğe sığdır">Sığdır</button>
+            <button class="chip" data-fit="page" title="Tam sayfa">Tam sayfa</button>
+            <button class="chip" data-fit="actual" title="Gerçek boyut">1:1</button>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="chip" id="sideSpread" title="Çift sayfa">Çift sayfa</button>
+            <button class="chip" id="sideTheme" title="Tema">Tema</button>
+            <a class="chip" href="index.html" title="Ana sayfa">Ana Sayfa</a>
+          </div>
+        </div>
+      </div>
       <div class="side-foot">
         <div class="hint">
           <kbd>&uarr;</kbd> kaydır: üst bar <b>ve</b> panel kapanır &middot; <kbd>K</kbd> ya da kenardaki ok ile panel<br>
-          <kbd>&larr;</kbd> <kbd>&rarr;</kbd> sayfa çevir<br>
+          <kbd>&larr;</kbd> <kbd>&rarr;</kbd> sayfa çevir &middot; sol alttaki <b>?</b> yardımcıyı açar<br>
           <kbd>+</kbd> <kbd>&minus;</kbd> yakınlaştır &middot; <kbd>0</kbd> sıfırla<br>
           <kbd>T</kbd> şerit &middot; <kbd>S</kbd> çift sayfa &middot; <kbd>B</kbd> ayraç<br>
           <kbd>D</kbd> tema &middot; <kbd>F</kbd> tam ekran &middot; <kbd>K</kbd> kütüphane
@@ -334,13 +386,8 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
     </aside>
     <section class="reader">
       <div class="reader-top">
-        <div class="title-wrap">
-          <span class="dot" id="subjDot"></span>
-          <strong id="subjTitle">—</strong>
-          <span class="muted" id="subjSub"></span>
-        </div>
         <div class="reader-tools">
-          <div class="seg" id="fitSeg">
+          <div class="seg hide-m" id="fitSeg">
             <button class="chip on" data-fit="width" title="Genişliğe sığdır">Sığdır</button>
             <button class="chip" data-fit="page" title="Tam sayfa">Tam sayfa</button>
             <button class="chip" data-fit="actual" title="Gerçek boyut (1:1)">1:1</button>
@@ -348,7 +395,7 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
           <button class="chip icon" id="zoomOut" title="Uzaklaştır">&minus;</button>
           <span class="zoomval" id="zoomVal">100%</span>
           <button class="chip icon" id="zoomIn" title="Yakınlaştır">+</button>
-          <button class="chip icon" id="zoomReset" title="Sıfırla (0)">&#8635;</button>
+          <button class="chip icon hide-m" id="zoomReset" title="Sıfırla (0)">&#8635;</button>
           <button class="chip primary hide-sm" id="btnOpen" title="Sayfayı yeni sekmede aç">&#8599; Yeni sekme</button>
         </div>
       </div>
@@ -381,6 +428,17 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
   </main>
 </div>
 <div class="toast" id="toast"></div>
+<div class="fab" id="fab">
+  <div class="fab-menu" id="fabMenu" role="menu" aria-label="Yardımcı menü">
+    <div class="row"><span class="t">Önceki / Sonraki sayfa</span><button class="mini" id="fabPrev" title="Önceki sayfa">&#8592;</button><button class="mini" id="fabNext" title="Sonraki sayfa">&#8594;</button></div>
+    <div class="row"><span class="t">Büyüt / Küçült</span><button class="mini" id="fabZoomOut" title="Uzaklaştır">&minus;</button><button class="mini" id="fabZoomIn" title="Yakınlaştır">+</button><button class="mini" id="fabZoomReset" title="Sıfırla">%100</button></div>
+    <div class="row"><span class="t">Derse git</span><button class="mini" id="fabSubPrev" title="Önceki ders">&#8676;</button><button class="mini" id="fabSubNext" title="Sonraki ders">&#8677;</button><button class="mini" id="fabFirst" title="İlk sayfa">Başa</button></div>
+    <div class="row"><span class="t">Sayfa ayarı</span><button class="mini" data-fit="width">Sığdır</button><button class="mini" data-fit="page">Tam</button><button class="mini" data-fit="actual">1:1</button></div>
+    <div class="row"><span class="t">Görünüm</span><button class="mini" id="fabSpread" title="Çift sayfa">Çift</button><button class="mini" id="fabThumbs" title="Şerit">Şerit</button><button class="mini" id="fabTheme" title="Tema">Tema</button></div>
+    <div class="row"><span class="t">Sayfalar</span><a class="mini" href="index.html">Ana Sayfa</a><a class="mini" href="oku.html">Kitap</a></div>
+  </div>
+  <button class="fab-main" id="fabMain" title="Yardımcı menü" aria-expanded="false">?</button>
+</div>
 <script>
 /* Veri dogrudan gomulu: dosya yerelden (file://) acildiginda fetch/CORS calismaz. */
 const LIBRARY = [
@@ -399,13 +457,15 @@ const PAD = n => String(n).padStart(3, '0');
 
 const el = {
   stage: $('#stage'), inner: $('#stageInner'), paper: $('#paper'),
-  subjectList: $('#subjectList'), subjectSeg: $('#subjectSeg'),
+  subjectListDers: $('#subjectListDers'), subjectListDeneme: $('#subjectListDeneme'),
+  subjectSeg: $('#subjectSeg'),
   thumbs: $('#thumbs'), thumbWrap: $('#thumbWrap'),
   pageInput: $('#pageInput'), pageTotal: $('#pageTotal'), progress: $('#progressBar'),
-  subjTitle: $('#subjTitle'), subjSub: $('#subjSub'), totalBadge: $('#totalBadge'),
+  totalBadge: $('#totalBadge'),
   prev: $('#prevBtn'), next: $('#nextBtn'), first: $('#firstBtn'), last: $('#lastBtn'),
   zoomVal: $('#zoomVal'), toast: $('#toast'), fitSeg: $('#fitSeg'),
   bmList: $('#bmList'), bmCount: $('#bmCount'), btnBm: $('#btnBm'),
+  cntDers: $('#cntDers'), cntDeneme: $('#cntDeneme'),
 };
 
 const STORE = {
@@ -473,23 +533,35 @@ function applyAccent() {
   document.documentElement.style.setProperty('--accent-2', ACCENT2[s.key] || '#2ec4b6');
 }
 
-/* ---------- ders listeleri ---------- */
+/* ---------- ders listeleri: akordeon (Dersler / Denemeler) ---------- */
+function applyGrp() {
+  document.body.classList.toggle('grp-ders-kapali', STORE.get('grp.ders', '1') === '0');
+  document.body.classList.toggle('grp-deneme-kapali', STORE.get('grp.deneme', '1') === '0');
+  $$('.grpbtn').forEach(b => {
+    const g = b.dataset.grp;
+    b.setAttribute('aria-expanded', STORE.get('grp.' + g, '1') === '0' ? 'false' : 'true');
+  });
+}
+function toggleGrp(g) {
+  STORE.set('grp.' + g, STORE.get('grp.' + g, '1') === '0' ? '1' : '0');
+  applyGrp();
+  followEdge(300);
+}
 function buildSubjects() {
   const total = LIBRARY.reduce((a, s) => a + s.pages, 0);
   el.totalBadge.textContent = total + ' sayfa';
-  el.subjectList.innerHTML = '';
+  el.subjectListDers.innerHTML = '';
+  el.subjectListDeneme.innerHTML = '';
   el.subjectSeg.innerHTML = '';
-  const GRUPS = [['ders', 'Dersler'], ['deneme', 'Denemeler']];
-  GRUPS.forEach(([g, ad]) => {
-    const h = document.createElement('div');
-    h.className = 'grp';
-    h.textContent = ad;
-    el.subjectList.appendChild(h);
+  const GRUPS = [['ders', 'Dersler', el.subjectListDers, el.cntDers], ['deneme', 'Denemeler', el.subjectListDeneme, el.cntDeneme]];
+  GRUPS.forEach(([g, ad, nav, cnt]) => {
+    const items = LIBRARY.filter(s => (s.group || 'ders') === g);
+    if (cnt) cnt.textContent = items.length + ' bölüm';
     const hs = document.createElement('span');
     hs.className = 'grp';
     hs.textContent = ad;
     el.subjectSeg.appendChild(hs);
-    LIBRARY.filter(s => (s.group || 'ders') === g).forEach(s => {
+    items.forEach(s => {
       const b = document.createElement('button');
       b.className = 'sub';
       b.dataset.key = s.key;
@@ -498,7 +570,7 @@ function buildSubjects() {
         '<span class="meta"><strong>' + s.title + '</strong><span>' + s.subtitle + '</span></span>' +
         '<span class="pc">' + s.pages + '</span>';
       b.addEventListener('click', () => selectSubject(s.key));
-      el.subjectList.appendChild(b);
+      nav.appendChild(b);
 
       const t = document.createElement('button');
       t.className = 'chip';
@@ -508,11 +580,14 @@ function buildSubjects() {
       el.subjectSeg.appendChild(t);
     });
   });
+  applyGrp();
 }
 
 function markSubjects() {
   const s = subject();
-  $$('.sub', el.subjectList).forEach(n => n.classList.toggle('on', n.dataset.key === state.key));
+  [el.subjectListDers, el.subjectListDeneme].forEach(nav => {
+    if (nav) $$('.sub', nav).forEach(n => n.classList.toggle('on', n.dataset.key === state.key));
+  });
   $$('.chip', el.subjectSeg).forEach(n => {
     const on = n.dataset.key === state.key;
     n.classList.toggle('on', on);
@@ -622,8 +697,6 @@ function syncUI(center) {
   const step = state.spread ? 2 : 1;
   const last = state.page + (state.spread ? 1 : 0);
   const shown = Math.min(last, s.pages);
-  el.subjTitle.textContent = s.title;
-  el.subjSub.textContent = s.subtitle + ' · kaldığın yer ' + readPage(s.key) + '/' + s.pages;
   el.pageTotal.textContent = '/ ' + s.pages;
   el.pageInput.max = s.pages;
   el.pageInput.value = state.page;
@@ -648,9 +721,9 @@ const panelOpen = () => !document.body.classList.contains('no-side');
 function edgePos() {
   const panel = document.getElementById('side');
   if (!panel) return null;
+  if (!panelOpen()) return { left: 10, top: Math.round(innerHeight / 2) };
   const r = panel.getBoundingClientRect();
   const top = Math.round(r.top + r.height / 2);
-  if (!panelOpen()) return { left: 10, top };
   return { left: Math.max(10, Math.round(r.right - 9)), top };
 }
 function paintEdge() {
@@ -765,6 +838,7 @@ function setFit(mode) {
   STORE.set('mode', mode);
   STORE.set('zoom', '1');
   layout();
+  syncFabFit();
 }
 
 function setZoom(z, anchor) {
@@ -789,6 +863,7 @@ function toggleSpread(force) {
   STORE.set('zoom', '1');
   paint();
   syncUI(true);
+  syncFabFit();
   toast(state.spread ? 'Çift sayfa görünümü açık' : 'Tek sayfa görünümü');
 }
 
@@ -828,6 +903,26 @@ function zoomStep(factor) {
   });
 }
 
+/* ---------- yardimci balon (sol alt: buyut/kucult/sayfa) ---------- */
+function fabToggle(force) {
+  const f = $('#fab');
+  const want = force === undefined ? !f.classList.contains('open') : !!force;
+  f.classList.toggle('open', want);
+  $('#fabMain').setAttribute('aria-expanded', want ? 'true' : 'false');
+}
+function syncFabFit() {
+  const all = $$('#fabMenu [data-fit]');
+  all.forEach(b => b.classList.toggle('on', b.dataset.fit === state.mode));
+  $$('.side-foot [data-fit]').forEach(b => b.classList.toggle('on', b.dataset.fit === state.mode));
+  $('#sideSpread').classList.toggle('on', state.spread);
+}
+function stepSubject(d) {
+  const i = LIBRARY.indexOf(subject());
+  const n = LIBRARY[i + d];
+  if (n) selectSubject(n.key);
+  else toast(d < 0 ? 'İlk ders' : 'Son ders');
+}
+
 /* ---------- olaylar ---------- */
 function bind() {
   el.prev.addEventListener('click', () => move(-1));
@@ -858,6 +953,23 @@ function bind() {
   $('#btnSide').addEventListener('click', () => toggleSide());
   const edgeBtn = document.getElementById('edgeLeft');
   if (edgeBtn) edgeBtn.addEventListener('click', () => toggleSide());
+  $$('.grpbtn').forEach(b => b.addEventListener('click', () => toggleGrp(b.dataset.grp)));
+  $$('.side-foot [data-fit]').forEach(b => b.addEventListener('click', () => setFit(b.dataset.fit)));
+  $('#sideSpread').addEventListener('click', () => toggleSpread());
+  $('#sideTheme').addEventListener('click', toggleTheme);
+  $('#fabMain').addEventListener('click', () => fabToggle());
+  $('#fabPrev').addEventListener('click', () => move(-1));
+  $('#fabNext').addEventListener('click', () => move(1));
+  $('#fabZoomIn').addEventListener('click', () => zoomStep(1.18));
+  $('#fabZoomOut').addEventListener('click', () => zoomStep(1 / 1.18));
+  $('#fabZoomReset').addEventListener('click', () => { setFit(state.mode); toast('Ölçek %100'); });
+  $('#fabSubPrev').addEventListener('click', () => stepSubject(-1));
+  $('#fabSubNext').addEventListener('click', () => stepSubject(1));
+  $('#fabFirst').addEventListener('click', () => go(1));
+  $$('#fabMenu [data-fit]').forEach(b => b.addEventListener('click', () => setFit(b.dataset.fit)));
+  $('#fabSpread').addEventListener('click', () => toggleSpread());
+  $('#fabThumbs').addEventListener('click', () => $('#btnThumbs').click());
+  $('#fabTheme').addEventListener('click', toggleTheme);
   el.stage.addEventListener('scroll', onStageScroll, { passive: true });
 
   $('#thumbPrev').addEventListener('click', () => el.thumbs.scrollBy({ left: -420, behavior: 'smooth' }));
@@ -964,6 +1076,7 @@ function onKey(e) {
     case 'd': case 'D': toggleTheme(); break;
     case 'f': case 'F': toggleFull(); break;
     case 'k': case 'K': toggleSide(); break;
+    case 'Escape': if ($('#fab').classList.contains('open')) fabToggle(false); break;
     default: return;
   }
   e.preventDefault();
@@ -990,6 +1103,7 @@ function init() {
   window.addEventListener('keydown', onKey);
   paint();
   syncUI(true);
+  syncFabFit();
   STORE.set('max.' + state.key, Math.max(readMax(state.key), state.page));
 }
 
