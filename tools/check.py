@@ -20,7 +20,7 @@ for name, out in (("index.html", None), ("galeri.html", "app.js"), ("oku.html", 
         links = ("oku.html" in html and "galeri.html" in html
                  and "oku.html?ders=turkce" in html and "oku.html?ders=vatandaslik" in html
                  and "turkce-ozet.html" in html
-                 and "assets/turkce/clean/page-001.jpg" in html)
+                 and "assets/cover.jpg" in html)
         print(name, "| chars:", len(html), "| statik: True | ders-linkleri:", links)
         assert links, f"{name} icinde ders baglantilari eksik"
         continue
