@@ -21,8 +21,12 @@ otomatik sayfa takibi, kaldığın yerden devam, ayraçlar, Beyaz/Sepya/Gece kâ
 genişlik ayarı, Odak modu ve gri zeminleri bastıran **temizlenmiş sayfalar**.
 Tercih orijinal tarama ile tek tuşla değiştirilebilir (`C`).
 
-`index.html` (Galeri görünümü): tek/çift sayfa, zum, küçük resim şeridi,
+`galeri.html` (Galeri görünümü): tek/çift sayfa, zum, küçük resim şeridi,
 sayfa ayraçları (kütüphane panelinde "Ayraçlarım" listesi).
+
+İki görünümde de sol altta **yardımcı butonu (`?`)** bulunur: tek dokunuşla açılan
+menüden sayfa çevirme, büyüt/küçült, sayfa görünümü, tema ve ana sayfa/galeri
+bağlantılarına tek elle ulaşılır.
 
 Her iki dosyayı da tarayıcıda açmak yeterli. Sunucu, kurulum veya internet
 gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yüklenir.
@@ -41,6 +45,38 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
 - Panel ve üst bar durumu `localStorage`'da saklanır; sayfayı yenilediğinizde
   kaldığınız düzen ve **kaldığınız sayfa** ile devam edersiniz.
 
+### Odak modu
+
+- **Yalnızca sol kenardaki ok şeffaflaşır** — panel tamamen gizlenir, ok
+  bulunduğu yerden ayrılıp üst alana kaymaz.
+- **"Odak Kapat" düğmesi sol üst köşededir** (`✕ Odak Kapat`); `O` tuşu da
+  modu açıp kapatır.
+- Odakta üst bar gereksiz bölmeleri gizler, okuma alanı ekranın tamamını
+  kullanır.
+
+### Telefon ve gece modu
+
+- Telefonda üst bar **sadeleştirilir**: ders şeridi, sayfa görünümü, genişlik
+  ayarı, "Temiz" düğmesi ve ana sayfa bağlantısı gizlenir; yalnızca gerekli
+  düğmeler kalır (bu işlevler yardımcı menüsünde ve sol panelde durur).
+  Bar yüksekliği ve boşluklar daraltılarak okuma alanı büyütülür.
+- **Gece modunda üst bar opaktır** (saydamlık kaldırıldı): bar arkasından sayfa
+  geçmediği için bar içindeki yazılar ve ikonlar net okunur.
+
+### Ders ve deneme menüsü (akordeon)
+
+- Sol paneldeki **Dersler** ve **Denemeler** başlıkları açılıp kapanır
+  akordeondur (`▾` oku döner, seçim `localStorage`'da saklanır).
+- Her başlığın yanında o gruptaki ders/deneme sayısı görünür; bir grubu
+  kapatınca yalnızca o grubun listesi gizlenir.
+
+### Konu özeti renkleri
+
+`turkce-ozet.html` ve Kitap Modu çekmecesindeki özet blokları ezber kolaylığı
+göz önünde tutularak renklendirilir: konu başlıkları vurgu renginde, maddeler
+arası boşluk artırılmış, "Dipnot / Pratik Yol / Kritik Kural / Önemli Tuzak"
+notları kendi renkli kutusunda gösterilir.
+
 ### Kitap Modu kısayolları
 
 | Tuş | İşlev |
@@ -52,14 +88,18 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
 | `D` | Aydınlık / karanlık tema |
 | `Ö` | Türkçe konu özeti çekmecesi |
 | `K` | İçindekiler paneli |
-| `Esc` | Açık çekmeceyi kapat |
+| `Esc` | Açık çekmeceyi / yardımcı menüsünü kapat |
 | `1`–`7` | Bölüm seç: 1–4 Dersler, 5–7 Denemeler |
+| `+` / `-` | Sayfa genişliği artır / azalt |
+| `PgDn` / `Space` / `PgUp` | Sayfa sayfa ileri / geri kaydır |
+| `Home` | En başa dön |
+| Sol alttaki `?` | Yardımcı menüsünü aç/kapat |
 
 ### Galeri kısayolları (`galeri.html`)
 
 | Tuş | İşlev |
 |---|---|
-| `←` / `→` | Sayfa çevir |
+| `←` / `→` / `↑` / `↓` | Sayfa çevir / sayfa içinde kaydır |
 | `+` / `-` / `0` | Yakınlaştır / uzaklaştır / sıfırla |
 | `T` | Sayfa şeridi |
 | `S` | Çift sayfa görünümü |
@@ -67,6 +107,9 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
 | `D` | Aydınlık / karanlık tema |
 | `F` | Tam ekran |
 | `K` | Kütüphane paneli |
+| `Home` / `End` | İlk / son sayfa |
+| `Esc` | Yardımcı menüsünü kapat |
+| Sol alttaki `?` | Yardımcı menüsünü aç/kapat |
 
 Okunan sayfa, **ayraçlar**, ders, zum/çift sayfa, tema ve panel durumu tarayıcıda
 (`localStorage`) saklanır; kaldığınız yerden devam edersiniz. Ayraçlar ders
@@ -111,7 +154,7 @@ python tools/render.py turkce   # yalnızca seçilen dersi yeniden üretir
 python tools/order.py           # ders sırasını dört dosyaya uygular (aşağıya bakın)
 python tools/ozet.py            # Türkçe konu özetini sayfaya + oku.html'e (JSON) uygular
 python tools/check.py           # script söz dizimini ayıklar + tüm görsellerin varlığını doğrular
-node tools/ui-test.js           # üst bar / yan panel / ok / kaldığın yer / ayraç davranışını headless tarayıcıda doğrular (96 kontrol)
+node tools/ui-test.js           # üst bar / yan panel / ok / odak / akordeon / yardımcı / özet renkleri / kaldığın yer / ayraç davranışını headless tarayıcıda doğrular (156 kontrol)
 python tools/enhance.py --all             # temizlenmiş ders sayfalarını üretir (assets/*/clean/)
 python tools/enhance.py tarih 1           # tek sayfa önizleme -> tools/preview/ (depoya girmez)
 ```

@@ -46,7 +46,17 @@ const NO_ANIM = '<style>*,*::before,*::after{transition:none!important;animation
 function build(file, pre, drive) {
   let t = fs.readFileSync(path.join(ROOT, file), 'utf8');
   t = t.replace('</head>', '<script>try{' + pre + '}catch(e){}</script>' + NO_ANIM + '\n</head>');
-  t = t.replace(/<\/body>\s*<\/html>\s*$/i, '<script>' + drive + '</script>\n</body>\n</html>');
+  /* surucu betigi cokerse sessizce log'suz kalmasin: hatayi test kaydina yaz
+     (load icinde olusan hatalar icin ayrica 'error' dinleyicisi eklenir) */
+  t = t.replace(/<\/body>\s*<\/html>\s*$/i,
+    '<script>window.addEventListener("error",function(ev){' +
+    'document.documentElement.setAttribute("data-testlog","TEST HATASI: " + (ev.message || "bilinmeyen") ' +
+    '+ " | " + (ev.filename || "") + ":" + (ev.lineno || 0));});</script>\n' +
+    '<script>try{' + drive + '}catch(err){' +
+    'document.documentElement.setAttribute("data-testlog","TEST HATASI: " + ' +
+    '(err && err.message ? err.message : String(err)) + " | " + ' +
+    '((err && err.stack ? err.stack.split("\\n")[1] : "") || "").trim());}' +
+    '</script>\n</body>\n</html>');
   const tmp = path.join(ROOT, '_t_' + path.basename(file, '.html') + '_uitest.html');
   fs.writeFileSync(tmp, t, 'utf8');
   return tmp;
@@ -141,7 +151,53 @@ window.addEventListener('load', function(){
   /* geri tepe */
   step(50);
   ck('tepeye donunce ust bar gelir', '0', has('hide-top'));
+
+  /* 4. odak modu: ok yerinde + saydam, kapatma sol ustte */
+  document.getElementById('btnFocus').click();
+  ck('odak acilir', '1', has('focus'));
+  ck('odakta ok gizlenmez', 'true', String(!!document.getElementById('edgeLeft') && getComputedStyle(document.getElementById('edgeLeft')).display !== 'none'));
+  ck('odakta ok saydam', 'true', String(parseFloat(getComputedStyle(document.getElementById('edgeLeft')).opacity) < 0.9));
+  ck('odak kapatma sol ustte gorunur', '1', String((function(){ var b = document.getElementById('focusExit'); if (!b) return false; var r = b.getBoundingClientRect(); return getComputedStyle(b).display !== 'none' && r.left < 60 && r.top < 60; })() ? '1' : '0'));
+  ck('odak sakli', '1', localStorage.getItem('oku.odak'));
+  document.getElementById('focusExit').click();
+  ck('odak kapatma dugmesi kapatir', '0', has('focus'));
+
+  /* 5. akordeon: Dersler / Denemeler acilip kapanir */
+  var grpD = document.querySelector(".grpbtn[data-grp='ders']");
+  ck('ders grubu baslangicta acik', '0', has('grp-ders-kapali'));
+  grpD.click();
+  ck('ders grubu kapanir', '1', has('grp-ders-kapali'));
+  ck('grup tercihi sakli', '0', localStorage.getItem('oku.grp.ders'));
+  grpD.click();
+  ck('ders grubu acilir', '0', has('grp-ders-kapali'));
+
+  /* 6. yardimci balon: sol altta, acilip kapanir, zum yapar */
+  var fab = document.getElementById('fab');
+  var fr = fab.getBoundingClientRect();
+  ck('yardimci sol altta', '1', String(fr.left < 60 && (window.innerHeight - fr.bottom) < 60 ? '1' : '0'));
+  document.getElementById('fabMain').click();
+  ck('yardimci acilir', '1', fab.classList.contains('open') ? '1' : '0');
+  var w0 = document.documentElement.style.getPropertyValue('--colw');
+  document.getElementById('fabZoomIn').click();
+  ck('yardimci zum yapar', '1', String(document.documentElement.style.getPropertyValue('--colw') !== w0 ? '1' : '0'));
+  document.getElementById('fabMain').click();
+  ck('yardimci kapanir', '0', fab.classList.contains('open') ? '1' : '0');
+
+  /* 7. konu ozeti: cekmece acilir, basliklar renkli */
+  document.getElementById('btnOzet').click();
+  ck('ozet cekmecesi acilir', '1', String(!document.getElementById('ozDrawer').hidden ? '1' : '0'));
+  ck('ozet basligi renkli', '1', String(document.querySelector('#ozBody h5.oz-t1') ? '1' : '0'));
+  document.getElementById('ozClose').click();
+  ck('ozet cekmecesi kapanir', '0', document.getElementById('ozDrawer').classList.contains('show') ? '1' : '0');
+
+  /* 8. duyarli ust bar + gece opakligi */
+  var dar = window.innerWidth < 761;
+  ck('ust bar duyarli', dar ? '1' : '0', String(getComputedStyle(document.getElementById('subjectSeg')).display === 'none' ? '1' : '0'));
+  var css = '';
+  try { for (var sh of document.styleSheets) { try { for (var rl of sh.cssRules) { css += rl.cssText + ' '; } } catch (e) {} } } catch (e) {}
+  ck('gece opak bar kurali', '1', String(css.indexOf('html[data-theme="dark"] header.bar') > -1 ? '1' : '0'));
   bitir();
+
 });
 `;
 
@@ -203,7 +259,37 @@ window.addEventListener('load', function(){
   ck('kapali ok ekran kenarinda', '10px', arrow.style.left);
   ck('ok kapali durumuna gecer', '0', arrow.classList.contains('open') ? '1' : '0');
 
-  /* 6. ayraclar */
+  /* 4. akordeon: Dersler / Denemeler acilip kapanir */
+  var grpD = document.querySelector(".grpbtn[data-grp='ders']");
+  ck('ders grubu baslangicta acik', '0', has('grp-ders-kapali'));
+  grpD.click();
+  ck('ders grubu kapanir', '1', has('grp-ders-kapali'));
+  ck('grup tercihi sakli', '0', localStorage.getItem('dn.grp.ders'));
+  grpD.click();
+  ck('ders grubu acilir', '0', has('grp-ders-kapali'));
+
+  /* 5. yardimci balon: sol altta, zum + tema yapar */
+  var fab = document.getElementById('fab');
+  var fr = fab.getBoundingClientRect();
+  ck('yardimci sol altta', '1', String(fr.left < 60 && (window.innerHeight - fr.bottom) < 60 ? '1' : '0'));
+  document.getElementById('fabMain').click();
+  ck('yardimci acilir', '1', fab.classList.contains('open') ? '1' : '0');
+  document.getElementById('fabZoomIn').click();
+  ck('yardimci zum yapar', '1', String(document.getElementById('zoomVal').textContent !== '100%' ? '1' : '0'));
+  document.getElementById('fabTheme').click();
+  ck('yardimci tema degisir', 'light', document.documentElement.dataset.theme);
+  document.getElementById('fabMain').click();
+  ck('yardimci kapanir', '0', fab.classList.contains('open') ? '1' : '0');
+
+  /* 6. duyarli ust bar + gece opakligi */
+  var dar = window.innerWidth < 901;
+  ck('ust bar duyarli', dar ? '1' : '0', String(getComputedStyle(document.getElementById('subjectSeg')).display === 'none' ? '1' : '0'));
+  var css = '';
+  try { for (var sh of document.styleSheets) { try { for (var rl of sh.cssRules) { css += rl.cssText + ' '; } } catch (e) {} } } catch (e) {}
+  ck('gece opak bar kurali', '1', String(css.indexOf('html[data-theme="dark"] header.bar') > -1 ? '1' : '0'));
+
+  /* 7. ayraclar */
+
   ck('baslangicta ayrac yok', '0', String(document.querySelectorAll('#bmList .bm').length));
   document.getElementById('btnBm').click();
   ck('ayrac eklendi (satir)', '1', String(document.querySelectorAll('#bmList .bm').length));
