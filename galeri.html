@@ -59,10 +59,22 @@ header.bar{display:flex;align-items:center;gap:10px;padding:10px clamp(10px,1.6v
   border-bottom:1px solid var(--stroke);box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:5;
   overflow:hidden;max-height:120px;transition:max-height .38s cubic-bezier(.22,.75,.25,1),padding .3s,opacity .3s}
 body.hide-top header.bar{max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-bottom-width:0}
-.edge-tab{position:fixed;top:50%;transform:translateY(-50%);z-index:60;width:34px;height:88px;display:grid;place-items:center;font-size:18px;color:var(--text);background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--stroke);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:pointer;box-shadow:var(--shadow);transition:left .3s var(--ease)}
+/* Kenar oku: sol panelin sag kenarina yapisik bir tutamak gibi durur.
+   Konumu (left/top) JS ile her karede panelden olculur; panel kayarken ok da onunla hareket eder. */
+.edge-tab{position:fixed;left:10px;top:50%;transform:translateY(-50%);z-index:60;width:34px;height:88px;
+  display:grid;place-items:center;font-size:18px;color:var(--text);
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--stroke);border-left:0;
+  border-radius:0 14px 14px 0;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:pointer;
+  box-shadow:var(--shadow);
+  transition:left .34s cubic-bezier(.22,.75,.25,1),top .34s cubic-bezier(.22,.75,.25,1),
+    opacity .25s var(--ease),transform .25s var(--ease),color .25s var(--ease)}
+/* .glued: panel açıkken ok her karede JS ile panelin kenarına yazılır; geçiş kapalı olmalı
+   ki ok panelden ayrı hareket etmesin. Kapalıyken geçiş açık: ok yumuşakça kenara kayar. */
+.edge-tab.glued{transition:opacity .25s var(--ease),transform .25s var(--ease),color .25s var(--ease)}
+.edge-tab .ic{display:block;transition:transform .35s cubic-bezier(.22,.75,.25,1)}
+.edge-tab.open .ic{transform:rotate(180deg)}
+.edge-tab:hover{color:var(--accent);transform:translateY(-50%) translateX(3px)}
 .edge-tab:active{transform:translateY(-50%) scale(.94)}
-/* ok, panel acikken panelin sag kenarina yaslanir (konum JS ile hesaplanir) */
-#edgeLeft{left:10px;border-radius:0 14px 14px 0;border-left:0}
 @media(max-width:900px){.edge-tab{width:30px;height:76px;font-size:16px}}
 .brand{display:flex;align-items:center;gap:12px;min-width:0}
 .brand .mark{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;
@@ -297,7 +309,8 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
     <button class="chip icon" id="btnFull" title="Tam ekran (F)">&#9974;</button>
   </header>
   <main id="view">
-    <button class="edge-tab" id="edgeLeft" title="Kütüphaneyi aç/kapat (K)">&#10095;</button>
+    <button class="edge-tab" id="edgeLeft" aria-controls="side" aria-expanded="true"
+            title="Kütüphaneyi aç/kapat (K)"><span class="ic">&#10095;</span></button>
     <aside class="side" id="side">
       <div class="side-head">
         <span>Kütüphane</span>
@@ -311,7 +324,7 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
       <div class="bm-list" id="bmList"></div>
       <div class="side-foot">
         <div class="hint">
-          <kbd>&uarr;</kbd> kaydır: üst bar gizlenir/gelir, yukarı kaydır paneli açar<br>
+          <kbd>&uarr;</kbd> kaydır: üst bar <b>ve</b> panel kapanır &middot; <kbd>K</kbd> ya da kenardaki ok ile panel<br>
           <kbd>&larr;</kbd> <kbd>&rarr;</kbd> sayfa çevir<br>
           <kbd>+</kbd> <kbd>&minus;</kbd> yakınlaştır &middot; <kbd>0</kbd> sıfırla<br>
           <kbd>T</kbd> şerit &middot; <kbd>S</kbd> çift sayfa &middot; <kbd>B</kbd> ayraç<br>
@@ -625,40 +638,86 @@ function syncUI(center) {
   syncBm();
 }
 
-/* kenar oku + ust bar saklama */
+/* ---------- kenar oku: panel ile tek parça ---------- */
+const NARROW = () => window.matchMedia('(max-width: 900px)').matches;
+let lastNarrow = NARROW(), edgeRAF = 0, panelOpenedAt = 0, lastStageY = 0, scrollCoolUntil = 0;
+const panelOpen = () => !document.body.classList.contains('no-side');
+/* okun hedefi panelden ölçülür: açıkken panelin sağ kenarı + dikey ortası,
+   kapalıyken ekran kenarı (10px) — masaüstünde kutu sadece 290px kaydığı için
+   panelle birlikte gitseydi ok sayfanın ortasında kalırdı. */
+function edgePos() {
+  const panel = document.getElementById('side');
+  if (!panel) return null;
+  const r = panel.getBoundingClientRect();
+  const top = Math.round(r.top + r.height / 2);
+  if (!panelOpen()) return { left: 10, top };
+  return { left: Math.max(10, Math.round(r.right - 9)), top };
+}
+function paintEdge() {
+  const b = document.getElementById('edgeLeft');
+  const p = edgePos();
+  if (!b || !p) return;
+  if (b.style.left !== p.left + 'px') b.style.left = p.left + 'px';
+  if (b.style.top !== p.top + 'px') b.style.top = p.top + 'px';
+}
+/* panel kayarken oku her karede panelin kenarına yapıştır; durunca kendi kendine durur */
+function followEdge(ms) {
+  cancelAnimationFrame(edgeRAF);
+  paintEdge(); /* ilk kareyi beklemeden hemen hizala */
+  const start = performance.now(), limit = ms || 700;
+  let last = '', stable = 0;
+  const tick = () => {
+    const p = edgePos();
+    if (!p) return;
+    const key = p.left + ':' + p.top;
+    if (key === last) stable++; else { stable = 0; last = key; }
+    paintEdge();
+    const dt = performance.now() - start;
+    if (dt < limit && !(dt > 200 && stable > 6)) edgeRAF = requestAnimationFrame(tick);
+  };
+  edgeRAF = requestAnimationFrame(tick);
+}
 function syncEdge() {
   const b = document.getElementById('edgeLeft');
   if (!b) return;
-  const closed = document.body.classList.contains('no-side');
-  b.innerHTML = closed ? '&#10095;' : '&#10094;';
-  b.title = (closed ? 'Kütüphaneyi aç' : 'Kütüphaneyi kapat') + ' (K)';
-  const side = document.getElementById('side');
-  if (closed || !side) { b.style.left = '10px'; return; }
-  /* kutunun sag kenarina yasla: masaustu ve telefonda dogru konum */
-  b.style.left = Math.max(10, Math.round(side.getBoundingClientRect().right - 8)) + 'px';
+  const open = panelOpen();
+  b.classList.toggle('open', open);
+  /* açıkken left/top her karede paneli takip eder; kapanırken CSS geçişiyle kenara kayar */
+  b.classList.toggle('glued', open);
+  b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  b.title = (open ? 'Kütüphaneyi kapat' : 'Kütüphaneyi aç') + ' (K)';
+  if (open) followEdge(700); else paintEdge();
+}
+function setPanel(open, save) {
+  if (save) STORE.set('side', open ? '1' : '0');
+  if (open === panelOpen()) { followEdge(400); return; }
+  document.body.classList.toggle('no-side', !open);
+  if (open) panelOpenedAt = Date.now(); /* hemen ardından gelen kaydırma paneli kapatmasın */
+  syncEdge();
 }
 function toggleSide(force) {
-  const open = force !== undefined ? force : document.body.classList.contains('no-side');
-  document.body.classList.toggle('no-side', !open);
-  STORE.set('side', open ? '1' : '0');
-  syncEdge();
-  /* panel kayma animasyonu bitince oku panelin yeni kenarina yasala */
-  clearTimeout(toggleSide._t);
-  toggleSide._t = setTimeout(syncEdge, 460);
+  setPanel(force === undefined ? !panelOpen() : !!force, true);
 }
-/* asagi kaydirinca ust bar gizlenir; yukari kaydirinca bar ve panel geri gelir */
-let lastStageY = 0, upAcc = 0;
+/* üst barı göster/gizle; panel de kayacağı için oku yeniden hizala */
+function setTopBar(show) {
+  if (document.body.classList.contains('hide-top') === !show) return;
+  document.body.classList.toggle('hide-top', !show);
+  followEdge(500);
+}
+/* aşağı kaydırınca ÜST BAR + SOL PANEL birlikte kapanır.
+   Yukarı kaydırınca SADECE üst bar geri gelir; panel yalnızca elle (ok / K) açılır. */
 function onStageScroll() {
   const y = el.stage ? el.stage.scrollTop : 0;
+  if (Date.now() < scrollCoolUntil) { lastStageY = y; return; }
   const dy = y - lastStageY;
   lastStageY = y;
-  if (y < 60) { document.body.classList.remove('hide-top'); upAcc = 0; return; }
-  if (dy > 8) { document.body.classList.add('hide-top'); upAcc = 0; }
-  else if (dy < -8) {
-    document.body.classList.remove('hide-top');
-    upAcc -= dy;
-    /* belirgin sekilde yukari kaydirilinca yan panel de kendiliginden acilir */
-    if (upAcc > 80 && document.body.classList.contains('no-side')) { upAcc = 0; toggleSide(true); }
+  if (panelOpen()) followEdge(320); /* panel kayarken ok yapışık kalsın */
+  if (y < 60) { setTopBar(true); return; }
+  if (dy > 8) {
+    setTopBar(false);
+    if (panelOpen() && Date.now() - panelOpenedAt > 1200) setPanel(false, true);
+  } else if (dy < -8) {
+    setTopBar(true);
   }
 }
 
@@ -673,7 +732,8 @@ function go(n, opts) {
   STORE.set('page.' + s.key, target);
   if (target > readMax(s.key)) STORE.set('max.' + s.key, target);
   if (changed || (opts && opts.force)) paint();
-  if (changed) el.stage.scrollTop = 0;
+  /* programatik sifirlama ust bari gizlemesin / paneli kapatmasin */
+  if (changed) { scrollCoolUntil = Date.now() + 900; el.stage.scrollTop = 0; }
   syncUI(true);
 }
 
@@ -689,14 +749,14 @@ function selectSubject(key) {
   let n = readPage(key);
   if (state.spread && n > 1 && n % 2 === 0) n -= 1;
   state.page = Math.max(1, Math.min(subject().pages, n));
-  document.body.classList.remove('hide-top');
+  setTopBar(true);
   paint();
   syncUI(true);
+  scrollCoolUntil = Date.now() + 600;
   el.stage.scrollTop = 0;
   lastStageY = 0;
-  upAcc = 0;
-  /* telefonda panel icerigi kapatmasin; kullanicinin acik/kapali tercihi silinmez */
-  if (window.matchMedia('(max-width: 900px)').matches) { document.body.classList.add('no-side'); syncEdge(); }
+  /* telefonda panel içeriği kapatmasın; kullanıcının açık/kapalı tercihi silinmez */
+  if (NARROW()) setPanel(false, false);
 }
 
 function setFit(mode) {
@@ -782,7 +842,7 @@ function bind() {
   $$('.chip', el.fitSeg).forEach(c => c.addEventListener('click', () => setFit(c.dataset.fit)));
   $('#zoomIn').addEventListener('click', () => zoomStep(1.18));
   $('#zoomOut').addEventListener('click', () => zoomStep(1 / 1.18));
-  $('#zoomReset').addEventListener('click', () => { setFit(state.mode); el.stage.scrollTo(0, 0); });
+  $('#zoomReset').addEventListener('click', () => { setFit(state.mode); scrollCoolUntil = Date.now() + 600; el.stage.scrollTo(0, 0); });
   $('#btnOpen').addEventListener('click', () => window.open(src(state.key, state.page), '_blank'));
   $('#btnTheme').addEventListener('click', toggleTheme);
   $('#btnFull').addEventListener('click', toggleFull);
@@ -808,7 +868,19 @@ function bind() {
   });
 
   let rt;
-  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); syncEdge(); }, 120); });
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => {
+      const narrow = NARROW();
+      if (narrow !== lastNarrow) {
+        lastNarrow = narrow;
+        /* telefon/tablet geçişinde panel çekmece gibi davranır: kapat */
+        setPanel(!narrow && STORE.get('side', '1') === '1', false);
+      }
+      layout();
+      followEdge(400);
+    }, 120);
+  });
 
   /* tekerlek: ctrl ile yakinlastir, normalde tam sayfa gecisi yap */
   let wheelAcc = 0, wheelT = null;
@@ -885,7 +957,7 @@ function onKey(e) {
     case 'End': go(subject().pages); break;
     case '+': case '=': zoomStep(1.18); break;
     case '-': case '_': zoomStep(1 / 1.18); break;
-    case '0': setFit(state.mode); el.stage.scrollTo(0, 0); toast('Ölçek %100'); break;
+    case '0': setFit(state.mode); scrollCoolUntil = Date.now() + 600; el.stage.scrollTo(0, 0); toast('Ölçek %100'); break;
     case 't': case 'T': $('#btnThumbs').click(); break;
     case 's': case 'S': toggleSpread(); break;
     case 'b': case 'B': toggleMark(state.page); break;
@@ -904,8 +976,8 @@ function init() {
   setTheme(STORE.get('theme', 'dark'));
   $('#btnSpread').classList.toggle('on', state.spread);
   document.body.classList.toggle('no-thumbs', STORE.get('thumbs', '1') === '0');
-  const narrow = window.matchMedia('(max-width: 900px)').matches;
-  if (narrow || STORE.get('side', '1') === '0') document.body.classList.add('no-side');
+  /* panel açık/kapalı tercihi: telefonda varsayılan kapalı */
+  if (NARROW() || STORE.get('side', '1') === '0') document.body.classList.add('no-side');
 
   buildThumbs();
   renderBm();

@@ -37,10 +37,23 @@ html[data-theme="light"] .aurora b{opacity:.34;mix-blend-mode:normal;filter:blur
 .app{position:relative;z-index:2;display:flex;flex-direction:column;min-height:100dvh}
 header.bar{position:sticky;top:0;z-index:50;transition:transform .38s cubic-bezier(.22,.75,.25,1),opacity .3s}
 body.hide-top header.bar{transform:translateY(-110%);opacity:0}
-.edge-tab{position:fixed;top:50%;transform:translateY(-50%);z-index:60;width:34px;height:88px;display:grid;place-items:center;font-size:18px;color:var(--text);background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--stroke);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:pointer;box-shadow:var(--shadow);transition:left .3s var(--ease),right .3s var(--ease)}
+/* Kenar oku: sol panelin sag kenarina yapisik bir tutamak gibi durur.
+   Konumu (left/top) JS ile her karede panelden olculur; boylece panel kayarken
+   ok da onunla tek parca halinde hareket eder. */
+.edge-tab{position:fixed;left:10px;top:50%;transform:translateY(-50%);z-index:60;width:34px;height:88px;
+  display:grid;place-items:center;font-size:18px;color:var(--text);
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--stroke);border-left:0;
+  border-radius:0 14px 14px 0;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:pointer;
+  box-shadow:var(--shadow);
+  transition:left .34s cubic-bezier(.22,.75,.25,1),top .34s cubic-bezier(.22,.75,.25,1),
+    opacity .25s var(--ease),transform .25s var(--ease),color .25s var(--ease)}
+/* .glued: panel açıkken ok her karede JS ile panelin kenarına yazılır; geçiş kapalı olmalı
+   ki ok panelden ayrı hareket etmesin. Kapalıyken geçiş açık: ok yumuşakça kenara kayar. */
+.edge-tab.glued{transition:opacity .25s var(--ease),transform .25s var(--ease),color .25s var(--ease)}
+.edge-tab .ic{display:block;transition:transform .35s cubic-bezier(.22,.75,.25,1)}
+.edge-tab.open .ic{transform:rotate(180deg)}
+.edge-tab:hover{color:var(--accent);transform:translateY(-50%) translateX(3px)}
 .edge-tab:active{transform:translateY(-50%) scale(.94)}
-/* ok, panel acikken panelin sag kenarina yaslanir (konum JS ile hesaplanir) */
-#edgeLeft{left:10px;border-radius:0 14px 14px 0;border-left:0}
 @media(max-width:920px){.edge-tab{width:30px;height:76px;font-size:16px}}
 .page.bookmarked{outline:2px solid var(--accent);outline-offset:-2px}
 header.bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
@@ -254,7 +267,8 @@ body.no-scroll{overflow:hidden}
     <button class="chip" id="btnTheme" title="Tema (D)">&#9789;</button>
   </header>
   <div class="wrap">
-    <button class="edge-tab" id="edgeLeft" title="İçindekiler panelini aç/kapat (K)">&#10095;</button>
+    <button class="edge-tab" id="edgeLeft" aria-controls="lib" aria-expanded="true"
+            title="İçindekiler panelini aç/kapat (K)"><span class="ic">&#10095;</span></button>
     <aside class="lib" id="lib">
       <div class="card">
         <h3>İçindekiler</h3>
@@ -267,8 +281,8 @@ body.no-scroll{overflow:hidden}
       <div class="card">
         <h3>Kısayollar</h3>
         <div class="hint">
-          <kbd>&uarr;</kbd><kbd>&darr;</kbd> kaydır: üst bar gizlenir/gelir, yukarı kaydır paneli açar &middot; <kbd>B</kbd> ayraç<br>
-          <kbd>Ö</kbd> konu özeti &middot; <kbd>C</kbd> temiz sayfa<br>
+          <kbd>&uarr;</kbd><kbd>&darr;</kbd> kaydır: üst bar <b>ve</b> panel kapanır &middot; <kbd>K</kbd> ya da kenardaki ok ile panel<br>
+          <kbd>B</kbd> ayraç &middot; <kbd>Ö</kbd> konu özeti &middot; <kbd>C</kbd> temiz sayfa<br>
           <kbd>O</kbd> odak &middot; <kbd>D</kbd> tema &middot; <kbd>K</kbd> panel<br>
           <kbd>1</kbd>…<kbd>7</kbd> bölüm &middot; <kbd>Esc</kbd> kapat
         </div>
@@ -1121,57 +1135,109 @@ function selectSubject(key, noscroll, push) {
   if (!noscroll && !first) window.scrollTo(0, 0);
   syncLibBar();
 }
-function syncLibBar() {
-  const narrow = window.matchMedia('(max-width: 920px)').matches;
-  const lib = STORE.get('panel.lib', narrow ? '0' : '1');
-  document.body.classList.toggle('no-lib', lib !== '1');
+const NARROW = () => window.matchMedia('(max-width: 920px)').matches;
+let lastNarrow = NARROW();
+const panelOpen = () => !document.body.classList.contains('no-lib');
+function setPanel(open, save) {
+  if (save) STORE.set('panel.lib', open ? '1' : '0');
+  if (open === panelOpen()) { followEdge(400); return; }
+  document.body.classList.toggle('no-lib', !open);
+  if (open) panelOpenedAt = Date.now(); /* hemen ardından gelen kaydırma paneli kapatmasın */
   syncEdge();
 }
 function toggleLib(force) {
-  const open = force !== undefined ? force : document.body.classList.contains('no-lib');
-  document.body.classList.toggle('no-lib', !open);
-  STORE.set('panel.lib', open ? '1' : '0');
-  syncEdge();
-  /* panel kayma animasyonu bitince oku panelin yeni kenarına yasala */
-  clearTimeout(toggleLib._t);
-  toggleLib._t = setTimeout(syncEdge, 460);
+  setPanel(force === undefined ? !panelOpen() : !!force, true);
+}
+function syncLibBar() {
+  setPanel(!NARROW() && STORE.get('panel.lib', '1') === '1', false);
+}
+
+/* ---------- kenar oku: panel ile tek parça ---------- */
+let edgeRAF = 0, panelOpenedAt = 0, lastY = 0, scrollCoolUntil = 0;
+/* okun hedefi panelden ölçülür: açıkken panelin sağ kenarı + dikey ortası,
+   kapalıyken ekran kenarı (10px) — masaüstünde kutu sadece 290px kaydığı için
+   panelle birlikte gitseydi ok sayfanın ortasında kalırdı. */
+function edgePos() {
+  const panel = document.getElementById('lib');
+  if (!panel) return null;
+  const r = panel.getBoundingClientRect();
+  const top = Math.round(r.top + r.height / 2);
+  if (!panelOpen()) return { left: 10, top };
+  return { left: Math.max(10, Math.round(r.right - 9)), top };
+}
+function paintEdge() {
+  const b = document.getElementById('edgeLeft');
+  const p = edgePos();
+  if (!b || !p) return;
+  if (b.style.left !== p.left + 'px') b.style.left = p.left + 'px';
+  if (b.style.top !== p.top + 'px') b.style.top = p.top + 'px';
+}
+/* panel kayarken oku her karede panelin kenarına yapıştır; durunca (~200ms) kendi kendine durur */
+function followEdge(ms) {
+  cancelAnimationFrame(edgeRAF);
+  paintEdge(); /* ilk kareyi beklemeden hemen hizala */
+  const start = performance.now(), limit = ms || 700;
+  let last = '', stable = 0;
+  const tick = () => {
+    const p = edgePos();
+    if (!p) return;
+    const key = p.left + ':' + p.top;
+    if (key === last) stable++; else { stable = 0; last = key; }
+    paintEdge();
+    const dt = performance.now() - start;
+    if (dt < limit && !(dt > 200 && stable > 6)) edgeRAF = requestAnimationFrame(tick);
+  };
+  edgeRAF = requestAnimationFrame(tick);
 }
 function syncEdge() {
   const b = document.getElementById('edgeLeft');
   if (!b) return;
-  const closed = document.body.classList.contains('no-lib');
-  b.innerHTML = closed ? '&#10095;' : '&#10094;';
-  b.title = (closed ? 'İçindekiler panelini aç' : 'İçindekiler panelini kapat') + ' (K)';
-  const lib = document.getElementById('lib');
-  if (closed || !lib) { b.style.left = '10px'; return; }
-  /* panelin sağ kenarına yasla: masaüstünde ortalanmış yerleşimde de doğru konum */
-  b.style.left = Math.max(10, Math.round(lib.getBoundingClientRect().right - 8)) + 'px';
+  const open = panelOpen();
+  b.classList.toggle('open', open);
+  /* açıkken left/top her karede paneli takip eder; kapanırken CSS geçişiyle kenara kayar */
+  b.classList.toggle('glued', open);
+  b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  b.title = (open ? 'İçindekiler panelini kapat' : 'İçindekiler panelini aç') + ' (K)';
+  if (open) followEdge(700); else paintEdge();
 }
-let lastY = 0, upAcc = 0, edgeCoolUntil = 0;
+/* üst barı göster/gizle; panel de kayacağı için oku yeniden hizala */
+function setTopBar(show) {
+  if (document.body.classList.contains('hide-top') === !show) return;
+  document.body.classList.toggle('hide-top', !show);
+  followEdge(500);
+}
+/* aşağı kaydırınca ÜST BAR + SOL PANEL birlikte kapanır.
+   Yukarı kaydırınca SADECE üst bar geri gelir; panel yalnızca elle (ok / K) açılır. */
 function onScrollTop() {
   const y = window.scrollY || 0;
+  if (el.ozDrawer && !el.ozDrawer.hidden) { lastY = y; setTopBar(true); return; }
+  if (Date.now() < scrollCoolUntil) { lastY = y; return; } /* programatik kaydırma sayılmasın */
   const dy = y - lastY;
   lastY = y;
-  if (el.ozDrawer && !el.ozDrawer.hidden) { document.body.classList.remove('hide-top'); return; }
-  if (y < 140) { document.body.classList.remove('hide-top'); upAcc = 0; return; }
-  if (dy > 6) { document.body.classList.add('hide-top'); upAcc = 0; }
-  else if (dy < -6) {
-    document.body.classList.remove('hide-top');
-    if (Date.now() < edgeCoolUntil) upAcc = 0;
-    else {
-      upAcc -= dy;
-      /* belirgin şekilde yukarı kaydırılınca yan panel de kendiliğinden açılır */
-      if (upAcc > 80 && document.body.classList.contains('no-lib')) { upAcc = 0; toggleLib(true); }
-    }
+  if (panelOpen()) followEdge(320); /* yapışkan panel kayarken ok yapışık kalsın */
+  if (y < 140) { setTopBar(true); return; }
+  if (dy > 8) {
+    setTopBar(false);
+    if (panelOpen() && Date.now() - panelOpenedAt > 1200) setPanel(false, true);
+  } else if (dy < -8) {
+    setTopBar(true);
   }
 }
-window.addEventListener('resize', () => { syncLibBar(); });
+window.addEventListener('resize', () => {
+  const narrow = NARROW();
+  if (narrow !== lastNarrow) {
+    lastNarrow = narrow;
+    /* telefon/tablet geçişinde panel çekmece gibi davranır: kapat */
+    setPanel(!narrow && STORE.get('panel.lib', '1') === '1', false);
+  }
+  followEdge(400);
+});
 function goPage(n) {
   const p = $('.page[data-n="' + n + '"]', el.pages);
   if (p) {
-    document.body.classList.remove('hide-top');
-    upAcc = 0;
-    edgeCoolUntil = Date.now() + 900; /* programatik kaydırma paneli açmasın */
+    setTopBar(true);
+    /* programatik kaydırma üst barı gizlemesin / paneli kapatmasın */
+    scrollCoolUntil = Date.now() + 1200;
     p.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

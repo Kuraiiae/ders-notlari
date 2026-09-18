@@ -29,12 +29,15 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
 
 ### Kaydırma, üst bar ve yan bölme (her iki görünüm)
 
-- **Aşağı kaydırınca üst bar kaybolur**; okuma alanı büyür.
-- **Yukarı kaydırınca**, üst bar geri gelir ve yan bölme (İçindekiler /
-  Kütüphane) **kendiliğinden açılır**; böylece aradığınız derse hızlıca
-  atlarsınız.
-- Kenardaki **ok düğmesi** paneli elle açar/kapatır ve panel açıkken
-  **panelin kenarına yaslanır** (telefonda da masaüstünde de).
+- **Aşağı kaydırınca üst bar ve yan bölme birlikte kapanır**; okuma alanı
+  büyür, dikkat dağılmaz.
+- **Yukarı kaydırınca yalnızca üst bar geri gelir**; yan bölme (İçindekiler /
+  Kütüphane) **kendiliğinden açılmaz** — yalnızca elle açılır.
+- Kenardaki **ok düğmesi** paneli elle açar/kapatır ve **panel ile tek parça
+  hareket eder**: panel açıkken okun konumu her karede panelin sağ kenarından ve
+  dikey ortasından ölçülür, panel kayarken ok da onunla birlikte kayar
+  (telefonda da masaüstünde de). Ok üzerindeki `›` işareti panel açıkken `‹`
+  olacak şekilde döner, düğme `aria-expanded` ile durumu bildirir.
 - Panel ve üst bar durumu `localStorage`'da saklanır; sayfayı yenilediğinizde
   kaldığınız düzen ve **kaldığınız sayfa** ile devam edersiniz.
 
@@ -108,7 +111,7 @@ python tools/render.py turkce   # yalnızca seçilen dersi yeniden üretir
 python tools/order.py           # ders sırasını dört dosyaya uygular (aşağıya bakın)
 python tools/ozet.py            # Türkçe konu özetini sayfaya + oku.html'e (JSON) uygular
 python tools/check.py           # script söz dizimini ayıklar + tüm görsellerin varlığını doğrular
-node tools/ui-test.js           # üst bar / yan panel / ok / kaldığın yer / ayraç davranışını headless tarayıcıda doğrular (60 kontrol)
+node tools/ui-test.js           # üst bar / yan panel / ok / kaldığın yer / ayraç davranışını headless tarayıcıda doğrular (96 kontrol)
 python tools/enhance.py --all             # temizlenmiş ders sayfalarını üretir (assets/*/clean/)
 python tools/enhance.py tarih 1           # tek sayfa önizleme -> tools/preview/ (depoya girmez)
 ```

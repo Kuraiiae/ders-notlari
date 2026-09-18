@@ -2,9 +2,10 @@
 /* Davranis testi (bagimlilik yok): headless Chrome/Edge + --dump-dom.
  *
  * Dogrulananlar (oku.html = Kitap Modu, galeri.html = Galeri Modu):
- *   1. Asagi kaydirinca ust bar gizlenir, kucuk/tepe kaydirmada gizlenmez.
- *   2. Youtube'daki gibi: yukari kaydirinca yan panel (kutuphane) acilir.
- *   3. Kenardaki ok panelin kenarina yaslanir (kapaliyken ekran kenarinda).
+ *   1. Asagi kaydirinca ust bar VE yan panel birlikte kapanir; kucuk/tepe kaydirmada kapanmaz.
+ *   2. Yukari kaydirinca SADECE ust bar geri gelir; panel yalnizca elle (ok / K) acilir.
+ *   3. Kenardaki ok panel ile tek parca: acikken panelin sag kenarina ve dikey ortasina
+ *      yapisir, kapaliyken ekran kenarina (10px) doner; panel kayarken onu takip eder.
  *   4. Panel ve ust bar durumu localStorage'da saklanir.
  *   5. Okunan sayfa (kaldigi yer) yeniden acilista geri gelir.
  *   6. Ayraclar (B) konur/kaldirilir; sayfa seridinde isaretlenir ve saklanir.
@@ -75,9 +76,12 @@ var out = [];
 function ck(ad, beklenen, gercek){ out.push(ad + '|' + beklenen + '|' + gercek); }
 function has(c){ return document.body.classList.contains(c) ? '1' : '0'; }
 function okEdge(panelId){
-  var b = document.getElementById('edgeLeft');
   var p = document.getElementById(panelId);
-  return Math.max(10, Math.round(p.getBoundingClientRect().right - 8)) + 'px';
+  return Math.max(10, Math.round(p.getBoundingClientRect().right - 9)) + 'px';
+}
+function okMid(panelId){
+  var r = document.getElementById(panelId).getBoundingClientRect();
+  return Math.round(r.top + r.height / 2) + 'px';
 }
 function bitir(){ document.documentElement.setAttribute('data-testlog', out.join('~~')); }
 `;
@@ -99,7 +103,9 @@ window.addEventListener('load', function(){
   ck('devam dugmesi gorunur', '1', rb && !rb.hidden ? '1' : '0');
   ck('devam dugmesi sayfa 7', '1', rb && /sayfa\\s*7\\b/.test(rb.textContent) ? '1' : '0');
 
-  /* 1. ust bar */
+  /* 1. ust bar + panel: asagi kaydirinca IKISI de kapanir */
+  var arrow = document.getElementById('edgeLeft');
+  ck('baslangicta panel kapali', '1', has('no-lib'));
   step(0);
   ck('tepede ust bar acik', '0', has('hide-top'));
   step(40);
@@ -107,14 +113,30 @@ window.addEventListener('load', function(){
   step(600);
   ck('asagi kaydirma ust bari gizler', '1', has('hide-top'));
 
-  /* 2. yukari kaydirinca panel */
-  ck('asagi kaydirma paneli acmaz', '1', has('no-lib'));
+  /* 2. yukari kaydirinca SADECE ust bar gelir; panel elle acilir */
+  ck('asagi kaydirma paneli kapatir', '1', has('no-lib'));
   step(400);
-  ck('yukari kaydirma paneli acar', '0', has('no-lib'));
+  ck('yukari kaydirma ust bari geri getirir', '0', has('hide-top'));
+  ck('yukari kaydirma paneli ACMAZ', '1', has('no-lib'));
+
+  /* 3. ok panel ile tek parca */
+  arrow.click();
+  ck('ok paneli acar', '0', has('no-lib'));
+  ck('ok acik durumuna gecer', '1', arrow.classList.contains('open') ? '1' : '0');
+  ck('ok panel kenarina yapisik', okEdge('lib'), arrow.style.left);
+  ck('ok panelin dikey ortasinda', okMid('lib'), arrow.style.top);
   ck('panel durumu sakli', '1', localStorage.getItem('oku.panel.lib'));
 
-  /* 3. ok panel kenarina yaslanir */
-  ck('ok panel kenarina yasli', okEdge('lib'), document.getElementById('edgeLeft').style.left);
+  /* elle acilan panel hemen kapanmaz; sonra asagi kaydirma kapatir */
+  step(700);
+  ck('elle acilan panel hemen kapanmaz', '0', has('no-lib'));
+  var gercekNow = Date.now;
+  Date.now = function(){ return gercekNow() + 4000; };
+  step(900);
+  ck('sonra asagi kaydirma paneli kapatir', '1', has('no-lib'));
+  Date.now = gercekNow;
+  ck('kapali ok ekran kenarinda', '10px', arrow.style.left);
+  ck('ok kapali durumuna gecer', '0', arrow.classList.contains('open') ? '1' : '0');
 
   /* geri tepe */
   step(50);
@@ -146,7 +168,9 @@ window.addEventListener('load', function(){
   var img = document.querySelector('#paper img');
   ck('acilan sayfa dosyasi', '1', img && String(img.getAttribute('src')).indexOf('page-007') > -1 ? '1' : '0');
 
-  /* 1. ust bar */
+  /* 1. ust bar + panel: asagi kaydirinca IKISI de kapanir */
+  var arrow = document.getElementById('edgeLeft');
+  ck('baslangicta panel kapali', '1', has('no-side'));
   step(0);
   ck('tepede ust bar acik', '0', has('hide-top'));
   step(20);
@@ -154,14 +178,30 @@ window.addEventListener('load', function(){
   step(600);
   ck('asagi kaydirma ust bari gizler', '1', has('hide-top'));
 
-  /* 2. yukari kaydirinca panel */
-  ck('asagi kaydirma paneli acmaz', '1', has('no-side'));
+  /* 2. yukari kaydirinca SADECE ust bar gelir; panel elle acilir */
+  ck('asagi kaydirma paneli kapatir', '1', has('no-side'));
   step(400);
-  ck('yukari kaydirma paneli acar', '0', has('no-side'));
+  ck('yukari kaydirma ust bari geri getirir', '0', has('hide-top'));
+  ck('yukari kaydirma paneli ACMAZ', '1', has('no-side'));
+
+  /* 3. ok panel ile tek parca */
+  arrow.click();
+  ck('ok paneli acar', '0', has('no-side'));
+  ck('ok acik durumuna gecer', '1', arrow.classList.contains('open') ? '1' : '0');
+  ck('ok panel kenarina yapisik', okEdge('side'), arrow.style.left);
+  ck('ok panelin dikey ortasinda', okMid('side'), arrow.style.top);
   ck('panel durumu sakli', '1', localStorage.getItem('dn.side'));
 
-  /* 3. ok panel kenarina yaslanir */
-  ck('ok panel kenarina yasli', okEdge('side'), document.getElementById('edgeLeft').style.left);
+  /* elle acilan panel hemen kapanmaz; sonra asagi kaydirma kapatir */
+  step(700);
+  ck('elle acilan panel hemen kapanmaz', '0', has('no-side'));
+  var gercekNow = Date.now;
+  Date.now = function(){ return gercekNow() + 4000; };
+  step(900);
+  ck('sonra asagi kaydirma paneli kapatir', '1', has('no-side'));
+  Date.now = gercekNow;
+  ck('kapali ok ekran kenarinda', '10px', arrow.style.left);
+  ck('ok kapali durumuna gecer', '0', arrow.classList.contains('open') ? '1' : '0');
 
   /* 6. ayraclar */
   ck('baslangicta ayrac yok', '0', String(document.querySelectorAll('#bmList .bm').length));
