@@ -104,5 +104,20 @@ for ad, hedefler in BEKLENEN.items():
     for h in hedefler:
         assert h in t, f"{ad} icinde {h} baglantisi yok"
 
+# --- Site adi: her giris noktasi ayni adi kullanmali ---
+# Kitaplik adi tek yerden degismedigi icin burada dogrulanir:
+# turkce-ozet.html adini ozet.py BASLIK belirler.
+SITE_ADI = "KPSS Orta Öğretim"
+for ad in ("index.html", "oku.html", "galeri.html", "404.html", "viewer.html"):
+    with open(os.path.join(ROOT, ad), encoding="utf-8") as f:
+        t = f.read()
+    assert SITE_ADI in t, f"{ad} icinde site adi yok: {SITE_ADI}"
+    assert "KPSS Orta Ogretim" not in t, f"{ad} icinde bozuk (ASCII) site adi kalmis"
+assert SITE_ADI in sayfa, "turkce-ozet.html icinde site adi yok: " + SITE_ADI
+assert "<title>" + d["baslik"] + "</title>" in sayfa, \
+    "turkce-ozet.html basligi gomulu ozet basligiyla ayni olmali"
+assert "<h1>" + d["baslik"] + "</h1>" in sayfa, \
+    "turkce-ozet.html h1'i gomulu ozet basligiyla ayni olmali"
+
 print("ozet: bolum", len(d["bolumler"]), "| blok", blok, "| madde", madde,
-      "| sayfa karakter", len(sayfa))
+      "| sayfa karakter", len(sayfa), "| site adi", SITE_ADI)

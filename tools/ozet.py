@@ -22,7 +22,7 @@ PAGE = os.path.join(ROOT, "turkce-ozet.html")
 BEGIN = "<!-- OZET-DATA-BEGIN -->"
 END = "<!-- OZET-DATA-END -->"
 
-BASLIK = "KPSS Türkçe Genel Tekrar Ders Notları"
+BASLIK = "KPSS Orta Öğretim"
 GIRIS = ("ÖSYM'nin son yıllardaki soru dağılımlarına bakıldığında KPSS Türkçe oturumu "
          "<b>7 adet dil bilgisi sorusu</b> ve geri kalanı <b>anlam/paragraf</b> soruları "
          "üzerine kuruludur.")

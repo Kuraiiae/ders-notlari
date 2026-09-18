@@ -1,4 +1,4 @@
-# Ders Notları — Dijital Kütüphane + Kitap Modu
+# KPSS Orta Öğretim — Dijital Kütüphane + Kitap Modu
 
 KPSS ders notlarının (taranmış PDF) tarayıcıda dergi gibi okunmasını sağlayan
 **tek dosyalık, çevrimdışı** bir okuyucu.
