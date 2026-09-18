@@ -56,7 +56,14 @@ html[data-theme="light"] .grain{opacity:.45;background-image:radial-gradient(rgb
 header.bar{display:flex;align-items:center;gap:10px;padding:10px clamp(10px,1.6vw,20px);
   backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);
   background:linear-gradient(180deg,var(--panel-2),var(--panel));
-  border-bottom:1px solid var(--stroke);box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:5}
+  border-bottom:1px solid var(--stroke);box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:5;
+  overflow:hidden;max-height:120px;transition:max-height .38s cubic-bezier(.22,.75,.25,1),padding .3s,opacity .3s}
+body.hide-top header.bar{max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-bottom-width:0}
+.edge-tab{position:fixed;top:50%;transform:translateY(-50%);z-index:60;width:34px;height:88px;display:grid;place-items:center;font-size:18px;color:var(--text);background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--stroke);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:pointer;box-shadow:var(--shadow);transition:left .3s var(--ease)}
+.edge-tab:active{transform:translateY(-50%) scale(.94)}
+/* ok, panel acikken panelin sag kenarina yaslanir (konum JS ile hesaplanir) */
+#edgeLeft{left:10px;border-radius:0 14px 14px 0;border-left:0}
+@media(max-width:900px){.edge-tab{width:30px;height:76px;font-size:16px}}
 .brand{display:flex;align-items:center;gap:12px;min-width:0}
 .brand .mark{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;
   background:linear-gradient(140deg,var(--accent),var(--accent-2));font-size:20px;color:#fff;
@@ -190,6 +197,19 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
   opacity:0;pointer-events:none;transition:all .3s var(--ease)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
+/* AYRAC */
+.bm-list{flex:0 1 auto;max-height:36%;overflow:auto;padding:0 10px 10px;display:flex;flex-direction:column;gap:4px}
+.bm-list:empty{display:none}
+.bm{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:11px;font-size:12.5px;transition:background .2s}
+.bm:hover{background:var(--panel-2)}
+.bm .dot{width:8px;height:8px;border-radius:50%;flex:0 0 8px;background:var(--accent)}
+.bm .go{flex:1;text-align:left;font-weight:600}
+.bm .x{color:var(--muted);font-size:15px;padding:0 5px;border-radius:6px}
+.bm .x:hover{color:#ff5f6d}
+.empty{font-size:12px;color:var(--muted);padding:2px 8px 8px;line-height:1.7}
+.thumb.bm::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--accent);z-index:2}
+.thumb.bm .no{background:var(--accent);color:#fff}
+
 /* MOBIL */
 .burger{display:none}
 @media (max-width:1080px){
@@ -224,6 +244,11 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
 .paper{border-radius:14px}
 .stage{gap:14px}
 @media (max-width:900px){
+  /* ust bar tek satirda kalir; yatay kaydirilabilir oldugu icin butonlar erisilebilir kalir */
+  header.bar{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:none}
+  header.bar::-webkit-scrollbar{display:none}
+  .bar .spacer{display:none}
+  header.bar .chip,header.bar .brand,header.bar .seg{flex:0 0 auto}
   header.bar{padding:8px 10px;gap:6px}
   main#view{padding:8px}
   .reader-top{top:56px}
@@ -267,22 +292,30 @@ body.no-thumbs .thumb-wrap{height:0;opacity:0;border-width:0;overflow:hidden}
     <div class="seg" id="subjectSeg" role="tablist" aria-label="Dersler"></div>
     <button class="chip icon" id="btnThumbs" title="Sayfa şeridi (T)">&#9639;&#9640;</button>
     <button class="chip icon hide-sm" id="btnSpread" title="Çift sayfa görünümü (S)">&#9633;&#9633;</button>
+    <button class="chip" id="btnBm" title="Bu sayfaya ayraç koy / kaldır (B)">&#128278;<span class="hide-sm"> Ayraç</span></button>
     <button class="chip icon" id="btnTheme" title="Tema (D)">&#9789;</button>
     <button class="chip icon" id="btnFull" title="Tam ekran (F)">&#9974;</button>
   </header>
   <main id="view">
+    <button class="edge-tab" id="edgeLeft" title="Kütüphaneyi aç/kapat (K)">&#10095;</button>
     <aside class="side" id="side">
       <div class="side-head">
         <span>Kütüphane</span>
         <span class="badge" id="totalBadge">—</span>
       </div>
       <nav class="subjects" id="subjectList"></nav>
+      <div class="side-head">
+        <span>Ayraçlarım</span>
+        <span class="badge" id="bmCount">0</span>
+      </div>
+      <div class="bm-list" id="bmList"></div>
       <div class="side-foot">
         <div class="hint">
+          <kbd>&uarr;</kbd> kaydır: üst bar gizlenir/gelir, yukarı kaydır paneli açar<br>
           <kbd>&larr;</kbd> <kbd>&rarr;</kbd> sayfa çevir<br>
           <kbd>+</kbd> <kbd>&minus;</kbd> yakınlaştır &middot; <kbd>0</kbd> sıfırla<br>
-          <kbd>T</kbd> şerit &middot; <kbd>S</kbd> çift sayfa &middot; <kbd>D</kbd> tema<br>
-          <kbd>F</kbd> tam ekran &middot; <kbd>K</kbd> kütüphane
+          <kbd>T</kbd> şerit &middot; <kbd>S</kbd> çift sayfa &middot; <kbd>B</kbd> ayraç<br>
+          <kbd>D</kbd> tema &middot; <kbd>F</kbd> tam ekran &middot; <kbd>K</kbd> kütüphane
         </div>
       </div>
     </aside>
@@ -359,6 +392,7 @@ const el = {
   subjTitle: $('#subjTitle'), subjSub: $('#subjSub'), totalBadge: $('#totalBadge'),
   prev: $('#prevBtn'), next: $('#nextBtn'), first: $('#firstBtn'), last: $('#lastBtn'),
   zoomVal: $('#zoomVal'), toast: $('#toast'), fitSeg: $('#fitSeg'),
+  bmList: $('#bmList'), bmCount: $('#bmCount'), btnBm: $('#btnBm'),
 };
 
 const STORE = {
@@ -378,6 +412,39 @@ const subject = () => LIBRARY.find(s => s.key === state.key) || LIBRARY[0];
 const src = (key, n, thumb) => 'assets/' + key + '/' + (thumb ? 'thumbs/' : '') + 'page-' + PAD(n) + '.jpg';
 const readMax = key => parseInt(STORE.get('max.' + key, '0'), 10) || 0;
 const readPage = key => parseInt(STORE.get('page.' + key, '1'), 10) || 1;
+
+/* ---------- ayraçlar: bu tarayıcıda kalıcı (localStorage) ---------- */
+const getBm = key => { try { return JSON.parse(STORE.get('ayrac.' + key, '[]')); } catch (e) { return []; } };
+const isMarked = n => getBm(state.key).includes(n);
+function toggleMark(n) {
+  const arr = getBm(state.key);
+  const next = arr.includes(n) ? arr.filter(x => x !== n) : [...arr, n].sort((a, b) => a - b);
+  STORE.set('ayrac.' + state.key, JSON.stringify(next));
+  renderBm();
+  syncBm();
+  toast(next.includes(n) ? 'Ayraç eklendi: sayfa ' + n : 'Ayraç kaldırıldı: sayfa ' + n);
+}
+function renderBm() {
+  const arr = getBm(state.key);
+  el.bmCount.textContent = String(arr.length);
+  el.bmList.innerHTML = arr.length ? '' :
+    '<div class="empty">Henüz ayraç yok.<br>Üst bardaki ya da şeritteki <b>Ayraç</b> düğmesine basın; sayfa bu tarayıcıda saklanır.</div>';
+  arr.forEach(n => {
+    const row = document.createElement('div');
+    row.className = 'bm';
+    row.innerHTML = '<span class="dot"></span><button class="go">Sayfa ' + n + '</button>' +
+      '<button class="x" title="Ayracı kaldır">&times;</button>';
+    $('.go', row).addEventListener('click', () => go(n));
+    $('.x', row).addEventListener('click', () => toggleMark(n));
+    el.bmList.appendChild(row);
+  });
+}
+function syncBm() {
+  const on = isMarked(state.page);
+  el.btnBm.classList.toggle('on', on);
+  el.btnBm.innerHTML = '&#128278;<span class="hide-sm"> ' + (on ? 'Ayraç: var' : 'Ayraç') + '</span>';
+  $$('.thumb', el.thumbs).forEach(t => t.classList.toggle('bm', isMarked(parseInt(t.dataset.n, 10))));
+}
 
 function toast(msg) {
   el.toast.textContent = msg;
@@ -543,7 +610,7 @@ function syncUI(center) {
   const last = state.page + (state.spread ? 1 : 0);
   const shown = Math.min(last, s.pages);
   el.subjTitle.textContent = s.title;
-  el.subjSub.textContent = s.subtitle;
+  el.subjSub.textContent = s.subtitle + ' · kaldığın yer ' + readPage(s.key) + '/' + s.pages;
   el.pageTotal.textContent = '/ ' + s.pages;
   el.pageInput.max = s.pages;
   el.pageInput.value = state.page;
@@ -554,6 +621,45 @@ function syncUI(center) {
   el.last.disabled = el.next.disabled;
   markSubjects();
   syncThumbs(center);
+  syncEdge();
+  syncBm();
+}
+
+/* kenar oku + ust bar saklama */
+function syncEdge() {
+  const b = document.getElementById('edgeLeft');
+  if (!b) return;
+  const closed = document.body.classList.contains('no-side');
+  b.innerHTML = closed ? '&#10095;' : '&#10094;';
+  b.title = (closed ? 'Kütüphaneyi aç' : 'Kütüphaneyi kapat') + ' (K)';
+  const side = document.getElementById('side');
+  if (closed || !side) { b.style.left = '10px'; return; }
+  /* kutunun sag kenarina yasla: masaustu ve telefonda dogru konum */
+  b.style.left = Math.max(10, Math.round(side.getBoundingClientRect().right - 8)) + 'px';
+}
+function toggleSide(force) {
+  const open = force !== undefined ? force : document.body.classList.contains('no-side');
+  document.body.classList.toggle('no-side', !open);
+  STORE.set('side', open ? '1' : '0');
+  syncEdge();
+  /* panel kayma animasyonu bitince oku panelin yeni kenarina yasala */
+  clearTimeout(toggleSide._t);
+  toggleSide._t = setTimeout(syncEdge, 460);
+}
+/* asagi kaydirinca ust bar gizlenir; yukari kaydirinca bar ve panel geri gelir */
+let lastStageY = 0, upAcc = 0;
+function onStageScroll() {
+  const y = el.stage ? el.stage.scrollTop : 0;
+  const dy = y - lastStageY;
+  lastStageY = y;
+  if (y < 60) { document.body.classList.remove('hide-top'); upAcc = 0; return; }
+  if (dy > 8) { document.body.classList.add('hide-top'); upAcc = 0; }
+  else if (dy < -8) {
+    document.body.classList.remove('hide-top');
+    upAcc -= dy;
+    /* belirgin sekilde yukari kaydirilinca yan panel de kendiliginden acilir */
+    if (upAcc > 80 && document.body.classList.contains('no-side')) { upAcc = 0; toggleSide(true); }
+  }
 }
 
 /* ---------- gezinme ---------- */
@@ -579,13 +685,18 @@ function selectSubject(key) {
   STORE.set('subject', key);
   applyAccent();
   buildThumbs();
+  renderBm();
   let n = readPage(key);
   if (state.spread && n > 1 && n % 2 === 0) n -= 1;
   state.page = Math.max(1, Math.min(subject().pages, n));
+  document.body.classList.remove('hide-top');
   paint();
   syncUI(true);
   el.stage.scrollTop = 0;
-  if (window.matchMedia('(max-width: 900px)').matches) document.body.classList.add('no-side');
+  lastStageY = 0;
+  upAcc = 0;
+  /* telefonda panel icerigi kapatmasin; kullanicinin acik/kapali tercihi silinmez */
+  if (window.matchMedia('(max-width: 900px)').matches) { document.body.classList.add('no-side'); syncEdge(); }
 }
 
 function setFit(mode) {
@@ -676,14 +787,18 @@ function bind() {
   $('#btnTheme').addEventListener('click', toggleTheme);
   $('#btnFull').addEventListener('click', toggleFull);
   $('#btnSpread').addEventListener('click', () => toggleSpread());
+  $('#btnBm').addEventListener('click', () => toggleMark(state.page));
+  /* panel kayma animasyonu bitince ok panelin yeni kenarina tam oturur */
+  const sideEl = document.getElementById('side');
+  if (sideEl) sideEl.addEventListener('transitionend', ev => { if (ev.target === sideEl) syncEdge(); });
   $('#btnThumbs').addEventListener('click', () => {
     document.body.classList.toggle('no-thumbs');
     STORE.set('thumbs', document.body.classList.contains('no-thumbs') ? '0' : '1');
   });
-  $('#btnSide').addEventListener('click', () => {
-    document.body.classList.toggle('no-side');
-    STORE.set('side', document.body.classList.contains('no-side') ? '0' : '1');
-  });
+  $('#btnSide').addEventListener('click', () => toggleSide());
+  const edgeBtn = document.getElementById('edgeLeft');
+  if (edgeBtn) edgeBtn.addEventListener('click', () => toggleSide());
+  el.stage.addEventListener('scroll', onStageScroll, { passive: true });
 
   $('#thumbPrev').addEventListener('click', () => el.thumbs.scrollBy({ left: -420, behavior: 'smooth' }));
   $('#thumbNext').addEventListener('click', () => el.thumbs.scrollBy({ left: 420, behavior: 'smooth' }));
@@ -693,7 +808,7 @@ function bind() {
   });
 
   let rt;
-  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(layout, 120); });
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); syncEdge(); }, 120); });
 
   /* tekerlek: ctrl ile yakinlastir, normalde tam sayfa gecisi yap */
   let wheelAcc = 0, wheelT = null;
@@ -773,9 +888,10 @@ function onKey(e) {
     case '0': setFit(state.mode); el.stage.scrollTo(0, 0); toast('Ölçek %100'); break;
     case 't': case 'T': $('#btnThumbs').click(); break;
     case 's': case 'S': toggleSpread(); break;
+    case 'b': case 'B': toggleMark(state.page); break;
     case 'd': case 'D': toggleTheme(); break;
     case 'f': case 'F': toggleFull(); break;
-    case 'k': case 'K': $('#btnSide').click(); break;
+    case 'k': case 'K': toggleSide(); break;
     default: return;
   }
   e.preventDefault();
@@ -792,6 +908,7 @@ function init() {
   if (narrow || STORE.get('side', '1') === '0') document.body.classList.add('no-side');
 
   buildThumbs();
+  renderBm();
 
   let n = readPage(state.key);
   if (state.spread && n > 1 && n % 2 === 0) n -= 1;
