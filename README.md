@@ -21,10 +21,22 @@ otomatik sayfa takibi, kaldığın yerden devam, ayraçlar, Beyaz/Sepya/Gece kâ
 genişlik ayarı, Odak modu ve gri zeminleri bastıran **temizlenmiş sayfalar**.
 Tercih orijinal tarama ile tek tuşla değiştirilebilir (`C`).
 
-`index.html` (Galeri görünümü): tek/çift sayfa, zum, küçük resim şeridi.
+`index.html` (Galeri görünümü): tek/çift sayfa, zum, küçük resim şeridi,
+sayfa ayraçları (kütüphane panelinde "Ayraçlarım" listesi).
 
 Her iki dosyayı da tarayıcıda açmak yeterli. Sunucu, kurulum veya internet
 gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yüklenir.
+
+### Kaydırma, üst bar ve yan bölme (her iki görünüm)
+
+- **Aşağı kaydırınca üst bar kaybolur**; okuma alanı büyür.
+- **Yukarı kaydırınca**, üst bar geri gelir ve yan bölme (İçindekiler /
+  Kütüphane) **kendiliğinden açılır**; böylece aradığınız derse hızlıca
+  atlarsınız.
+- Kenardaki **ok düğmesi** paneli elle açar/kapatır ve panel açıkken
+  **panelin kenarına yaslanır** (telefonda da masaüstünde de).
+- Panel ve üst bar durumu `localStorage`'da saklanır; sayfayı yenilediğinizde
+  kaldığınız düzen ve **kaldığınız sayfa** ile devam edersiniz.
 
 ### Kitap Modu kısayolları
 
@@ -48,12 +60,15 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
 | `+` / `-` / `0` | Yakınlaştır / uzaklaştır / sıfırla |
 | `T` | Sayfa şeridi |
 | `S` | Çift sayfa görünümü |
+| `B` | Bu sayfaya ayraç koy / kaldır |
 | `D` | Aydınlık / karanlık tema |
 | `F` | Tam ekran |
 | `K` | Kütüphane paneli |
 
-Okunan sayfa, ayraçlar, ders, kâğıt, genişlik ve tema tercihleri tarayıcıda
-(`localStorage`) saklanır; kaldığınız yerden devam edersiniz.
+Okunan sayfa, **ayraçlar**, ders, zum/çift sayfa, tema ve panel durumu tarayıcıda
+(`localStorage`) saklanır; kaldığınız yerden devam edersiniz. Ayraçlar ders
+başına ayrı tutulur; kütüphane panelindeki **Ayraçlarım** listesinden tek
+tıkla o sayfaya dönebilir veya ayracı silebilirsiniz.
 
 ## Site (GitHub Pages)
 
@@ -93,6 +108,7 @@ python tools/render.py turkce   # yalnızca seçilen dersi yeniden üretir
 python tools/order.py           # ders sırasını dört dosyaya uygular (aşağıya bakın)
 python tools/ozet.py            # Türkçe konu özetini sayfaya + oku.html'e (JSON) uygular
 python tools/check.py           # script söz dizimini ayıklar + tüm görsellerin varlığını doğrular
+node tools/ui-test.js           # üst bar / yan panel / ok / kaldığın yer / ayraç davranışını headless tarayıcıda doğrular (60 kontrol)
 python tools/enhance.py --all             # temizlenmiş ders sayfalarını üretir (assets/*/clean/)
 python tools/enhance.py tarih 1           # tek sayfa önizleme -> tools/preview/ (depoya girmez)
 ```

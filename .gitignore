@@ -14,6 +14,10 @@ tools/preview/
 temizle.log
 *.log
 
+# Davranis testi ciktilari (headless Chrome, depoya girmez)
+_t_*.html
+_dump_*.html
+
 # Isletim sistemi / editor
 .DS_Store
 Thumbs.db
