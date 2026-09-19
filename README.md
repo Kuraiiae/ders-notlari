@@ -19,7 +19,9 @@ KPSS ders notlarının (taranmış PDF) tarayıcıda dergi gibi okunmasını sa�
 `oku.html` **(Kitap Modu — önerilen)**: sürekli kaydırma ile kitap gibi okuma,
 otomatik sayfa takibi, kaldığın yerden devam, ayraçlar, Beyaz/Sepya/Gece kâğıt,
 genişlik ayarı, Odak modu ve gri zeminleri bastıran **temizlenmiş sayfalar**.
-Tercih orijinal tarama ile tek tuşla değiştirilebilir (`C`).
+Tercih orijinal tarama ile tek tuşla değiştirilebilir (`C`). Test setlerinde
+(Dersler dışındaki bölümler) Kitap Modu kendiliğinden **Test modu / Kart
+Modu**'na geçer: soru kartları ve A–E işaretleme (aşağıya bakın).
 
 `galeri.html` (Galeri görünümü): tek/çift sayfa, zum, küçük resim şeridi,
 sayfa ayraçları (kütüphane panelinde "Ayraçlarım" listesi).
@@ -69,6 +71,66 @@ gerekmez — tüm görseller `assets/` klasöründen `file://` üzerinden yükle
   akordeondur (`▾` oku döner, seçim `localStorage`'da saklanır).
 - Her başlığın yanında o gruptaki ders/deneme sayısı görünür; bir grubu
   kapatınca yalnızca o grubun listesi gizlenir.
+
+### Test modu (Kart Modu) — A–E işaretleme
+
+**Türkçe Testleri**, **Türkçe Çıkmış Sorular** ve **KPSS Tam Deneme** açıldığında
+Kitap Modu kendiliğinden **Kart Modu**'na geçer: her soru sayfasının altına o
+sayfadaki sorular için birer kart konur.
+
+- Kartta soru kökü (PDF metin katmanından) ve **A–E** seçenek düğmeleri bulunur.
+  Şıklar her soruda sabit A–E üretilir; PDF'te şık işareti tespit edilemeyen
+  sorularda da beş seçenek eksiksiz görünür.
+- Seçilen şık **kırmızı** işaretlenir ve kartın başlığında **yeşil ✓** çıkar;
+  aynı şıkka tekrar basmak işareti kaldırır. İşaretler ders başına
+  `localStorage`'da (`oku.quiz.<ders>`) saklanır, sayfayı yenileyince geri gelir.
+- **Denemeyi bitir** sonrası (anahtarı olan sorularda) doğru şık **yeşil ✓
+  (okey)**, yanlış işaretlenmiş şık **kırmızı ✗ (çarpı)** olur; kart başlığı
+  doğru için ✓, yanlış için ✗, boş bırakıldıysa `—` gösterir.
+- Üstteki çubuk **İşaretli x/y** ve **Boş** sayaçlarını gösterir; **Sıfırla**
+  tüm işaretleri temizler, **Denemeyi bitir** sonucu açar.
+- Telefonda kartlar tek sütun akar; bir şık işaretlendiğinde **otomatik olarak
+  sonraki soruya** geçilir, seçenek düğmeleri büyük dokunmatik hedeftir ve çubuk
+  başlığın altına yapışır (başlık gizlenince yukarı kayar).
+- Cevap anahtarı **arayüzde hiçbir zaman kart üzerinde görünmez**; yalnızca
+  **Denemeyi bitir** sonrası sonuç penceresinde kullanılır.
+
+**Sonuç penceresi** (cevap anahtarı ekliyse):
+
+- **A–E analizi**: her şık için doğru/yanlış/boş sayısı ve o şıkka ait sorulardaki
+  **başarı yüzdesi** (doğru ÷ (doğru + yanlış); boşlar orana girmez) —
+  ≥%70 `kolay`, ≥%40 `orta`, altı `zor`, hiç işaret yoksa `—`; altında `Σ`
+  toplam satırı (başlıkta anahtarlı/anahtarsız soru sayısı yazar).
+- Soru soru liste: `S.12  B / C  ✓ Doğru` (yeşil) / `✗ Yanlış` (kırmızı) /
+  `Boş` biçiminde işaret–anahtar karşılaştırması;
+  satıra dokunmak ilgili soru kartına atlar.
+- Anahtarı henüz olmayan sorular `işaretli · anahtar yok` der; özet satırı
+  "kalan N sorunun anahtarı henüz eklenmedi" notunu gösterir.
+
+Anahtarı olmayan setlerde puanlama kapalıdır: çubukta **"N soru · cevap
+anahtarı bekleniyor"** notu görünür ve sonuç penceresi yalnızca işaretlerinizi
+listeler. **Anahtarlar eklendiği anda aynı işaretler otomatik puanlanır** —
+arayüz kodunda değişiklik gerekmez.
+
+#### Cevap anahtarı ekleme
+
+Anahtarlar `tools/quiz-keys.json` içinde durur ve **sayfa bazında** filtrelenir:
+bir sayfanın anahtarı yalnızca o sayfada görünen sorularla eşleşir, başka
+yaprağın anahtarı karışmaz.
+
+```json
+{ "turkce-test": { "4": { "6": "A", "7": "B" }, "10": { "6": "A" } } }
+```
+
+```powershell
+python tools/quiz-embed.py      # anahtarları oku.html'e gömer, bekleyen soru sayısını bildirir
+python tools/check.py           # anahtar filtresi + şık aralığı (A–E) doğrulaması
+```
+
+**Güncel anahtar durumu** (gömmü sonrası): Türkçe Testleri 221/222 ·
+Türkçe Çıkmış Sorular 113/157 · KPSS Tam Deneme 289/320 (kalanlar: konu
+anlatımı içinden yanlış soru sanılan çözüm/örnek blokları, metin
+katmanından çıkarılamayan sorular ve henüz iletilmeyen cevap tabloları).
 
 ### Konu özeti renkleri
 
@@ -143,6 +205,9 @@ turkce-ozet.html    Türkçe konu özetleri (tools/ozet.py üretir, elle düzenl
 manifest.json     Ders listesi (sayfa sayısı, boyut, renk) - araçlar tarafından üretilir
 assets/<ders>/    page-NNN.jpg (1400px genişlik, JPEG q74) + thumbs/page-NNN.jpg (300px)
 assets/<ders>/clean/  Gri zemini bastırılmış ders çalışma sayfaları (JPEG q68)
+quiz-data.json      Test setlerinin soru/şık/anahtar koordinatları (araclar üretir, HTML'e gömülmez)
+quiz-text.json      Soru kökü + şık metinleri (araclar üretir; HTML'e yalnızca kökler gömülür)
+tools/quiz-keys.json  Cevap anahtarları (elle düzenlenir — "Cevap anahtarı ekleme")
 tools/            Yeniden üretim ve doğrulama araçları
 ```
 
@@ -153,14 +218,28 @@ python tools/render.py          # PDF'lerden sayfa görselleri + küçük resiml
 python tools/render.py turkce   # yalnızca seçilen dersi yeniden üretir
 python tools/order.py           # ders sırasını dört dosyaya uygular (aşağıya bakın)
 python tools/ozet.py            # Türkçe konu özetini sayfaya + oku.html'e (JSON) uygular
+python tools/quiz.py            # test setlerinden soru/şık/anahtar koordinatlarını çıkarır (quiz-data.json)
+python tools/quiz-fix.py        # quiz-data.json'u sadeleştirir + tools/quiz-keys.json üretir
+python tools/quiz-text.py       # soru kökü + şık metinlerini çıkarır (quiz-text.json)
+python tools/quiz-embed.py      # gömülü test indeksini + cevap anahtarlarını oku.html'e yazar
+python tools/quiz-text-embed.py # soru köklerini oku.html'e gömer
+python tools/quiz-vis.py        # şık kutularını sayfa görseline çizip geometriyi gözle doğrular (tools/preview)
 python tools/check.py           # script söz dizimini ayıklar + tüm görsellerin varlığını doğrular
-node tools/ui-test.js           # üst bar / yan panel / ok / odak / akordeon / yardımcı / özet renkleri / kaldığın yer / ayraç davranışını headless tarayıcıda doğrular (156 kontrol)
+node tools/ui-test.js           # üst bar / yan panel / ok / odak / akordeon / yardımcı / özet renkleri / kaldığın yer / ayraç / test modu (A–E işaretleme, puanlama, telefonda otomatik geçiş) davranışını headless tarayıcıda doğrular (194 kontrol)
 python tools/enhance.py --all             # temizlenmiş ders sayfalarını üretir (assets/*/clean/)
 python tools/enhance.py tarih 1           # tek sayfa önizleme -> tools/preview/ (depoya girmez)
 ```
 
 `tools/render.py` içindeki `SUBJECTS` listesi PDF yollarını tutar; PDF'ler depoda
 yer almaz. `tools/info.py` kaynak PDF'lerin sayfa/boyut bilgisini çıkarır.
+
+Test modu verisi iki gömülü blok olarak (soru indeksi + soru kökleri) `oku.html`
+içinde durur; `quiz-embed.py` ve `quiz-text-embed.py` bu blokları yazar. Çıkarım
+araçları (`quiz.py`, `quiz-text.py`) kaynak PDF'leri gerektirir, **gömme araçları
+gerektirmez** — bu yüzden cevap anahtarı eklemek için PDF'lere ihtiyaç yoktur,
+`quiz-data.json` / `quiz-text.json` depoda hazır durur. Koordinatlar (sayfa
+üzerine kaplama için gerekli olan soru/şık kutuları) `quiz-data.json`'da kalır;
+HTML'e yalnızca kart akışının ihtiyaç duyduğu minik indeks gömülür.
 
 ### Türkçe konu özetleri
 
