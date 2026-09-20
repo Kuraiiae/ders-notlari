@@ -178,27 +178,50 @@ body.quiz .page .qoverlay{display:block}
 .qpick button.bad{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
 .qpick button.dim{opacity:.5;cursor:default}
 
-/* ---------- görsel üstü doğrudan tıklanabilir A-B-C-D-E hotspot katmanı ---------- */
-.qhotspots{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}
+/* ---------- görsel üstü doğrudan tıklanabilir A-B-C-D-E hotspot katmanı ----------
+   Katman görselin ÇİZİLEN alanına birebir oturur (JS px ile ölçer, letterbox
+   payını düşer), şık kutuları aynı soru içinde hizalıdır: alt alta dizilen
+   şıklar eşit sol kenar + eşit genişlik, yan yana dizilenler eşit üst kenar +
+   eşit yükseklik alır. Belirginlik için yarı saydam dolgu + kalın çerçeve +
+   basılı şık harfinin üstüne oturan yuvarlak rozet kullanılır. */
+.qhotspots{position:absolute;left:0;top:0;width:100%;height:100%;z-index:4;
+  --qh-b:24px;--qh-f:12px;
+  pointer-events:none;display:none;line-height:normal}
 body.quiz .page .qhotspots{display:block}
-.qhotspot{position:absolute;pointer-events:auto;cursor:pointer;border-radius:6px;
-  border:1.5px dashed transparent;background:transparent;
-  display:flex;align-items:center;padding:0;margin:0;box-sizing:border-box;
+.qhotspots:has(.qhotspot){display:block}
+.qhotspot{position:absolute;pointer-events:auto;cursor:pointer;margin:0;
+  box-sizing:border-box;padding:0 6px 0 calc(var(--qh-b,24px) + 6px);text-align:left;
+  display:flex;align-items:center;justify-content:flex-start;
+  border:2px solid rgba(124,92,255,.6);border-radius:8px;
+  background:rgba(124,92,255,.13);font:inherit;color:inherit;
   transition:background .15s, border-color .15s, box-shadow .15s;
   -webkit-tap-highlight-color:transparent}
-.qhotspot:hover{background:rgba(124,92,255,.14);border-color:rgba(124,92,255,.45)}
-.qhotspot.sel{background:rgba(239,43,58,.22);border:2px solid #ef2b3a;box-shadow:0 0 10px rgba(239,43,58,.35)}
-.qhotspot.ok{background:rgba(22,163,74,.22);border:2px solid #16a34a;box-shadow:0 0 10px rgba(22,163,74,.35)}
-.qhotspot.bad{background:rgba(239,43,58,.22);border:2px solid #ef2b3a;box-shadow:0 0 10px rgba(239,43,58,.35)}
-.qhotspot .qh-badge{position:absolute;left:-4px;top:50%;transform:translateY(-50%);
-  width:22px;height:22px;border-radius:50%;background:var(--panel-2);
-  border:1.5px solid var(--stroke);font-size:11px;font-weight:900;
-  display:grid;place-items:center;color:var(--text);pointer-events:none;
-  box-shadow:0 2px 6px rgba(0,0,0,.35);transition:all .15s}
-.qhotspot:hover .qh-badge{background:var(--accent);border-color:var(--accent);color:#fff}
-.qhotspot.sel .qh-badge{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
-.qhotspot.ok .qh-badge{background:#16a34a;border-color:#16a34a;color:#fff}
-.qhotspot.bad .qh-badge{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
+.qhotspot:hover{background:rgba(124,92,255,.26);border-color:var(--accent);
+  box-shadow:0 0 0 2px rgba(124,92,255,.28),0 0 14px rgba(124,92,255,.5)}
+.qhotspot:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+.qhotspot.sel{background:rgba(239,43,58,.28);border-color:#ef2b3a;
+  box-shadow:0 0 0 2px rgba(239,43,58,.28),0 0 14px rgba(239,43,58,.5)}
+.qhotspot.ok{background:rgba(22,163,74,.28);border-color:#16a34a;
+  box-shadow:0 0 0 2px rgba(22,163,74,.28),0 0 14px rgba(22,163,74,.5)}
+.qhotspot.bad{background:rgba(239,43,58,.28);border-color:#ef2b3a;
+  box-shadow:0 0 0 2px rgba(239,43,58,.28),0 0 14px rgba(239,43,58,.5)}
+/* harf rozeti: basılı şık harfinin (A) B) ...) tam üstüne oturur.
+   Satır içi şıklarda (A) K...  B) Ü... gibi) kutular yanyana ve dar olduğu
+   için rozet de kutuyla birlikte küçülür; böylece metni kapatmaz. */
+.qhotspot .qh-badge{position:absolute;left:2px;top:50%;transform:translateY(-50%);
+  width:var(--qh-b,24px);height:var(--qh-b,24px);border-radius:50%;background:var(--accent);
+  border:2px solid #fff;font-size:var(--qh-f,12px);font-weight:900;line-height:1;
+  display:grid;place-items:center;color:#fff;pointer-events:none;
+  box-shadow:0 2px 8px rgba(0,0,0,.5);transition:transform .15s}
+.qhotspot.inline .qh-badge{width:calc(var(--qh-b,20px)*.84);height:calc(var(--qh-b,20px)*.84);
+  font-size:calc(var(--qh-f,11px)*.92);left:1px}
+.qhotspot:hover .qh-badge{transform:translateY(-50%) scale(1.12)}
+.qhotspot.sel .qh-badge{background:#ef2b3a;border-color:#fff;color:#fff}
+.qhotspot.ok .qh-badge{background:#16a34a;border-color:#fff;color:#fff}
+.qhotspot.bad .qh-badge{background:#ef2b3a;border-color:#fff;color:#fff}
+/* minik kutularda rozet 12px'in altina duser: harfsiz renkli nokta olur. */
+.qhotspots.qmini .qhotspot{padding-left:8px}
+.qhotspots.qmini .qh-badge{font-size:0!important}
 @media(max-width:760px){
   .qoverlay{width:48px}
   .qstrip{top:70px;padding:5px 2px}
@@ -206,7 +229,6 @@ body.quiz .page .qhotspots{display:block}
   .qspot-lbl .qlbl-n{font-size:10px}
   .qpick{right:38px;padding:6px;min-width:44px}
   .qpick button{height:30px;font-size:13px}
-  .qhotspot .qh-badge{width:19px;height:19px;font-size:9.5px;left:-2px}
 }
 html[data-theme="light"] .quiz-cards{background:#fff}
 .qcard{border:1px solid var(--stroke);border-radius:14px;background:var(--panel-2);overflow:hidden}
@@ -298,6 +320,9 @@ body.quiz .quiz-bar{display:flex}
 html[data-theme="dark"] .page{box-shadow:0 26px 70px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.10)}
 .page img{display:block;width:100%;height:auto;background:#fff;opacity:0;transition:opacity .4s var(--ease)}
 .page img.ready{opacity:1}
+/* sayfa gorseli + ustune oturan hotspot katmani TEK kutu: katman yalnizca
+   gorselin kapladigi alani olcer (alt bilgi cubugu / serit disarida kalir). */
+.page .pgwrap{position:relative;display:block;text-indent:0}
 html[data-paper="sepya"] .page img{filter:sepia(.34) contrast(1.02) brightness(1.01)}
 html[data-paper="gece"] .page{background:#101319}
 html[data-paper="gece"] .page img{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.94)}
@@ -1174,6 +1199,7 @@ function reserve(img, s) { if (img && s && s.w && s.h) img.style.aspectRatio = s
 function readyImg(img) {
   if (img.naturalWidth && img.naturalHeight) img.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
   img.classList.add('ready');
+  qzHotspotsHizala();
 }
 let resumeTarget = 0, holdUntil = 0;
 
@@ -1444,7 +1470,9 @@ function quizIsaretle(s, h) {
     } else if (v && curH === v) {
       st = 'sel';
     }
-    hs.className = 'qhotspot' + (st ? ' ' + st : '');
+    /* inline rozet kucultmesi korunur: className sifirlanirsa rozet buyur */
+    hs.classList.remove('sel', 'ok', 'bad');
+    if (st) hs.classList.add(st);
   });
 }
 function quizBitir() {
@@ -1630,16 +1658,150 @@ function quizOverlayTazele() {
   quizHotspotsTazele();
 }
 /* ---------- Görsel Üstü A-B-C-D-E Hotspot Butonları ---------- */
+/* Hotspot katmani + rozet olcusu. Katman, sayfa gorselinin GERCEK CIZILEN
+   alanina oturur: gorsel object-fit ile letterbox'a giriyorsa olusan bosluk
+   dusulur; boylece A) B) C) D) E) kutulari metnin tam ustunde kalir. Katman
+   kutusu px ile verilir, sik kutulari katman icinde % oranla durur; genislik
+   ya da zoom degisince oranlar kendiliginden oturur. */
+function qzHotOlcek(kap) {
+  const host = kap.parentElement;
+  const img = host ? host.querySelector('img') : null;
+  if (!img) return;
+  const ow = img.clientWidth, oh = img.clientHeight;
+  if (!ow || !oh) return;
+  const nw = img.naturalWidth || 0, nh = img.naturalHeight || 0;
+  let ox = 0, oy = 0, cw = ow, ch = oh;
+  if (nw && nh) {
+    const nar = nw / nh, br = ow / oh;
+    if (Math.abs(nar - br) > 0.002) {
+      if (nar > br) { cw = ow; ch = ow / nar; oy = (oh - ch) / 2; }
+      else { ch = oh; cw = oh * nar; ox = (ow - cw) / 2; }
+    }
+  }
+  kap.style.left = (img.offsetLeft + ox) + 'px';
+  kap.style.top = (img.offsetTop + oy) + 'px';
+  kap.style.width = cw + 'px';
+  kap.style.height = ch + 'px';
+  /* rozet olcusu: ASLA kutu yuksekligini asmaz (kenarlik dahil kutuya sigar;
+     kucuk ekranlarda bile tasip komsu sikkin ustune binmez) ve en fazla 28px
+     olur. Rozet 12px'in altina duserse harf gizlenip renkli noktaya doner
+     (qmini) -> hem tiklanabilir hem tasmaz. Kutular henuz yoksa sayfa
+     genisliginden tahmin edilir. */
+  let mn = 0;
+  kap.querySelectorAll('.qhotspot').forEach(hs => {
+    const hh = hs.getBoundingClientRect().height;
+    if (hh > 0 && (!mn || hh < mn)) mn = hh;
+  });
+  const b = mn ? Math.round(Math.min(28, Math.min(mn, mn * 0.95)) * 10) / 10
+    : Math.round(Math.min(26, Math.max(14, cw * 0.021)));
+  kap.style.setProperty('--qh-b', b + 'px');
+  kap.style.setProperty('--qh-f', Math.max(10, Math.round(b * 0.55)) + 'px');
+  /* minik rozet: 12px alti nokta olur; kutunun kalaninda sik metni okunur. */
+  kap.classList.toggle('qmini', !!mn && b < 12);
+}
+/* Sik kutularini AYNI SORU icinde hizala. rows: [[x0,y0,x1,y1], ...] (0..1).
+   PDF metin katmanindan gelen olcumler satir araligi/kalibrasyon yuzunden
+   milimetrik oynar. Alt alta dizilen siklar ESIT SOL KENAR + ESIT GENISLIK +
+   ESIT YUKSEKLIK alir ve her satirin DIKEY ORTASINA hizalanir; yan yana
+   dizilenler ESIT UST KENAR + ESIT YUKSEKLIK alir. Yukseklik satir araligindan
+   (pitch) buyuk secilmez, boylece A) B) C) D) E) kutulari hicbir zaman ust uste
+   binmez ve harfler tam hizada durur. Cikti: {x0,y0,w,h}. */
+function qzHotHiza(rows) {
+  const n = rows.length;
+  const x0 = [], y0 = [], w = [], h = [];
+  rows.forEach(b => {
+    const x = Math.min(1, Math.max(0, b[0])), y = Math.min(1, Math.max(0, b[1]));
+    const x2 = Math.min(1, Math.max(x, b[2])), y2 = Math.min(1, Math.max(y, b[3]));
+    x0.push(Math.max(0, x - 0.008));
+    y0.push(Math.max(0, y - 0.004));
+    w.push(Math.min(1 - x0[x0.length - 1], (x2 - x) + 0.016));
+    h.push((y2 - y) + 0.008);
+  });
+  if (n < 2) return { x0: x0, y0: y0, w: w, h: h, satir: null };
+  /* satir ici dizilim tespiti: ayni yatay bantta birden fazla sik varsa
+     bunlar "satir ici" sikkardir (orn: "A) K...  B) ..."); bu satirlarda
+     sol-kenar esitleme YAPILMAZ (kutular ust uste binerdi). */
+  const cy = rows.map(b => (b[1] + b[3]) / 2);
+  const satirId = new Array(n).fill(-1);
+  let ns = 0;
+  for (let i = 0; i < n; i++) {
+    if (satirId[i] > -1) continue;
+    satirId[i] = ns;
+    for (let j = i + 1; j < n; j++) {
+      if (satirId[j] === -1 && Math.abs(cy[j] - cy[i]) < 0.010) satirId[j] = ns;
+    }
+    ns++;
+  }
+  const ort = a => a.reduce((t, v) => t + v, 0) / a.length;
+  const cogunluk = satirId.some(id => satirId.filter(x => x === id).length > 1);
+  if (cogunluk) {
+    /* satir ici dizilim (orn: "A) K...  B) ..."): ayni banttaki siklar TEK UST
+       KENAR + TEK YUKSEKLIK alir ve bant ortasina hizalanir; sol-kenar esitleme
+       YAPILMAZ (kutular ust uste binerdi), yan yana cakismasinlar diye genislik
+       komsunun sol kenarinda kesilir. */
+    for (let id = 0; id < ns; id++) {
+      const gr = [];
+      for (let i = 0; i < n; i++) if (satirId[i] === id) gr.push(i);
+      const ust = Math.min.apply(null, gr.map(i => rows[i][1]));
+      const alt = Math.max.apply(null, gr.map(i => rows[i][3]));
+      const yuk = Math.min(Math.max.apply(null, gr.map(i => h[i])), (alt - ust) + 0.008);
+      const orta = (ust + alt) / 2;
+      gr.forEach(i => { h[i] = yuk; y0[i] = Math.max(0, Math.min(1 - yuk, orta - yuk / 2)); });
+      gr.sort((a, b) => x0[a] - x0[b]);
+      gr.forEach((i, k) => {
+        const pay = k + 1 < gr.length
+          ? Math.max(0.02, x0[gr[k + 1]] - 0.004 - x0[i]) : (1 - x0[i]);
+        w[i] = Math.min(w[i], pay);
+      });
+    }
+    return { x0: x0, y0: y0, w: w, h: h, satir: satirId };
+  }
+  /* klasik blok dizilim */
+  const xs = rows.map(b => (b[0] + b[2]) / 2);
+  const yay = Math.max.apply(null, cy) - Math.min.apply(null, cy);
+  const xay = Math.max.apply(null, xs) - Math.min.apply(null, xs);
+  if (yay >= xay && yay > 0.008) {
+    /* dikey dizilim: tek sol kenar + tek genislik + TEK YUKSEKLIK */
+    const sol = ort(x0);
+    const gen = Math.min(1 - sol, Math.max.apply(null, w));
+    /* Satir araligi (pitch) kadar yer var: kutular birbirine girmesin diye
+       yukseklik en kisa araliga gore kisilir; alt sinir metin yuksekligidir
+       (harf cercevenin disinda kalmasin). Aralik olculemezse ham olcum kalir. */
+    const sirali = cy.slice().sort((a, b) => a - b);
+    let pitch = Infinity;
+    for (let i = 1; i < n; i++) pitch = Math.min(pitch, sirali[i] - sirali[i - 1]);
+    const metin = Math.max.apply(null, rows.map(b => b[3] - b[1]));
+    let yuk = Math.max.apply(null, h);
+    if (pitch !== Infinity && pitch > metin * 0.6) {
+      yuk = Math.min(yuk, Math.max(metin + 0.002, pitch - 0.004));
+    }
+    for (let i = 0; i < n; i++) {
+      x0[i] = sol; w[i] = gen; h[i] = yuk;
+      /* her satirin DIKEY ORTASINA hizala; PDF kutusu disarida kalmasin */
+      let yy = Math.min(cy[i] - yuk / 2, rows[i][1]);
+      yy = Math.max(yy, Math.min(rows[i][1], rows[i][3] - yuk));
+      y0[i] = Math.max(0, Math.min(1 - yuk, yy));
+    }
+  } else {
+    /* yatay dizilim: tek ust kenar + tek yukseklik */
+    const ust = ort(y0);
+    const yuk = Math.min(1 - ust, Math.max.apply(null, h));
+    for (let i = 0; i < n; i++) { y0[i] = ust; h[i] = yuk; }
+  }
+  return { x0: x0, y0: y0, w: w, h: h, satir: null };
+}
 function quizHotspotsKoy(container, sorular) {
   container.innerHTML = '';
+  qzHotOlcek(container);
   sorular.forEach(s => {
     const cMap = quizChoicesOf(s.p, s.n);
     if (!cMap) return;
     const v = quizSec(s.p, s.n);
     const a = quizKeyOf(s.p, s.n);
     const acik = quizGorunur();
-    Object.keys(cMap).forEach(h => {
-      const box = cMap[h];
+    const harfler = QUIZ_SIKLAR.filter(h => cMap[h] && cMap[h].length >= 4);
+    const hz = qzHotHiza(harfler.map(h => cMap[h]));
+    harfler.forEach((h, i) => {
       const hs = document.createElement('button');
       let st = '';
       if (acik && a) {
@@ -1648,22 +1810,20 @@ function quizHotspotsKoy(container, sorular) {
       } else if (v && h === v) {
         st = 'sel';
       }
-      hs.className = 'qhotspot' + (st ? ' ' + st : '');
+      hs.type = 'button';
+      hs.className = 'qhotspot' + (st ? ' ' + st : '') + (hz.satir ? ' inline' : '');
       hs.dataset.qid = s.id;
       hs.dataset.h = h;
+      hs.setAttribute('aria-pressed', (v && h === v) ? 'true' : 'false');
       hs.setAttribute('title', 'Soru ' + s.n + ' — ' + h + ' Şıkkı');
-      
-      const padX = 0.008, padY = 0.004;
-      const x0 = Math.max(0, (box[0] - padX) * 100);
-      const y0 = Math.max(0, (box[1] - padY) * 100);
-      const w = Math.min(100 - x0, (box[2] - box[0] + padX * 2) * 100);
-      const ht = (box[3] - box[1] + padY * 2) * 100;
-      
-      hs.style.left = x0.toFixed(2) + '%';
-      hs.style.top = y0.toFixed(2) + '%';
-      hs.style.width = Math.max(5.5, w).toFixed(2) + '%';
-      hs.style.height = Math.max(2.2, ht).toFixed(2) + '%';
-      
+      hs.setAttribute('aria-label', 'Soru ' + s.n + ' ' + h + ' şıkkı');
+      const yuzde = x => (Math.min(100, Math.max(0, x)) * 100).toFixed(2) + '%';
+      /* hz.* degerleri ORANDIR (0..1): taban genislik %5, taban yukseklik %1.2
+         -> oran karsiliklari 0.05 ve 0.012 (yuzde yazilirsa kutu 100x tasar). */
+      hs.style.left = yuzde(hz.x0[i]);
+      hs.style.top = yuzde(hz.y0[i]);
+      hs.style.width = yuzde(Math.max(0.05, hz.w[i]));
+      hs.style.height = yuzde(Math.max(0.012, hz.h[i]));
       hs.innerHTML = '<span class="qh-badge">' + h + '</span>';
       hs.addEventListener('click', e => {
         e.stopPropagation();
@@ -1672,6 +1832,16 @@ function quizHotspotsKoy(container, sorular) {
       });
       container.appendChild(hs);
     });
+  });
+  /* rozet olcusunu GERCEK kutu yuksekliklerinden yeniden olc (qzHotOlcek, kutu
+     eklenmeden once cagrildiginda tahmin kullanirdi). */
+  qzHotOlcek(container);
+}
+/* Pencere / genislik / zoom degisiminde katman kutusunu ve rozeti tazele. */
+function qzHotspotsHizala() {
+  if (!document.body.classList.contains('quiz')) return;
+  $$('.qhotspots[data-qhpage]', el.pages).forEach(hot => {
+    if (hot.children.length) qzHotOlcek(hot);
   });
 }
 function quizHotspotsTazele() {
@@ -1690,12 +1860,16 @@ function quizHotspotsTazele() {
     } else if (v && h === v) {
       st = 'sel';
     }
-    hs.className = 'qhotspot' + (st ? ' ' + st : '');
+    /* inline rozet kucultmesi korunur: className sifirlanirsa rozet buyur */
+    hs.classList.remove('sel', 'ok', 'bad');
+    if (st) hs.classList.add(st);
+    hs.setAttribute('aria-pressed', (v && h === v) ? 'true' : 'false');
   });
 }
 /* Test akisindaki tum overlay'leri yeniden cizer (bitir/anahtar degisiminde) */
 function quizKartlariTazele() {
   quizOverlayTazele();
+  qzHotspotsHizala();
 }
 /* "Anahtari goster": sonuc penceresini ACMADAN puanlama modunu acar/kapatir.
    Acikken dogru sik yesil ✓, isaretlenen yanlis sik kirmizi ✗ olur ve
@@ -1830,8 +2004,8 @@ function buildPages() {
     const d = document.createElement('article');
     d.className = 'page';
     d.dataset.n = n;
-    d.innerHTML = '<img loading="lazy" decoding="async" alt="' + s.title + ' — sayfa ' + n + '">' +
-      '<div class="qhotspots" data-qhpage="' + n + '"></div>' +
+    d.innerHTML = '<div class="pgwrap"><img loading="lazy" decoding="async" alt="' + s.title + ' — sayfa ' + n + '">' +
+      '<div class="qhotspots" data-qhpage="' + n + '"></div></div>' +
       '<div class="pcap"><span>Sayfa ' + n + ' / ' + s.pages + '</span>' +
       '<button class="mk' + (isMarked(n) ? ' on' : '') + '" title="Ayraç (B)">&#128278; Ayraç</button></div>' +
       '<div class="qoverlay" data-qpage="' + n + '"><div class="qstrip"></div></div>';
@@ -2013,6 +2187,7 @@ window.addEventListener('resize', () => {
     /* telefon/tablet geçişinde panel çekmece gibi davranır: kapat */
     setPanel(!narrow && STORE.get('panel.lib', '1') === '1', false);
   }
+  qzHotspotsHizala();
   followEdge(400);
 });
 function goPage(n) {
@@ -2076,6 +2251,7 @@ function fabZoom(f) {
   document.documentElement.style.setProperty('--colw', nx + 'px');
   STORE.set('genislik', nx);
   syncEdge();
+  qzHotspotsHizala();
   toast('Genişlik %' + Math.round(nx / 8.6));
 }
 function stepSubject(d) {
@@ -2102,6 +2278,7 @@ function init() {
     document.documentElement.style.setProperty('--colw', e.target.value + 'px');
     STORE.set('genislik', e.target.value);
     syncEdge(); /* kolon genişliği değişince panel kayar, oku yeniden hizala */
+    qzHotspotsHizala();
   });
   $('#paperSeg').addEventListener('click', e => {
     const c = e.target.closest('.chip');
