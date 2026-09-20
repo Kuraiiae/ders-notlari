@@ -101,8 +101,19 @@ def yukle():
                     atilan += 1
             if m:
                 anahtarlar[p] = m
+        # secenek koordinatlari (c)
+        choices = {}
+        for p, e in (d[key].get("pages") or {}).items():
+            pq = {}
+            for q in e.get("q", []):
+                n = str(q["n"])
+                c = q.get("c", {})
+                if c:
+                    pq[n] = {h: [round(v, 4) for v in c[h]] for h in SIKLAR if h in c}
+            if pq:
+                choices[p] = pq
         if sayfalar:
-            out[key] = {"pages": sayfalar, "keys": anahtarlar}
+            out[key] = {"pages": sayfalar, "keys": anahtarlar, "choices": choices}
     return out, atilan, yuva
 
 
