@@ -132,8 +132,59 @@ body.quiz .quiz-layer{display:block}
 /* soru karti: sayfa gorselinin ALTINDA, metin tabanli tiklanabilir kart akisi.
    Kart icerigi: soru koku + A–E secenek dugmeleri (isaretleme yeterli;
    cevap anahtari kartta gosterilmez). */
-.quiz-cards{display:none;flex-direction:column;gap:10px;padding:12px 14px 6px;background:var(--panel)}
-body.quiz .quiz-cards{display:flex}
+.quiz-cards{display:none!important}
+body.quiz .quiz-cards{display:none!important}
+/* ---------- hotspot overlay: kart akisi yerine sayfa saginda q-serit ----------
+   Her test sayfasinin (.page) icine .qoverlay eklenir.
+   .qstrip: soru numaralarini dikey listeler (sag kenara yapisik).
+   .qspot: tek bir soruyu gosteren sekme; tiklayinca .qpick acilir.
+   .qpick: A-E seceneklerini iceren acilir panel. */
+.qoverlay{position:absolute;top:0;right:0;bottom:0;width:56px;z-index:5;
+  pointer-events:none;display:none}
+body.quiz .page .qoverlay{display:block}
+.qstrip{position:sticky;top:130px;display:flex;flex-direction:column;gap:5px;
+  padding:8px 4px;align-items:flex-end;pointer-events:auto}
+.qspot{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px}
+.qspot-lbl{width:44px;min-height:42px;border-radius:10px 0 0 10px;border:1px solid var(--stroke);
+  border-right:0;background:var(--panel-2);backdrop-filter:blur(12px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:10px;font-weight:800;color:var(--muted);cursor:pointer;
+  transition:all .18s var(--ease);gap:2px;padding:4px 2px;
+  -webkit-tap-highlight-color:transparent}
+.qspot-lbl:hover{background:var(--panel);color:var(--text)}
+.qspot-lbl .qlbl-n{font-size:11px;font-weight:900;color:var(--accent)}
+.qspot-lbl .qlbl-sel{font-size:12px;font-weight:900;min-height:16px;text-align:center}
+/* isaretli: siyah arka plan ile secilen sik */
+.qspot.marked .qspot-lbl{background:var(--accent);border-color:var(--accent);color:#fff}
+.qspot.marked .qspot-lbl .qlbl-n{color:#fff}
+.qspot.marked .qspot-lbl .qlbl-sel{color:#fff}
+/* bitir/anahtar: dogru=yesil, yanlis=kirmizi */
+.qspot.ok .qspot-lbl{background:#16a34a;border-color:#16a34a;color:#fff}
+.qspot.ok .qspot-lbl .qlbl-n{color:#fff}
+.qspot.bad .qspot-lbl{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
+.qspot.bad .qspot-lbl .qlbl-n{color:#fff}
+.qpick{display:none;position:absolute;right:44px;top:0;z-index:10;
+  flex-direction:column;gap:4px;padding:8px;border-radius:12px 0 12px 12px;
+  border:1px solid var(--stroke);background:var(--panel-2);
+  backdrop-filter:blur(18px);box-shadow:var(--shadow);min-width:52px}
+.qspot.open .qpick{display:flex}
+.qpick button{height:34px;border-radius:8px;border:1px solid var(--stroke);
+  background:var(--panel);font-size:14px;font-weight:800;cursor:pointer;
+  transition:all .15s var(--ease);-webkit-tap-highlight-color:transparent;
+  color:var(--text)}
+.qpick button:hover{border-color:var(--accent);color:var(--accent)}
+.qpick button.sel{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
+.qpick button.ok{background:#16a34a;border-color:#16a34a;color:#fff}
+.qpick button.bad{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
+.qpick button.dim{opacity:.5;cursor:default}
+@media(max-width:760px){
+  .qoverlay{width:48px}
+  .qstrip{top:70px;padding:5px 2px}
+  .qspot-lbl{width:38px;min-height:38px;font-size:9.5px}
+  .qspot-lbl .qlbl-n{font-size:10px}
+  .qpick{right:38px;padding:6px;min-width:44px}
+  .qpick button{height:30px;font-size:13px}
+}
 html[data-theme="light"] .quiz-cards{background:#fff}
 .qcard{border:1px solid var(--stroke);border-radius:14px;background:var(--panel-2);overflow:hidden}
 .qcard.done{border-color:rgba(22,163,74,.55)}
@@ -1331,21 +1382,26 @@ function quizIsaretle(s, h) {
   quizKaydet();
   quizGoster();
   quizBarGuncelle();
-  $$('.qcard[data-qid="' + id + '"]', el.pages).forEach(c => {
-    c.classList.toggle('done', !!quizState.sec[id]);
-    c.innerHTML = quizKartHTML(s);
+  /* overlay spot'unu güncelle */
+  $$('.qspot[data-qid="' + id + '"]', el.pages).forEach(sp => {
+    const { cls, lbl, pick } = quizSpotHTML(s);
+    const wasOpen = sp.classList.contains('open');
+    sp.className = 'qspot' + (cls ? ' ' + cls : '') + (wasOpen ? ' open' : '');
+    sp.innerHTML = lbl + pick;
+    sp.querySelector('.qspot-lbl').addEventListener('click', e => {
+      e.stopPropagation();
+      const wo = sp.classList.contains('open');
+      $$('.qspot.open', el.pages).forEach(x => x.classList.remove('open'));
+      if (!wo) sp.classList.add('open');
+    });
+    sp.querySelectorAll('.qpick button').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (quizState.bitir || quizState.anahtar) return;
+        quizIsaretle(s, btn.dataset.h);
+      });
+    });
   });
-  if (quizState.sec[id] && NARROW()) {
-    clearTimeout(quizIsaretle._t);
-    quizIsaretle._t = setTimeout(() => {
-      const tum = quizSorulari();
-      const i = tum.findIndex(x => x.id === id);
-      const sn = tum[i + 1];
-      if (!sn) return;
-      const hedef = $('.qcard[data-qid="' + sn.id + '"]', el.pages);
-      if (hedef) hedef.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 320);
-  }
 }
 function quizBitir() {
   const sorular = quizSorulari();
@@ -1353,12 +1409,7 @@ function quizBitir() {
   if (!Object.keys(quizState.sec).length) { toast('Önce en az bir soruyu işaretleyin'); return; }
   quizState.bitir = true;
   quizState.anahtar = quizSay().anahtarli > 0;
-  $$('.qcard', el.pages).forEach(c => {
-    const s = sorular.find(x => x.id === c.dataset.qid);
-    if (!s) return;
-    c.classList.toggle('done', !!quizSec(s.p, s.n));
-    c.innerHTML = quizKartHTML(s);
-  });
+  quizOverlayTazele();
   quizBarGuncelle();
   quizSonucGoster();
   const bar = $('#quizBar');
@@ -1440,10 +1491,8 @@ function quizSonucGoster() {
   document.body.classList.add('no-scroll');
 }
 function quizGit(qid) {
-  /* sonuc satirindan soru kartina atla (kartin sayfasi henuz yuklenmemis olabilir) */
+  /* sonuc satirindan soru overlay'ine atla */
   quizKapat();
-  const kart = $('.qcard[data-qid="' + qid + '"]', el.pages);
-  if (kart) { kart.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
   const s = quizSorulari().find(x => x.id === qid);
   if (!s) return;
   const sayfa = $('.page[data-n="' + s.p + '"]', el.pages);
@@ -1456,15 +1505,88 @@ function quizKapat() {
   clearTimeout(quizKapat._t);
   quizKapat._t = setTimeout(() => { m.hidden = true; }, 250);
 }
-/* Test akisindaki tum kartlari yeniden cizer (bitir/anahtar degisiminde) */
-function quizKartlariTazele() {
-  const sorular = quizSorulari();
-  $$('.qcard', el.pages).forEach(c => {
-    const s = sorular.find(x => x.id === c.dataset.qid);
-    if (!s) return;
-    c.classList.toggle('done', !!quizSec(s.p, s.n));
-    c.innerHTML = quizKartHTML(s);
+/* ---------- Overlay: her soru için sağ kenarda tıklanabilir sekme ---------- */
+function quizSpotHTML(s) {
+  const v = quizSec(s.p, s.n);
+  const a = quizKeyOf(s.p, s.n);
+  const acik = quizGorunur();
+  let cls = '';
+  if (acik && a) { cls = v ? (v === a ? 'ok' : 'bad') : ''; }
+  else if (v) cls = 'marked';
+  const selTxt = v || '';
+  const lbl = '<div class="qspot-lbl">' +
+    '<span class="qlbl-n">S.' + s.n + '</span>' +
+    '<span class="qlbl-sel">' + selTxt + '</span>' +
+    '</div>';
+  const dug = QUIZ_SIKLAR.map(h => {
+    let bc = '';
+    if (acik && a) {
+      if (h === a) bc = 'ok';
+      else if (v && h === v) bc = 'bad';
+      else bc = 'dim';
+    } else if (v && h === v) bc = 'sel';
+    return '<button data-h="' + h + '" class="' + bc + '">' + h + '</button>';
+  }).join('');
+  const pick = '<div class="qpick">' + dug + '</div>';
+  return { cls, lbl, pick };
+}
+function quizOverlayKoy(ov, sorular) {
+  const strip = $('.qstrip', ov);
+  if (!strip) return;
+  strip.innerHTML = '';
+  sorular.forEach(s => {
+    const sp = document.createElement('div');
+    sp.className = 'qspot';
+    sp.dataset.qid = s.id;
+    const { cls, lbl, pick } = quizSpotHTML(s);
+    if (cls) sp.classList.add(cls);
+    sp.innerHTML = lbl + pick;
+    /* sekme tıklama: aç/kapat */
+    sp.querySelector('.qspot-lbl').addEventListener('click', e => {
+      e.stopPropagation();
+      const wasOpen = sp.classList.contains('open');
+      /* diğer açık picker'ları kapat */
+      $$('.qspot.open', el.pages).forEach(x => x.classList.remove('open'));
+      if (!wasOpen) sp.classList.add('open');
+    });
+    /* şık seçimi */
+    sp.querySelectorAll('.qpick button').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (quizState.bitir || quizState.anahtar) return;
+        quizIsaretle(s, btn.dataset.h);
+      });
+    });
+    strip.appendChild(sp);
   });
+}
+function quizOverlayTazele() {
+  const sorular = quizSorulari();
+  $$('.qspot', el.pages).forEach(sp => {
+    const s = sorular.find(x => x.id === sp.dataset.qid);
+    if (!s) return;
+    const { cls, lbl, pick } = quizSpotHTML(s);
+    sp.className = 'qspot' + (cls ? ' ' + cls : '');
+    sp.dataset.qid = s.id;
+    sp.innerHTML = lbl + pick;
+    sp.querySelector('.qspot-lbl').addEventListener('click', e => {
+      e.stopPropagation();
+      const wasOpen = sp.classList.contains('open');
+      $$('.qspot.open', el.pages).forEach(x => x.classList.remove('open'));
+      if (!wasOpen) sp.classList.add('open');
+    });
+    sp.querySelectorAll('.qpick button').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (quizState.bitir || quizState.anahtar) return;
+        quizIsaretle(s, btn.dataset.h);
+      });
+    });
+  });
+}
+/* Test akisindaki tum overlay'leri yeniden cizer (bitir/anahtar degisiminde) */
+function quizKartlariTazele() {
+  quizOverlayTazele();
 }
 /* "Anahtari goster": sonuc penceresini ACMADAN puanlama modunu acar/kapatir.
    Acikken dogru sik yesil ✓, isaretlenen yanlis sik kirmizi ✗ olur ve
@@ -1487,13 +1609,7 @@ function quizSifirla() {
   quizState.bitir = false;
   quizState.anahtar = false;
   quizKaydet();
-  const sorular = quizSorulari();
-  $$('.qcard', el.pages).forEach(c => {
-    const s = sorular.find(x => x.id === c.dataset.qid);
-    if (!s) return;
-    c.classList.remove('done');
-    c.innerHTML = quizKartHTML(s);
-  });
+  quizOverlayTazele();
   quizBarGuncelle();
   toast('İşaretler temizlendi');
 }
@@ -1601,10 +1717,6 @@ function buildPages() {
     $('#introOzet', ic).addEventListener('click', () => ozToggle(true));
   }
   const frag = document.createDocumentFragment();
-  /* test modu: kartlar sayfalarin ALTINA degil, soru sayfasinin ALTINA
-     (ilgili .page icine) konur — goz soru ile A–E isaretleme kartini
-     birlikte gorur. Kartlar cevap anahtari olmadan da cizilir. */
-  const soruluSayfa = p => quizSayfaNos(p).length > 0;
   for (let n = 1; n <= s.pages; n++) {
     const d = document.createElement('article');
     d.className = 'page';
@@ -1612,21 +1724,21 @@ function buildPages() {
     d.innerHTML = '<img loading="lazy" decoding="async" alt="' + s.title + ' — sayfa ' + n + '">' +
       '<div class="pcap"><span>Sayfa ' + n + ' / ' + s.pages + '</span>' +
       '<button class="mk' + (isMarked(n) ? ' on' : '') + '" title="Ayraç (B)">&#128278; Ayraç</button></div>' +
-      (soruluSayfa(n) ? '<div class="quiz-cards" data-qpage="' + n + '"></div>' : '');
+      '<div class="qoverlay" data-qpage="' + n + '"><div class="qstrip"></div></div>';
     reserve($('img', d), s);
     $('.mk', d).addEventListener('click', () => toggleMark(n));
     if (isMarked(n)) d.classList.add('bookmarked');
     frag.appendChild(d);
   }
   el.pages.appendChild(frag);
-  /* kartlari ilgili sayfalara dagit */
+  /* overlay'leri ilgili sayfalara dağıt */
   if (quizDataOf()) {
     const tum = quizSorulari();
     const gruplu = {};
     tum.forEach(q => { (gruplu[q.p] = gruplu[q.p] || []).push(q); });
     Object.keys(gruplu).forEach(p => {
-      const kutu = $('.quiz-cards[data-qpage="' + p + '"]', el.pages);
-      if (kutu) quizKartlariKoy(kutu, gruplu[p]);
+      const ov = $('.qoverlay[data-qpage="' + p + '"]', el.pages);
+      if (ov) quizOverlayKoy(ov, gruplu[p]);
     });
   }
   if (observer) observer.disconnect();
@@ -1924,14 +2036,9 @@ function init() {
     const r = e.target.closest('.row');
     if (r && r.dataset.qid) quizGit(r.dataset.qid);
   });
-  el.pages.addEventListener('click', e => {
-    const b = e.target.closest('.qcard .qo button');
-    if (!b) return;
-    const kart = b.closest('.qcard');
-    if (!kart) return;
-    const sorular = quizSorulari();
-    const s = sorular.find(x => x.id === kart.dataset.qid);
-    if (s) quizIsaretle(s, b.dataset.h);
+  /* overlay dışına tıklayınca açık picker'ları kapat */
+  document.addEventListener('click', () => {
+    $$('.qspot.open', el.pages).forEach(x => x.classList.remove('open'));
   });
   $('#btnLib').addEventListener('click', () => toggleLib());
   const eL = document.getElementById('edgeLeft');
