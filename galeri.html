@@ -154,6 +154,35 @@ html[data-theme="dark"] .paper{box-shadow:0 26px 70px rgba(0,0,0,.65),0 0 0 1px 
 .paper.spread img{flex:1 1 0;width:auto;min-width:0;height:100%;object-fit:contain}
 .paper img{opacity:0;transition:opacity .35s var(--ease)}
 .paper img.ready{opacity:1}
+.paper .pgwrap{position:relative;flex:1 1 0;min-width:0;display:block}
+.paper:not(.spread) .pgwrap{width:100%}
+.paper .pgwrap img{width:100%;height:auto}
+.paper.spread .pgwrap{height:100%}
+.paper.spread .pgwrap img{height:100%;object-fit:contain}
+/* ---------- gorsel ustu dogrudan tiklanabilir A-B-C-D-E hotspot katmani ---------- */
+.qhotspots{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}
+.qhotspots:has(.qhotspot){display:block}
+.qhotspot{position:absolute;pointer-events:auto;cursor:pointer;border-radius:6px;
+  border:1.5px dashed transparent;background:transparent;
+  display:flex;align-items:center;padding:0;margin:0;box-sizing:border-box;
+  transition:background .15s, border-color .15s, box-shadow .15s;
+  -webkit-tap-highlight-color:transparent}
+.qhotspot:hover{background:rgba(124,92,255,.14);border-color:rgba(124,92,255,.45)}
+.qhotspot.sel{background:rgba(239,43,58,.22);border:2px solid #ef2b3a;box-shadow:0 0 10px rgba(239,43,58,.35)}
+.qhotspot.ok{background:rgba(22,163,74,.22);border:2px solid #16a34a;box-shadow:0 0 10px rgba(22,163,74,.35)}
+.qhotspot.bad{background:rgba(239,43,58,.22);border:2px solid #ef2b3a;box-shadow:0 0 10px rgba(239,43,58,.35)}
+.qhotspot .qh-badge{position:absolute;left:-4px;top:50%;transform:translateY(-50%);
+  width:22px;height:22px;border-radius:50%;background:var(--panel-2);
+  border:1.5px solid var(--stroke);font-size:11px;font-weight:900;
+  display:grid;place-items:center;color:var(--text);pointer-events:none;
+  box-shadow:0 2px 6px rgba(0,0,0,.35);transition:all .15s}
+.qhotspot:hover .qh-badge{background:var(--accent);border-color:var(--accent);color:#fff}
+.qhotspot.sel .qh-badge{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
+.qhotspot.ok .qh-badge{background:#16a34a;border-color:#16a34a;color:#fff}
+.qhotspot.bad .qh-badge{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
+@media(max-width:760px){
+  .qhotspot .qh-badge{width:19px;height:19px;font-size:9.5px;left:-2px}
+}
 .skel{position:absolute;inset:0;z-index:3;background:linear-gradient(100deg,var(--panel) 20%,var(--panel-2) 40%,var(--panel) 60%);
   background-size:200% 100%;animation:sh 1.3s linear infinite;pointer-events:none;opacity:1;transition:opacity .3s}
 .paper.loaded .skel{opacity:0}
@@ -787,6 +816,8 @@ function paint() {
   const token = ++paintToken;
   el.paper.classList.toggle('spread', cols === 2);
   $$('img', el.paper).forEach(n => n.remove());
+  $$('.qhotspots', el.paper).forEach(n => n.remove());
+  $$('.pgwrap', el.paper).forEach(n => n.remove());
   el.paper.classList.remove('loaded');
   let left = nums.length;
   const settle = () => {
@@ -794,13 +825,21 @@ function paint() {
     if (--left <= 0) el.paper.classList.add('loaded');
   };
   nums.forEach(n => {
+    const wrap = document.createElement('div');
+    wrap.className = 'pgwrap';
+    wrap.dataset.pg = n;
     const img = document.createElement('img');
     img.src = src(s.key, n);
     img.alt = s.title + ' — sayfa ' + n;
     img.decoding = 'async';
     img.addEventListener('load', () => { img.classList.add('ready'); settle(); }, { once: true });
     img.addEventListener('error', settle, { once: true });
-    el.paper.appendChild(img);
+    wrap.appendChild(img);
+    const hot = document.createElement('div');
+    hot.className = 'qhotspots';
+    hot.dataset.qhpage = n;
+    wrap.appendChild(hot);
+    el.paper.appendChild(wrap);
   });
   /* komsu sayfalari onceden yukle */
   [state.page - cols, state.page + cols].forEach(n => {
@@ -808,6 +847,19 @@ function paint() {
   });
   layout();
   qzSayfaGuncelle();   /* test modu: bu yapraktaki sorular + anahtar seridi */
+  qzHotspotsYerlestir();
+}
+/* gorsel ustu hotspotlari o anki yapraga yerlestir */
+function qzHotspotsYerlestir() {
+  $$('.qhotspots', el.paper).forEach(hot => {
+    const p = parseInt(hot.dataset.qhpage, 10);
+    if (!p) { hot.innerHTML = ''; return; }
+    const d = qzSet();
+    const nos = (d && d.pages) ? (d.pages[String(p)] || []) : [];
+    if (!nos.length) { hot.innerHTML = ''; return; }
+    const sorular = nos.map(n => ({ id: p + ':' + n, p: p, n: n }));
+    qzHotspotKoy(hot, sorular);
+  });
 }
 
 /* ---------- arayuz senkronu ---------- */
@@ -1308,6 +1360,67 @@ function qzSay() {
   return { ok: ok, kotu: kotu, bos: bos, anahtarli: anahtarli, isaretli: isaretli, toplam: t.length };
 }
 function qzGorunur() { return qzState.anahtar || qzState.bitir; }
+function qzChoicesOf(p, n) {
+  const d = qzSet(); if (!d || !d.choices) return null;
+  const m = d.choices[String(p)];
+  return m ? (m[String(n)] || null) : null;
+}
+function qzHotDurum(s, h) {
+  const v = qzSec(s), a = qzKey(s), acik = qzGorunur();
+  if (acik && a) {
+    if (h === a) return 'ok';
+    if (v && h === v) return 'bad';
+    return '';
+  }
+  return (v && h === v) ? 'sel' : '';
+}
+function qzHotspotKoy(kutu, sorular) {
+  kutu.innerHTML = '';
+  sorular.forEach(s => {
+    const cMap = qzChoicesOf(s.p, s.n);
+    if (!cMap) return;
+    Object.keys(cMap).forEach(h => {
+      const box = cMap[h];
+      if (!box || box.length < 4) return;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'qhotspot' + (qzHotDurum(s, h) ? ' ' + qzHotDurum(s, h) : '');
+      b.dataset.qid = s.id;
+      b.dataset.h = h;
+      b.title = 'Soru ' + s.n + ' — ' + h + ' şıkkı';
+      b.setAttribute('aria-label', 'Soru ' + s.n + ' ' + h + ' şıkkı');
+      b.setAttribute('aria-pressed', qzSec(s) === h ? 'true' : 'false');
+      const padX = 0.008, padY = 0.004;
+      const x0 = Math.max(0, (box[0] - padX) * 100);
+      const y0 = Math.max(0, (box[1] - padY) * 100);
+      const w = Math.min(100 - x0, (box[2] - box[0] + padX * 2) * 100);
+      const ht = (box[3] - box[1] + padY * 2) * 100;
+      b.style.left = x0.toFixed(2) + '%';
+      b.style.top = y0.toFixed(2) + '%';
+      b.style.width = Math.max(5.5, w).toFixed(2) + '%';
+      b.style.height = Math.max(2.2, ht).toFixed(2) + '%';
+      b.innerHTML = '<span class="qh-badge">' + h + '</span>';
+      b.addEventListener('click', ev => {
+        ev.stopPropagation();
+        if (qzState.bitir || qzState.anahtar) return;
+        qzIsaretle(s, h);
+      });
+      kutu.appendChild(b);
+    });
+  });
+}
+function qzHotspotsTazele(kok) {
+  const sorular = qzTumu();
+  const byId = {};
+  sorular.forEach(s => { byId[s.id] = s; });
+  (kok || document).querySelectorAll('.qhotspot').forEach(hs => {
+    const s = byId[hs.dataset.qid];
+    if (!s) return;
+    const st = qzHotDurum(s, hs.dataset.h);
+    hs.className = 'qhotspot' + (st ? ' ' + st : '');
+    hs.setAttribute('aria-pressed', qzSec(s) === hs.dataset.h ? 'true' : 'false');
+  });
+}
 const qzKacis = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 function qzKartHTML(s) {
   const v = qzSec(s), a = qzKey(s), kok = qzKok(s), acik = qzGorunur();
@@ -1337,6 +1450,7 @@ function qzIsaretle(s, h) {
   const c = document.querySelector('.qcard[data-qid="' + s.id + '"]');
   if (c) { c.classList.toggle('done', !!qzState.sec[s.id]); c.innerHTML = qzKartHTML(s); }
   qzTabloGuncelle();
+  qzHotspotsTazele();
 }
 
 /* panel basligi + sayaclar + anahtar seridi */

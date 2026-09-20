@@ -176,6 +176,14 @@ for ad, metin in (("viewer.html", izl), ("galeri.html", gal)):
     for parca in ("type=\"button\" data-h=\"", "aria-pressed=\"",
                   "role=\"group\"", "aria-label=\"Soru '"):
         assert parca in metin, f"{ad} icinde test modu erisilebilirlik kodu eksik: {parca}"
+# gorsel ustu A-E hotspot katmani: oku + galeri + sunumda ayni davranis
+for ad, metin in (("oku.html", oku), ("viewer.html", izl), ("galeri.html", gal)):
+    for parca in ("qhotspot", "qhotspots", "qh-badge"):
+        assert parca in metin, f"{ad} icinde gorsel ustu hotspot kodu eksik: {parca}"
+for ad, metin in (("viewer.html", izl), ("galeri.html", gal)):
+    # hotspot kutusu JS ile uretilir (class adi tek tirnak icinde gecer)
+    for parca in ("qhotspots", "qh-badge"):
+        assert parca in metin, f"{ad} icinde hotspot erisilebilirlik kodu eksik: {parca}"
 
 # Galeri + Sunum gorunumunde test modu kart akisi vardir; uc dosyanin gomulu
 # quiz blogu birebir ayni olmali (tek komutla birlikte yazilir).

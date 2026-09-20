@@ -284,6 +284,33 @@ body.qz-open .dots{right:calc(min(400px,94vw) + 16px)}
 .qcard .qo button.ok{background:#16a34a;border-color:#16a34a;color:#fff}
 .qcard .qo button.bad{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
 .qcard .qo button.dim{opacity:.55}
+/* ---------- gorsel ustu dogrudan tiklanabilir A-B-C-D-E hotspot katmani ---------- */
+.pg-card.pg-img{position:relative}
+.pg-card.pg-img .pgwrap{position:relative;display:inline-block;line-height:0;max-width:100%;max-height:100%}
+.pg-card.pg-img .pgwrap img{line-height:normal}
+.qhotspots{position:absolute;inset:0;z-index:5;pointer-events:none;display:none;line-height:normal}
+.qhotspots:has(.qhotspot){display:block}
+.qhotspot{position:absolute;pointer-events:auto;cursor:pointer;border-radius:6px;
+  border:1.5px dashed transparent;background:transparent;
+  display:flex;align-items:center;padding:0;margin:0;box-sizing:border-box;
+  transition:background .15s, border-color .15s, box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;font-family:inherit;color:inherit}
+.qhotspot:hover{background:rgba(124,109,250,.16);border-color:rgba(124,109,250,.5)}
+.qhotspot.sel{background:rgba(239,43,58,.24);border:2px solid #ef2b3a;box-shadow:0 0 10px rgba(239,43,58,.35)}
+.qhotspot.ok{background:rgba(22,163,74,.24);border:2px solid #16a34a;box-shadow:0 0 10px rgba(22,163,74,.35)}
+.qhotspot.bad{background:rgba(239,43,58,.24);border:2px solid #ef2b3a;box-shadow:0 0 10px rgba(239,43,58,.35)}
+.qhotspot .qh-badge{position:absolute;left:-4px;top:50%;transform:translateY(-50%);
+  width:22px;height:22px;border-radius:50%;background:rgba(12,14,34,.92);
+  border:1.5px solid var(--border-h);font-size:11px;font-weight:900;
+  display:grid;place-items:center;color:var(--text);pointer-events:none;
+  box-shadow:0 2px 6px rgba(0,0,0,.4);transition:all .15s}
+.qhotspot:hover .qh-badge{background:var(--accent);border-color:var(--accent);color:#fff}
+.qhotspot.sel .qh-badge{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
+.qhotspot.ok .qh-badge{background:#16a34a;border-color:#16a34a;color:#fff}
+.qhotspot.bad .qh-badge{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
+@media(max-width:760px){
+  .qhotspot .qh-badge{width:19px;height:19px;font-size:9.5px;left:-2px}
+}
 .qz-key{margin:0 14px;border:1px solid rgba(247,201,72,.4);border-radius:12px;background:rgba(247,201,72,.07);
   padding:9px 12px;font-size:12px;line-height:1.95;color:var(--text);display:none}
 .qz-key.on{display:block}
@@ -618,6 +645,8 @@ function mkFrame(id,pg){
     const w=document.createElement('div');
     w.className='pg-card pg-img';
     w.id=id;
+    const wrap=document.createElement('div');
+    wrap.className='pgwrap';
     const im=document.createElement('img');
     im.src=pageSrc(pg);
     im.alt=`Sayfa ${pg}`;
@@ -625,7 +654,15 @@ function mkFrame(id,pg){
     im.addEventListener('error',()=>{
       w.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#555;font:600 14px system-ui">Sayfa görseli yok: ${pageSrc(pg)}</div>`;
     });
-    w.appendChild(im);
+    wrap.appendChild(im);
+    const hot=document.createElement('div');
+    hot.className='qhotspots';
+    hot.dataset.pg=pg;
+    wrap.appendChild(hot);
+    w.appendChild(wrap);
+    /* gorsel yuklenince hotspotlari yerlestir (oran % ile resme bagli) */
+    requestAnimationFrame(()=>qzHotspotsYerlestir(wrap,pg));
+    im.addEventListener('load',()=>qzHotspotsYerlestir(wrap,pg),{once:true});
     return w;
   }
   const f=document.createElement('iframe');
@@ -793,6 +830,73 @@ function qzSay(){
   return {ok:ok,kotu:kotu,bos:bos,anahtarli:anahtarli,isaretli:isaretli,toplam:t.length};
 }
 function qzGorunur(){return qzState.anahtar||qzState.bitir;}
+function qzChoicesOf(p,n){
+  const d=qzSet();if(!d||!d.choices)return null;
+  const m=d.choices[String(p)];return m?(m[String(n)]||null):null;
+}
+function qzHotDurum(s,h){
+  const v=qzSec(s),a=qzKey(s),acik=qzGorunur();
+  if(acik&&a){
+    if(h===a)return 'ok';
+    if(v&&h===v)return 'bad';
+    return '';
+  }
+  return (v&&h===v)?'sel':'';
+}
+function qzHotspotKoy(kutu,sorular){
+  kutu.innerHTML='';
+  sorular.forEach(s=>{
+    const cMap=qzChoicesOf(s.p,s.n);
+    if(!cMap)return;
+    Object.keys(cMap).forEach(h=>{
+      const box=cMap[h];
+      if(!box||box.length<4)return;
+      const b=document.createElement('button');
+      b.type='button';
+      b.className='qhotspot'+(qzHotDurum(s,h)?' '+qzHotDurum(s,h):'');
+      b.dataset.qid=s.id;b.dataset.h=h;
+      b.title='Soru '+s.n+' — '+h+' şıkkı';
+      b.setAttribute('aria-label','Soru '+s.n+' '+h+' şıkkı');
+      b.setAttribute('aria-pressed',qzSec(s)===h?'true':'false');
+      const padX=0.008,padY=0.004;
+      const x0=Math.max(0,(box[0]-padX)*100);
+      const y0=Math.max(0,(box[1]-padY)*100);
+      const w=Math.min(100-x0,(box[2]-box[0]+padX*2)*100);
+      const ht=(box[3]-box[1]+padY*2)*100;
+      b.style.left=x0.toFixed(2)+'%';
+      b.style.top=y0.toFixed(2)+'%';
+      b.style.width=Math.max(5.5,w).toFixed(2)+'%';
+      b.style.height=Math.max(2.2,ht).toFixed(2)+'%';
+      b.innerHTML='<span class="qh-badge">'+h+'</span>';
+      b.addEventListener('click',ev=>{
+        ev.stopPropagation();
+        if(qzState.bitir||qzState.anahtar)return;
+        qzIsaretle(s,h);
+      });
+      kutu.appendChild(b);
+    });
+  });
+}
+function qzHotspotsTazele(kok){
+  const sorular=qzTumu();
+  const byId={};
+  sorular.forEach(s=>{byId[s.id]=s;});
+  (kok||document).querySelectorAll('.qhotspot').forEach(hs=>{
+    const s=byId[hs.dataset.qid];
+    if(!s)return;
+    const st=qzHotDurum(s,hs.dataset.h);
+    hs.className='qhotspot'+(st?' '+st:'');
+    hs.setAttribute('aria-pressed',qzSec(s)===hs.dataset.h?'true':'false');
+  });
+}
+function qzHotspotsYerlestir(wrap,pg){
+  const hot=wrap?wrap.querySelector('.qhotspots'):document.querySelector('.qhotspots');
+  if(!hot)return;
+  const d=qzSet();
+  const nos=(d&&d.pages)?(d.pages[String(pg)]||[]):[];
+  if(!nos.length){hot.innerHTML='';return;}
+  qzHotspotKoy(hot,nos.map(n=>({id:pg+':'+n,p:pg,n:n})));
+}
 const qzKacis=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 function qzKartHTML(s){
   const v=qzSec(s),a=qzKey(s),kok=qzKok(s),acik=qzGorunur();
@@ -822,6 +926,7 @@ function qzIsaretle(s,h){
   const c=document.querySelector('.qcard[data-qid="'+s.id+'"]');
   if(c){c.classList.toggle('done',!!qzState.sec[s.id]);c.innerHTML=qzKartHTML(s);}
   qzTabloGuncelle();
+  qzHotspotsTazele();
 }
 function qzTabloGuncelle(){
   const s=qzSay();
