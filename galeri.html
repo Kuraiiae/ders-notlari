@@ -1409,7 +1409,42 @@ function qzOverlayGuncelle() {
       const optKeys = QZ_SIK.filter(h => opts[h] && opts[h].length >= 4);
       if (!optKeys.length) return;
 
-      const sortedByY = optKeys.slice().sort((a, b) => opts[a][1] - opts[b][1]);
+      // Sort by y1 first, then x1 (for same-row options)
+      const sortedByY = optKeys.slice().sort((a, b) => {
+        const dy = opts[a][1] - opts[b][1];
+        return Math.abs(dy) < 0.003 ? opts[a][0] - opts[b][0] : dy;
+      });
+
+      // Detect layout: horizontal if options share same Y row
+      // Group into rows: options within 0.008 y-distance are in same row
+      const rows = [];
+      sortedByY.forEach(h => {
+        const box = opts[h];
+        let placed = false;
+        for (const row of rows) {
+          if (Math.abs(opts[row[0]][1] - box[1]) < 0.008) {
+            row.push(h);
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) rows.push([h]);
+      });
+
+      const isHorizontal = rows.length === 1 && optKeys.length > 1;
+      const isMixed = rows.length > 1 && rows.some(r => r.length > 1); // e.g. 2-column grid
+
+      // Compute "row pitch" (vertical distance between rows) for height estimation
+      let rowPitch = 0;
+      if (rows.length >= 2) {
+        const pitches = [];
+        for (let ri = 0; ri < rows.length - 1; ri++) {
+          const y1 = opts[rows[ri][0]][1];
+          const y2 = opts[rows[ri + 1][0]][1];
+          pitches.push(y2 - y1);
+        }
+        rowPitch = pitches.reduce((a, b) => a + b, 0) / pitches.length;
+      }
 
       optKeys.forEach(h => {
         const box = opts[h];
@@ -1426,39 +1461,58 @@ function qzOverlayGuncelle() {
         } else if (qSec && h === qSec) {
           cls += ' sel';
         }
-
         btn.className = cls;
 
-        const x1 = (box[0] * 100).toFixed(2);
-        const y1 = (box[1] * 100).toFixed(2);
-        const w = Math.max(2.5, (box[2] - box[0]) * 100).toFixed(2);
+        // Find this option's row
+        const myRow = rows.find(r => r.includes(h));
+        const rowIdx = rows.indexOf(myRow);
+        const posInRow = myRow ? myRow.indexOf(h) : 0;
+        const isLastInRow = myRow ? posInRow === myRow.length - 1 : true;
+        const isLastRow = rowIdx === rows.length - 1;
 
-        const idx = sortedByY.indexOf(h);
-        let h_pct;
-
-        if (idx >= 0 && idx < sortedByY.length - 1) {
-          const nextH = sortedByY[idx + 1];
-          const dy = opts[nextH][1] - opts[h][1];
-          if (dy > 0.008) {
-            h_pct = Math.max((dy * 100 - 0.35), (box[3] - box[1]) * 100).toFixed(2);
+        // X: start at box[0], width extends to next sibling in row or use box width
+        let x1, w_pct;
+        if (isHorizontal || isMixed) {
+          x1 = (box[0] * 100).toFixed(2);
+          if (!isLastInRow) {
+            // Extend to just before next sibling
+            const nextH = myRow[posInRow + 1];
+            const dx = opts[nextH][0] - box[0];
+            w_pct = Math.max(2.5, (dx * 100 - 0.3)).toFixed(2);
           } else {
-            h_pct = Math.max(2.2, (box[3] - box[1]) * 100).toFixed(2);
-          }
-        } else if (idx === sortedByY.length - 1 && sortedByY.length > 1) {
-          const prevH = sortedByY[idx - 1];
-          const dy = opts[h][1] - opts[prevH][1];
-          if (dy > 0.008) {
-            h_pct = Math.max((dy * 100 - 0.35), (box[3] - box[1]) * 100).toFixed(2);
-          } else {
-            h_pct = Math.max(2.2, (box[3] - box[1]) * 100).toFixed(2);
+            w_pct = Math.max(2.5, (box[2] - box[0]) * 100).toFixed(2);
           }
         } else {
-          h_pct = Math.max(2.2, (box[3] - box[1]) * 100).toFixed(2);
+          // Vertical: extend width to max x2 of all opts in this question
+          // (multi-line text may extend further right than PDF-extracted x2)
+          const maxX2 = Math.max.apply(null, optKeys.map(k => opts[k][2]));
+          const extX2 = Math.min(0.98, maxX2 + 0.01); // slight padding, capped at 98%
+          x1 = (box[0] * 100).toFixed(2);
+          w_pct = Math.max(2.5, (extX2 - box[0]) * 100).toFixed(2);
+        }
+
+
+        // Y: top = box[1], height covers to next row's y1 (for all multi-line text)
+        const y1 = (box[1] * 100).toFixed(2);
+        let h_pct;
+
+        if (!isLastRow) {
+          // Extend to next row's y1 minus small gap
+          const nextRowFirstH = rows[rowIdx + 1][0];
+          const dy = opts[nextRowFirstH][1] - box[1];
+          h_pct = Math.max(3.0, (dy * 100 - 0.3)).toFixed(2);
+        } else if (rows.length >= 2) {
+          // Last row: use same pitch as average row distance
+          const pitch = rowPitch > 0.008 ? rowPitch : (box[3] - box[1]);
+          h_pct = Math.max(3.0, pitch * 100 - 0.3).toFixed(2);
+        } else {
+          // Only one row (pure horizontal): use raw box height
+          h_pct = Math.max(1.5, (box[3] - box[1]) * 100).toFixed(2);
         }
 
         btn.style.left = x1 + '%';
         btn.style.top = y1 + '%';
-        btn.style.width = w + '%';
+        btn.style.width = w_pct + '%';
         btn.style.height = h_pct + '%';
 
         btn.textContent = h;

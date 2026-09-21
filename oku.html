@@ -1764,23 +1764,29 @@ function qzHotHiza(rows) {
   const yay = Math.max.apply(null, cy) - Math.min.apply(null, cy);
   const xay = Math.max.apply(null, xs) - Math.min.apply(null, xs);
   if (yay >= xay && yay > 0.008) {
-    /* dikey dizilim: tek sol kenar + tek genislik + TEK YUKSEKLIK */
+    /* dikey dizilim: tek sol kenar + genişletilmiş genişlik + satır arasına kadar yükseklik */
     const sol = ort(x0);
-    const gen = Math.min(1 - sol, Math.max.apply(null, w));
-    /* Satir araligi (pitch) kadar yer var: kutular birbirine girmesin diye
-       yukseklik en kisa araliga gore kisilir; alt sinir metin yuksekligidir
-       (harf cercevenin disinda kalmasin). Aralik olculemezse ham olcum kalir. */
+    /* Genişlik: tüm şıkların max x2 değerine +1% padding (çok satırlı şıklar) */
+    const maxX2 = Math.max.apply(null, rows.map(b => b[2]));
+    const gen = Math.min(1 - sol, Math.max(Math.max.apply(null, w), (Math.min(0.98, maxX2 + 0.01) - sol)));
+    /* Yükseklik: şıklar arası tam mesafeyi kullan (çok satırlı metni kapsar).
+       pitch = ortalama iki şık arası mesafe; son şık için aynı pitch kullanılır. */
     const sirali = cy.slice().sort((a, b) => a - b);
-    let pitch = Infinity;
-    for (let i = 1; i < n; i++) pitch = Math.min(pitch, sirali[i] - sirali[i - 1]);
-    const metin = Math.max.apply(null, rows.map(b => b[3] - b[1]));
-    let yuk = Math.max.apply(null, h);
-    if (pitch !== Infinity && pitch > metin * 0.6) {
-      yuk = Math.min(yuk, Math.max(metin + 0.002, pitch - 0.004));
+    let avgPitch = 0;
+    if (n > 1) {
+      let sumP = 0;
+      for (let i = 1; i < n; i++) sumP += sirali[i] - sirali[i - 1];
+      avgPitch = sumP / (n - 1);
     }
+    const metin = Math.max.apply(null, rows.map(b => b[3] - b[1]));
+    /* Yükseklik = pitch (iki şık arası mesafe) - küçük boşluk.
+       Bu şık kutusunu bir sonraki şıkkın başına kadar uzatır. */
+    const yuk = avgPitch > metin * 0.6
+      ? Math.max(metin, avgPitch - 0.003)
+      : Math.max.apply(null, h);
     for (let i = 0; i < n; i++) {
       x0[i] = sol; w[i] = gen; h[i] = yuk;
-      /* her satirin DIKEY ORTASINA hizala; PDF kutusu disarida kalmasin */
+      /* her satırın DIKEY ORTASINA hizala; PDF kutusu dışarıda kalmasın */
       let yy = Math.min(cy[i] - yuk / 2, rows[i][1]);
       yy = Math.max(yy, Math.min(rows[i][1], rows[i][3] - yuk));
       y0[i] = Math.max(0, Math.min(1 - yuk, yy));
