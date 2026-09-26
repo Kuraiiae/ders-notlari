@@ -12,25 +12,18 @@ ASSETS = os.path.join(ROOT, "assets")
 
 SUBJECTS = [
     {
+        "key": "deneme",
+        "title": "KPSS Tam Deneme",
+        "subtitle": "Karışık Deneme Bölmesi",
+        "icon": "&#128202;",
+        "file": r"C:\Users\KURAI\Downloads\türkçe 2.pdf",
+    },
+    {
         "key": "turkce",
         "title": "Türkçe",
         "subtitle": "Dil Bilgisi ve Anlatım",
         "icon": "&#9998;",
         "file": r"C:\Users\KURAI\Downloads\turkce (1).pdf",
-    },
-    {
-        "key": "turkce-test",
-        "title": "Türkçe Testleri",
-        "subtitle": "Video Ders Notları ve Testler",
-        "icon": "&#128221;",
-        "file": r"C:\Users\KURAI\Downloads\Turkce.pdf",
-    },
-    {
-        "key": "turkce-cikmis",
-        "title": "Türkçe Çıkmış Sorular",
-        "subtitle": "Son 10 Yıl Konu Konu",
-        "icon": "&#127919;",
-        "file": r"C:\Users\KURAI\Downloads\paraf-akademi-kpss-lisans-son-10-yil-konu-konu-turkce-cikmis-sorular.pdf",
     },
     {
         "key": "tarih",
@@ -54,11 +47,18 @@ SUBJECTS = [
         "file": r"C:\Users\KURAI\Downloads\vatandaslik.pdf",
     },
     {
-        "key": "deneme",
-        "title": "KPSS Tam Deneme",
-        "subtitle": "Karışık Deneme Bölmesi",
-        "icon": "&#128202;",
-        "file": r"C:\Users\KURAI\Downloads\türkçe 2.pdf",
+        "key": "turkce-test",
+        "title": "Türkçe Testleri",
+        "subtitle": "Video Ders Notları ve Testler",
+        "icon": "&#128221;",
+        "file": r"C:\Users\KURAI\Downloads\Turkce.pdf",
+    },
+    {
+        "key": "turkce-cikmis",
+        "title": "Türkçe Çıkmış Sorular",
+        "subtitle": "Son 10 Yıl Konu Konu",
+        "icon": "&#127919;",
+        "file": r"C:\Users\KURAI\Downloads\paraf-akademi-kpss-lisans-son-10-yil-konu-konu-turkce-cikmis-sorular.pdf",
     },
 ]
 

@@ -18,7 +18,7 @@ import re
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-ORDER = ["turkce", "tarih", "cografya", "vatandaslik", "turkce-test", "turkce-cikmis", "deneme"]
+ORDER = ["deneme", "turkce", "tarih", "cografya", "vatandaslik", "turkce-test", "turkce-cikmis"]
 
 
 def read_text(path):
