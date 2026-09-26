@@ -332,9 +332,14 @@ html[data-theme="dark"] .page{box-shadow:0 26px 70px rgba(0,0,0,.65),0 0 0 1px r
 /* sayfa gorseli + ustune oturan hotspot katmani TEK kutu: katman yalnizca
    gorselin kapladigi alani olcer (alt bilgi cubugu / serit disarida kalir). */
 .page .pgwrap{position:relative;display:block;text-indent:0;overflow:hidden}
-/* Yayinevi logosu (PARAF AKADEMİ / KPSS-AGS LISANS) ust bantta: deneme/test
-   konularinda (body.quiz) goruntunun ust %3.8'ini kirp. */
-body.quiz .page .pgwrap img{clip-path:inset(3.8% 0 0 0);margin-top:-3.8%}
+body.quiz .page .pgwrap img{display:block;width:100%;height:auto}
+body.quiz .page .pgwrap::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3.5%;
+  background:#ffffff;border-bottom:1.5px solid #e2e8f0;z-index:4;pointer-events:none;
+}
+html[data-theme="dark"] body.quiz .page .pgwrap::before{background:#111528;border-bottom-color:#2a3356}
+html[data-paper="gece"] body.quiz .page .pgwrap::before{background:#101319;border-bottom-color:#2d3748}
+html[data-paper="sepya"] body.quiz .page .pgwrap::before{background:#fbf0d9;border-bottom-color:#e2d3b5}
 html[data-paper="sepya"] .page img{filter:sepia(.34) contrast(1.02) brightness(1.01)}
 html[data-paper="gece"] .page{background:#101319}
 html[data-paper="gece"] .page img{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.94)}

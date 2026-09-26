@@ -291,7 +291,11 @@ body.qz-open .dots{right:calc(min(400px,94vw) + 16px)}
    dolgu + kalin cerceve + basili sik harfinin ustune oturan yuvarlak rozet. */
 .pg-card.pg-img{position:relative}
 .pg-card.pg-img .pgwrap{position:relative;display:inline-block;line-height:0;max-width:100%;max-height:100%}
-.pg-card.pg-img .pgwrap img{line-height:normal}
+.pg-card.pg-img .pgwrap img{line-height:normal;display:block;width:100%;height:auto}
+body.quiz-set .pg-card.pg-img .pgwrap::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3.5%;
+  background:#ffffff;border-bottom:1.5px solid #e2e8f0;z-index:4;pointer-events:none;
+}
 .qhotspots{position:absolute;inset:0;z-index:5;--qh-b:24px;--qh-f:12px;
   pointer-events:none;display:none;line-height:normal}
 .qhotspots:has(.qhotspot){display:block}
@@ -499,7 +503,7 @@ const SETS=[
 ];
 const STORE={get(k,d){try{const v=localStorage.getItem('dn.'+k);return v===null?d:v;}catch(e){return d;}},
              set(k,v){try{localStorage.setItem('dn.'+k,String(v));}catch(e){}}};
-let SET=SETS[1];
+let SET=SETS[0];
 let TOTAL=SET.pages;
 let cur=1,busy=false,slotId='A',eff='slide',titles={},acc=0,accT=null,pillT=null;
 const EN={slide:'Dikey Kayma',zoom:'Zoom Solma',flip:'3D Çevirme',cube:'Küp Geçiş',swirl:'Girdap',random:'Rastgele'};
@@ -534,7 +538,7 @@ function setSec(key){
 }
 document.addEventListener('DOMContentLoaded',()=>{
   const q=new URLSearchParams(location.search).get('ders');
-  const s=SETS.find(x=>x.key===(q||STORE.get('viewer.ders','tarih')))||SETS[1];
+  const s=SETS.find(x=>x.key===(q||STORE.get('viewer.ders','deneme')))||SETS[0];
   SET=s;TOTAL=s.pages;
   const lbl=document.getElementById('sbSet');if(lbl)lbl.textContent=s.title;
   buildSetChips();

@@ -19,10 +19,15 @@
   --accent:#7c5cff; --accent-2:#2ec4b6;
   --ease:cubic-bezier(.22,.75,.25,1);
 }
+html[data-theme="sepia"]{
+  --bg:#1c1712; --panel:rgba(245,215,180,.07); --panel-2:rgba(245,215,180,.13);
+  --stroke:rgba(245,215,180,.16); --text:#fdf6ec; --muted:#cbba9f;
+  --shadow:0 26px 65px rgba(0,0,0,.60); --accent:#f59e0b; --accent-2:#d97706;
+}
 html[data-theme="light"]{
-  --bg:#e9edf7; --panel:rgba(255,255,255,.68); --panel-2:rgba(255,255,255,.92);
-  --stroke:rgba(16,28,64,.10); --text:#111a30; --muted:#5d6a8c;
-  --shadow:0 26px 60px rgba(28,44,92,.20);
+  --bg:#edf2f9; --panel:rgba(255,255,255,.82); --panel-2:rgba(255,255,255,.96);
+  --stroke:rgba(16,28,64,.12); --text:#0f172a; --muted:#475569;
+  --shadow:0 26px 60px rgba(28,44,92,.18); --accent:#6366f1; --accent-2:#06b6d4;
 }
 html,body{height:100%}
 body{
@@ -38,6 +43,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
 .aurora b{position:absolute;display:block;border-radius:50%;
   filter:blur(90px);opacity:.5;mix-blend-mode:screen;animation:float 26s ease-in-out infinite}
+html[data-theme="sepia"] .aurora b{opacity:.35;mix-blend-mode:screen;filter:blur(85px)}
 html[data-theme="light"] .aurora b{opacity:.34;mix-blend-mode:normal;filter:blur(80px)}
 .aurora b:nth-child(1){width:46vw;height:46vw;left:-8vw;top:-12vw;background:var(--accent)}
 .aurora b:nth-child(2){width:40vw;height:40vw;right:-6vw;top:6vh;background:var(--accent-2);animation-duration:31s;animation-delay:-6s}
@@ -331,7 +337,13 @@ body.grp-ders-kapali #subjectListDers,body.grp-deneme-kapali #subjectListDeneme{
    içindeki [x1,y1,x2,y2] oransal değerlerinden hesaplanır. */
 .qz-page-wrap{position:relative;display:flex;flex:1 1 0;min-width:0;overflow:hidden}
 .paper:not(.spread) .qz-page-wrap{flex:none;width:100%}
-.qz-page-wrap img{display:block;width:100%;height:auto;background:#fff;clip-path:inset(3.8% 0 0 0);margin-top:-3.8%}
+.qz-page-wrap img{display:block;width:100%;height:auto;background:#fff}
+.qz-page-wrap::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3.5%;
+  background:#ffffff;border-bottom:1.5px solid #e2e8f0;z-index:4;pointer-events:none;
+}
+html[data-theme="dark"] .qz-page-wrap::before{background:#111528;border-bottom-color:#2a3356}
+html[data-theme="sepia"] .qz-page-wrap::before{background:#fbf0d9;border-bottom-color:#e4d2b3}
 .qz-overlay, .qhotspots{position:absolute;inset:0;pointer-events:none;z-index:5}
 .qz-hot, .qhotspot{position:absolute;pointer-events:auto;cursor:pointer;
   border-radius:8px;border:2px solid transparent;
@@ -449,9 +461,9 @@ body.qz-acik .toast{bottom:calc(min(54vh,540px) + 26px)}
 <div class="grain" aria-hidden="true"></div>
 <div class="app">
   <header class="bar">
-    <button class="chip icon burger" id="btnSide" title="Kütüphane (K)">&#9776;</button>
+    <button class="chip icon burger" id="btnSide" title="Kütüphane Menüsü (K)">&#9776;</button>
     <a class="brand" href="index.html" title="Ana sayfa">
-      <div class="mark">&#9782;</div>
+      <div class="mark">&#128214;</div>
       <div class="txt">
         <strong>KPSS Orta Öğretim</strong>
         <span>Dijital Kütüphane</span>
@@ -487,20 +499,13 @@ body.qz-acik .toast{bottom:calc(min(54vh,540px) + 26px)}
       </div>
       <div class="bm-list" id="bmList"></div>
       <div class="side-head">
-        <span>Sayfa Ayarları</span>
+        <span>Arayüz Teması</span>
       </div>
       <div class="side-foot" style="border-top:0;padding-top:0">
-        <div class="hint" style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="chip" data-fit="width" title="Genişliğe sığdır">Sığdır</button>
-            <button class="chip" data-fit="page" title="Tam sayfa">Tam sayfa</button>
-            <button class="chip" data-fit="actual" title="Gerçek boyut">1:1</button>
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="chip" id="sideSpread" title="Çift sayfa">Çift sayfa</button>
-            <button class="chip" id="sideTheme" title="Tema">Tema</button>
-            <a class="chip" href="index.html" title="Ana sayfa">Ana Sayfa</a>
-          </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="chip theme-btn on" data-theme-val="dark" title="Gece Laciverti"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c5cff"></span> Gece</button>
+          <button class="chip theme-btn" data-theme-val="sepia" title="Sıcak Kitap Sepya"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b"></span> Sepya</button>
+          <button class="chip theme-btn" data-theme-val="light" title="Açık Temiz"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#6366f1"></span> Açık</button>
         </div>
       </div>
       <div class="side-foot">
@@ -1048,15 +1053,21 @@ function toggleSpread(force) {
 
 /* ---------- tema ---------- */
 function setTheme(t) {
+  if (!['dark', 'sepia', 'light'].includes(t)) t = 'dark';
   document.documentElement.dataset.theme = t;
   STORE.set('theme', t);
-  $('#btnTheme').innerHTML = t === 'dark' ? '&#9789;' : '&#9788;';
-  $('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#070a16' : '#e9edf7');
+  $('#btnTheme').innerHTML = t === 'light' ? '&#9788;' : (t === 'sepia' ? '&#9749;' : '&#9789;');
+  const colors = { dark: '#070a16', sepia: '#1c1712', light: '#edf2f9' };
+  $('meta[name="theme-color"]').setAttribute('content', colors[t] || '#070a16');
+  $$('.theme-btn').forEach(b => b.classList.toggle('on', b.dataset.themeVal === t));
 }
 function toggleTheme() {
-  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  const current = document.documentElement.dataset.theme || 'dark';
+  const order = ['dark', 'sepia', 'light'];
+  const next = order[(order.indexOf(current) + 1) % order.length];
   setTheme(next);
-  toast(next === 'dark' ? 'Karanlık tema' : 'Aydınlık tema');
+  const names = { dark: 'Gece Teması (Lacivert)', sepia: 'Sıcak Sepya Teması', light: 'Açık Temiz Tema' };
+  toast(names[next] || next);
 }
 
 /* ---------- tam ekran ---------- */
@@ -1133,9 +1144,7 @@ function bind() {
   const edgeBtn = document.getElementById('edgeLeft');
   if (edgeBtn) edgeBtn.addEventListener('click', () => toggleSide());
   $$('.grpbtn').forEach(b => b.addEventListener('click', () => toggleGrp(b.dataset.grp)));
-  $$('.side-foot [data-fit]').forEach(b => b.addEventListener('click', () => setFit(b.dataset.fit)));
-  $('#sideSpread').addEventListener('click', () => toggleSpread());
-  $('#sideTheme').addEventListener('click', toggleTheme);
+  $$('.theme-btn').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.themeVal)));
   $('#fabMain').addEventListener('click', () => fabToggle());
   $('#fabPrev').addEventListener('click', () => move(-1));
   $('#fabNext').addEventListener('click', () => move(1));
