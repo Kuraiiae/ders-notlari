@@ -13,8 +13,8 @@ ASSETS = os.path.join(ROOT, "assets")
 SUBJECTS = [
     {
         "key": "deneme",
-        "title": "KPSS Tam Deneme",
-        "subtitle": "Karışık Deneme Bölmesi",
+        "title": "Tüm Dersler",
+        "subtitle": "Tüm Dersler Deneme Bölmesi",
         "icon": "&#128202;",
         "file": r"C:\Users\KURAI\Downloads\türkçe 2.pdf",
     },
