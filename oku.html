@@ -19,10 +19,20 @@
   --shadow:0 30px 80px rgba(0,0,0,.55); --accent:#7c5cff; --accent-2:#2ec4b6;
   --ease:cubic-bezier(.22,.75,.25,1); --colw:860px;
 }
+html[data-theme="sepia"]{
+  --bg:#1a1510; --panel:rgba(245,215,180,.07); --panel-2:rgba(245,215,180,.13);
+  --stroke:rgba(245,215,180,.16); --text:#fdf6ec; --muted:#cbba9f;
+  --shadow:0 26px 65px rgba(0,0,0,.60); --accent:#f59e0b; --accent-2:#d97706;
+}
+html[data-theme="amoled"]{
+  --bg:#000000; --panel:#121217; --panel-2:#1b1b22;
+  --stroke:#272732; --text:#ffffff; --muted:#94a3b8;
+  --shadow:0 26px 65px rgba(0,0,0,.9); --accent:#06b6d4; --accent-2:#3b82f6;
+}
 html[data-theme="light"]{
-  --bg:#e9edf7; --panel:rgba(255,255,255,.68); --panel-2:rgba(255,255,255,.92);
-  --stroke:rgba(16,28,64,.10); --text:#111a30; --muted:#5d6a8c;
-  --shadow:0 26px 60px rgba(28,44,92,.20);
+  --bg:#edf2f9; --panel:rgba(255,255,255,.82); --panel-2:rgba(255,255,255,.96);
+  --stroke:rgba(16,28,64,.12); --text:#0f172a; --muted:#475569;
+  --shadow:0 26px 60px rgba(28,44,92,.18); --accent:#6366f1; --accent-2:#06b6d4;
 }
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--text);
@@ -554,6 +564,15 @@ html[data-theme="light"] .oz li{background:rgba(16,28,64,.05)}
         <nav id="subjectListDeneme"></nav>
       </div>
       <div class="card">
+        <h3>Arayüz Teması</h3>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="chip theme-btn on" data-theme-val="dark" title="Gece Laciverti"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c5cff"></span> Gece</button>
+          <button class="chip theme-btn" data-theme-val="sepia" title="Sıcak Kitap Sepya"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b"></span> Sepya</button>
+          <button class="chip theme-btn" data-theme-val="amoled" title="Obsidyen AMOLED"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#06b6d4"></span> AMOLED</button>
+          <button class="chip theme-btn" data-theme-val="light" title="Açık Temiz"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#6366f1"></span> Açık</button>
+        </div>
+      </div>
+      <div class="card">
         <h3>Ayraçlarım <span id="bmCount" style="color:var(--accent)"></span></h3>
         <div id="bmList"></div>
       </div>
@@ -583,6 +602,8 @@ html[data-theme="light"] .oz li{background:rgba(16,28,64,.05)}
         </span>
         <span class="cnt">İşaretli <b id="quizMarked">0</b>/<b id="quizTotal">0</b></span>
         <span class="sp"></span>
+        <button class="chip" id="quizNextEmpty" title="Sıradaki boş soruya git">🔘 Boş Soruya Git</button>
+        <button class="chip" id="quizNextBad" title="Sıradaki yanlış soruya git" hidden>❌ Yanlış Soruya Git</button>
         <button class="chip" id="quizAnahtar" title="Cevap anahtarını göster/gizle (A)">Anahtarı göster</button>
         <button class="chip" id="quizReset" title="İşaretleri temizle">Sıfırla</button>
         <button class="chip finish" id="quizFinish">Denemeyi bitir</button>
@@ -1329,6 +1350,16 @@ function quizBarGuncelle() {
     bekle.hidden = s.anahtarli > 0;
     bekle.textContent = s.toplam + ' soru · cevap anahtarı bekleniyor';
   }
+  const btnEmpty = $('#quizNextEmpty');
+  if (btnEmpty) {
+    btnEmpty.hidden = s.isaretli >= s.toplam;
+  }
+  const btnBad = $('#quizNextBad');
+  const yList = typeof quizYanlisSorulari === 'function' ? quizYanlisSorulari() : [];
+  if (btnBad) {
+    btnBad.hidden = !(quizGorunur() && yList.length > 0);
+    if (yList.length) btnBad.textContent = '❌ Yanlış Soruya Git (' + yList.length + ')';
+  }
 }
 
 /* ---------- Konu özetleri (veri: tools/ozet.py -> #ozetData) ---------- */
@@ -1803,10 +1834,47 @@ function qzHotHiza(rows) {
   return { x0: x0, y0: y0, w: w, h: h, satir: null };
 }
 function quizHasSolution(p, n) {
-  const d = quizDersVeri();
+  const d = quizDataOf();
   if (!d || !d.qs || !d.qs[String(p)]) return false;
   const num = parseInt(n, 10);
   return d.qs[String(p)].some(x => parseInt(x, 10) === num);
+}
+
+let quizYanlisIdx = 0;
+function quizYanlisSorulari() {
+  const list = [];
+  quizSorulari().forEach(q => {
+    const a = quizKeyOf(q.p, q.n);
+    const v = quizSec(q.p, q.n);
+    if (a && v && v !== a) list.push(q);
+  });
+  return list;
+}
+function quizSonrakiYanlis() {
+  const list = quizYanlisSorulari();
+  if (!list.length) {
+    toast('Tebrikler! Hiç yanlış cevabınız yok 🎉');
+    return;
+  }
+  if (quizYanlisIdx >= list.length) quizYanlisIdx = 0;
+  const q = list[quizYanlisIdx];
+  const current = quizYanlisIdx + 1;
+  quizYanlisIdx = (quizYanlisIdx + 1) % list.length;
+  toast('Yanlış soru: Soru ' + q.n + ' (Sayfa ' + q.p + ') [' + current + '/' + list.length + ']');
+  quizGit(q.id);
+}
+function quizSonrakiBos() {
+  const sorular = quizSorulari();
+  const bos = sorular.filter(q => !quizSec(q.p, q.n));
+  if (!bos.length) {
+    toast('Tüm soruları işaretlediniz! İsterseniz "Denemeyi bitir"e tıklayın.');
+    return;
+  }
+  const curPage = state.current || 1;
+  // find first empty on or after current page, or wrap around
+  const next = bos.find(q => q.p >= curPage) || bos[0];
+  toast('Boş soru: Soru ' + next.n + ' (Sayfa ' + next.p + ')');
+  quizGit(next.id);
 }
 
 function quizSolutionMaskKoy(container, s, cMap, sorular) {
@@ -2090,28 +2158,35 @@ function buildPages() {
     d.innerHTML = '<div class="pgwrap"><img loading="lazy" decoding="async" alt="' + s.title + ' — sayfa ' + n + '">' +
       '<div class="qhotspots" data-qhpage="' + n + '"></div></div>' +
       '<div class="pcap"><span>Sayfa ' + n + ' / ' + s.pages + '</span>' +
-      '<button class="mk' + (isMarked(n) ? ' on' : '') + '" title="Ayraç (B)">&#128278; Ayraç</button></div>' +
-      '<div class="qoverlay" data-qpage="' + n + '"><div class="qstrip"></div></div>' +
-      '<div class="quiz-cards" data-qcpage="' + n + '"></div>';
+      '<button class="mk' + (isMarked(n) ? ' on' : '') + '" title="Ayraç (B)">&#128278; Ayraç</button></div>';
     reserve($('img', d), s);
     $('.mk', d).addEventListener('click', () => toggleMark(n));
     if (isMarked(n)) d.classList.add('bookmarked');
     frag.appendChild(d);
   }
   el.pages.appendChild(frag);
-  /* overlay, hotspot ve kart'ları ilgili sayfalara dağıt */
+  /* hotspot'ları ilgili sayfalara dağıt */
   if (quizDataOf()) {
     const tum = quizSorulari();
     const gruplu = {};
     tum.forEach(q => { (gruplu[q.p] = gruplu[q.p] || []).push(q); });
     Object.keys(gruplu).forEach(p => {
-      const ov = $('.qoverlay[data-qpage="' + p + '"]', el.pages);
-      if (ov) quizOverlayKoy(ov, gruplu[p]);
       const hsp = $('.qhotspots[data-qhpage="' + p + '"]', el.pages);
       if (hsp) quizHotspotsKoy(hsp, gruplu[p]);
-      const qcd = $('.quiz-cards[data-qcpage="' + p + '"]', el.pages);
-      if (qcd) quizKartlariKoy(qcd, gruplu[p]);
     });
+  }
+  function yukleSayfa(box) {
+    const n = parseInt(box.dataset.n, 10);
+    const img = $('img', box);
+    if (!img) return;
+    const want = src(state.key, n);
+    if (img.dataset.ld !== want) {
+      img.dataset.ld = want;
+      img.onload = () => readyImg(img);
+      img.onerror = () => { if (img.src.includes('/clean/')) img.src = want.replace('/clean/', '/'); readyImg(img); };
+      img.src = want;
+    }
+    if (img.complete && img.naturalWidth > 0) readyImg(img);
   }
   if (observer) observer.disconnect();
   observer = new IntersectionObserver(entries => {
@@ -2119,33 +2194,22 @@ function buildPages() {
       if (!en.isIntersecting) return;
       const box = en.target;
       const n = parseInt(box.dataset.n, 10);
-      const img = $('img', box);
-      const want = src(state.key, n);
-      if (img.dataset.ld !== want) {
-        img.dataset.ld = want;
-        img.onload = () => readyImg(img);
-        img.onerror = () => readyImg(img);
-        img.src = want;
-      }
+      yukleSayfa(box);
       state.current = n;
       if (en.intersectionRatio > 0.55) {
-        /* kaldigi yerden devam kaydirmasi oturana kadar kayitli sayfayi ezme */
         if (resumeTarget && n === resumeTarget) resumeTarget = 0;
         if (!resumeTarget || Date.now() > holdUntil) {
-        state.max = Math.max(state.max, n);
-        STORE.set('max.' + state.key, String(state.max));
-        STORE.set('sayfa.' + state.key, String(n));
-        el.progress.style.width = (state.max / s.pages * 100) + '%';
+          state.max = Math.max(state.max, n);
+          STORE.set('max.' + state.key, String(state.max));
+          STORE.set('sayfa.' + state.key, String(n));
+          el.progress.style.width = (state.max / s.pages * 100) + '%';
         }
       }
     });
   }, { rootMargin: '600px 0px', threshold: [0, 0.55, 1] });
-  $$('.page', el.pages).forEach(p => observer.observe(p));
-  $$('.page', el.pages).slice(0, 3).forEach(p => {
-    const img = $('img', p);
-    img.src = src(state.key, parseInt(p.dataset.n, 10));
-    img.onload = () => readyImg(img);
-    img.onerror = () => readyImg(img);
+  $$('.page', el.pages).forEach(p => {
+    observer.observe(p);
+    yukleSayfa(p);
   });
 }
 function applyHeader() {
@@ -2294,9 +2358,11 @@ function updateResume() {
   } else el.resumeBtn.hidden = true;
 }
 function setTheme(t) {
+  if (!['dark', 'sepia', 'amoled', 'light'].includes(t)) t = 'dark';
   document.documentElement.dataset.theme = t;
   STORE.set('tema', t);
-  $('#btnTheme').innerHTML = t === 'dark' ? '&#9789;' : '&#9788;';
+  $('#btnTheme').innerHTML = (t === 'dark' || t === 'amoled') ? '&#9789;' : '&#9788;';
+  $$('.theme-btn').forEach(b => b.classList.toggle('on', b.dataset.themeVal === t));
 }
 function setPaper(p) {
   document.documentElement.dataset.paper = p;
@@ -2377,6 +2443,10 @@ function init() {
   $('#btnFocus').addEventListener('click', () => setFocus());
   $('#focusExit').addEventListener('click', () => setFocus(false));
   $$('.grpbtn').forEach(b => b.addEventListener('click', () => toggleGrp(b.dataset.grp)));
+  $$('.theme-btn').forEach(b => b.addEventListener('click', () => {
+    setTheme(b.dataset.themeVal);
+    toast('Tema: ' + b.textContent.trim());
+  }));
   $('#fabMain').addEventListener('click', () => fabToggle());
   $('#fabPrev').addEventListener('click', () => stepSubject(-1));
   $('#fabNext').addEventListener('click', () => stepSubject(1));
@@ -2389,9 +2459,12 @@ function init() {
   $('#fabClean').addEventListener('click', toggleClean);
   $$('#fabMenu [data-paper]').forEach(b => b.addEventListener('click', () => { setPaper(b.dataset.paper); syncFabPaper(); }));
   $('#btnTheme').addEventListener('click', () => {
-    const nx = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    const order = ['dark', 'sepia', 'amoled', 'light'];
+    const curTheme = document.documentElement.dataset.theme || 'dark';
+    const nx = order[(order.indexOf(curTheme) + 1) % order.length];
     setTheme(nx);
-    toast(nx === 'dark' ? 'Karanlık tema' : 'Aydınlık tema');
+    const names = { dark: 'Gece Laciverti', sepia: 'Sepya Kitap', amoled: 'Obsidyen AMOLED', light: 'Açık Temiz' };
+    toast('Tema: ' + (names[nx] || nx));
   });
   /* test modu dugmeleri */
   const qf = $('#quizFinish');
@@ -2411,6 +2484,10 @@ function init() {
     const r = e.target.closest('.row');
     if (r && r.dataset.qid) quizGit(r.dataset.qid);
   });
+  const qne = $('#quizNextEmpty');
+  if (qne) qne.addEventListener('click', quizSonrakiBos);
+  const qnb = $('#quizNextBad');
+  if (qnb) qnb.addEventListener('click', quizSonrakiYanlis);
   /* overlay dışına tıklayınca açık picker'ları kapat */
   document.addEventListener('click', () => {
     $$('.qspot.open', el.pages).forEach(x => x.classList.remove('open'));

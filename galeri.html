@@ -24,6 +24,11 @@ html[data-theme="sepia"]{
   --stroke:rgba(245,215,180,.16); --text:#fdf6ec; --muted:#cbba9f;
   --shadow:0 26px 65px rgba(0,0,0,.60); --accent:#f59e0b; --accent-2:#d97706;
 }
+html[data-theme="amoled"]{
+  --bg:#000000; --panel:#121217; --panel-2:#1b1b22;
+  --stroke:#272732; --text:#ffffff; --muted:#94a3b8;
+  --shadow:0 26px 65px rgba(0,0,0,.9); --accent:#06b6d4; --accent-2:#3b82f6;
+}
 html[data-theme="light"]{
   --bg:#edf2f9; --panel:rgba(255,255,255,.82); --panel-2:rgba(255,255,255,.96);
   --stroke:rgba(16,28,64,.12); --text:#0f172a; --muted:#475569;
@@ -346,19 +351,30 @@ html[data-theme="dark"] .qz-page-wrap::before{background:#111528;border-bottom-c
 html[data-theme="sepia"] .qz-page-wrap::before{background:#fbf0d9;border-bottom-color:#e4d2b3}
 .qz-overlay, .qhotspots{position:absolute;inset:0;pointer-events:none;z-index:5}
 .qz-hot, .qhotspot{position:absolute;pointer-events:auto;cursor:pointer;
-  border-radius:8px;border:2px solid transparent;
-  display:flex;align-items:flex-start;justify-content:flex-start;
-  font-size:11px;font-weight:800;color:transparent;
-  background:transparent;padding:2px 4px;margin:0;
+  border-radius:8px;border:2px solid rgba(124,92,255,.6);
+  display:flex;align-items:center;justify-content:flex-start;
+  font-size:12px;font-weight:800;color:var(--text);
+  background:rgba(124,92,255,.13);padding:0 6px 0 28px;margin:0;
   transition:background .18s,border-color .18s,color .18s,box-shadow .18s;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;
   box-sizing:border-box;user-select:none}
-.qz-hot .qh-badge, .qhotspot .qh-badge{border-radius:50%;display:inline-grid;place-items:center}
-.qz-hot:hover, .qhotspot:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);box-shadow:0 0 12px color-mix(in srgb,var(--accent) 30%,transparent)}
-.qz-hot.sel, .qhotspot.sel{border-color:#ef2b3a;background:rgba(239,43,58,.18);color:#ef2b3a;box-shadow:0 0 10px rgba(239,43,58,.25)}
-.qz-hot.ok, .qhotspot.ok{border-color:#16a34a;background:rgba(22,163,74,.18);color:#16a34a;box-shadow:0 0 10px rgba(22,163,74,.25)}
-.qz-hot.bad, .qhotspot.bad{border-color:#ef2b3a;background:rgba(239,43,58,.18);color:#ef2b3a;box-shadow:0 0 10px rgba(239,43,58,.25)}
-.qz-hot.dim, .qhotspot.dim{border-color:transparent;background:transparent;opacity:.35;pointer-events:none}
+.qz-hot .qh-badge, .qhotspot .qh-badge{position:absolute;left:2px;top:50%;transform:translateY(-50%);
+  width:22px;height:22px;border-radius:50%;background:var(--accent);border:2px solid #fff;color:#fff;
+  font-size:11px;font-weight:900;line-height:1;display:grid;place-items:center;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.45)}
+.qz-hot:hover, .qhotspot:hover{border-color:var(--accent);background:rgba(124,92,255,.26);box-shadow:0 0 0 2px rgba(124,92,255,.28),0 0 14px rgba(124,92,255,.5)}
+.qz-hot.sel, .qhotspot.sel{border-color:#ef2b3a;background:rgba(239,43,58,.28);box-shadow:0 0 0 2px rgba(239,43,58,.28),0 0 14px rgba(239,43,58,.5)}
+.qz-hot.sel .qh-badge, .qhotspot.sel .qh-badge{background:#ef2b3a}
+.qz-hot.ok, .qhotspot.ok{border-color:#16a34a;background:rgba(22,163,74,.28);box-shadow:0 0 0 2px rgba(22,163,74,.28),0 0 14px rgba(22,163,74,.5)}
+.qz-hot.ok .qh-badge, .qhotspot.ok .qh-badge{background:#16a34a}
+.qz-hot.bad, .qhotspot.bad{border-color:#ef2b3a;background:rgba(239,43,58,.28);box-shadow:0 0 0 2px rgba(239,43,58,.28),0 0 14px rgba(239,43,58,.5)}
+.qz-hot.bad .qh-badge, .qhotspot.bad .qh-badge{background:#ef2b3a}
+.qz-hot.dim, .qhotspot.dim{opacity:.45}
+.qsolution-mask{position:absolute;pointer-events:auto;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px dashed rgba(139,92,246,.5);border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:all .25s ease;overflow:hidden;padding:4px}
+.qsolution-mask:hover{border-color:var(--accent,#7c3aed);background:rgba(15,23,42,.92)}
+.qsolution-mask.revealed{background:rgba(34,197,94,.08);backdrop-filter:none;-webkit-backdrop-filter:none;border:1px dashed rgba(34,197,94,.4);box-shadow:none}
+.qsolution-toggle{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;font-size:12px;font-weight:600;color:#fff;background:linear-gradient(135deg,#7c3aed 0%,#6366f1 100%);border:none;border-radius:20px;cursor:pointer;box-shadow:0 2px 8px rgba(124,58,237,.4);transition:transform .15s ease,background .2s ease;pointer-events:auto;user-select:none}
+.qsolution-toggle:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(124,58,237,.6)}
+.qsolution-mask.revealed .qsolution-toggle{background:rgba(34,197,94,.2);color:#16a34a;border:1px solid rgba(34,197,94,.4);box-shadow:none}
 /* test modu kapalıyken overlay tamamen gizli */
 body:not(.qz-acik) .qz-overlay, body:not(.qz-acik) .qhotspots{display:none!important}
 
@@ -505,6 +521,7 @@ body.qz-acik .toast{bottom:calc(min(54vh,540px) + 26px)}
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="chip theme-btn on" data-theme-val="dark" title="Gece Laciverti"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c5cff"></span> Gece</button>
           <button class="chip theme-btn" data-theme-val="sepia" title="Sıcak Kitap Sepya"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b"></span> Sepya</button>
+          <button class="chip theme-btn" data-theme-val="amoled" title="Obsidyen AMOLED"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#06b6d4"></span> AMOLED</button>
           <button class="chip theme-btn" data-theme-val="light" title="Açık Temiz"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#6366f1"></span> Açık</button>
         </div>
       </div>
@@ -1053,20 +1070,20 @@ function toggleSpread(force) {
 
 /* ---------- tema ---------- */
 function setTheme(t) {
-  if (!['dark', 'sepia', 'light'].includes(t)) t = 'dark';
+  if (!['dark', 'sepia', 'amoled', 'light'].includes(t)) t = 'dark';
   document.documentElement.dataset.theme = t;
   STORE.set('theme', t);
   $('#btnTheme').innerHTML = t === 'light' ? '&#9788;' : (t === 'sepia' ? '&#9749;' : '&#9789;');
-  const colors = { dark: '#070a16', sepia: '#1c1712', light: '#edf2f9' };
+  const colors = { dark: '#070a16', sepia: '#1c1712', amoled: '#000000', light: '#edf2f9' };
   $('meta[name="theme-color"]').setAttribute('content', colors[t] || '#070a16');
   $$('.theme-btn').forEach(b => b.classList.toggle('on', b.dataset.themeVal === t));
 }
 function toggleTheme() {
   const current = document.documentElement.dataset.theme || 'dark';
-  const order = ['dark', 'sepia', 'light'];
+  const order = ['dark', 'sepia', 'amoled', 'light'];
   const next = order[(order.indexOf(current) + 1) % order.length];
   setTheme(next);
-  const names = { dark: 'Gece Teması (Lacivert)', sepia: 'Sıcak Sepya Teması', light: 'Açık Temiz Tema' };
+  const names = { dark: 'Gece Teması (Lacivert)', sepia: 'Sıcak Sepya Teması', amoled: 'Obsidyen AMOLED', light: 'Açık Temiz Tema' };
   toast(names[next] || next);
 }
 
@@ -1528,15 +1545,77 @@ function qzOverlayGuncelle() {
         btn.style.width = w_pct + '%';
         btn.style.height = h_pct + '%';
 
-        btn.textContent = h;
+        btn.innerHTML = '<span class="qh-badge">' + h + '</span>';
         btn.title = 'Soru ' + qNum + ' (' + h + ')';
 
         fr.appendChild(btn);
       });
+      qzSolutionMaskKoy(fr, s, opts, pageChoices);
     });
 
     ov.appendChild(fr);
   });
+}
+
+function qzHasSolution(p, n) {
+  const d = qzSet();
+  if (!d || !d.qs || !d.qs[String(p)]) return false;
+  const num = parseInt(n, 10);
+  return d.qs[String(p)].some(x => parseInt(x, 10) === num);
+}
+
+function qzSolutionMaskKoy(container, s, cMap, pageChoices) {
+  if (!qzHasSolution(s.p, s.n)) return;
+  const harfler = QZ_SIK.filter(h => cMap[h] && cMap[h].length >= 4);
+  if (!harfler.length) return;
+  const sonHarf = harfler[harfler.length - 1];
+  const sonBox = cMap[sonHarf];
+  const y0 = sonBox[3] + 0.005;
+
+  let nextTop = 0.92;
+  Object.keys(pageChoices).forEach(otherNum => {
+    if (otherNum === String(s.n)) return;
+    const oMap = pageChoices[otherNum];
+    if (!oMap || !oMap['A']) return;
+    const oTop = oMap['A'][1];
+    if (oTop > sonBox[3] && oTop < nextTop) {
+      const xSelf = cMap['A'] ? cMap['A'][0] : 0;
+      const xOther = oMap['A'][0];
+      if (Math.abs(xSelf - xOther) < 0.25) {
+        nextTop = oTop - 0.005;
+      }
+    }
+  });
+
+  const h = Math.max(0.035, nextTop - y0);
+  const x0 = Math.max(0.02, cMap['A'] ? cMap['A'][0] - 0.008 : 0.04);
+  const maxX2 = Math.max.apply(null, harfler.map(h => cMap[h][2]));
+  const w = Math.min(0.96 - x0, Math.max(0.38, (maxX2 - x0) + 0.04));
+
+  const mask = document.createElement('div');
+  const isAcik = qzGorunur();
+  mask.className = 'qsolution-mask' + (isAcik ? ' revealed' : '');
+  const yuzde = x => (Math.min(100, Math.max(0, x)) * 100).toFixed(2) + '%';
+  mask.style.left = yuzde(x0);
+  mask.style.top = yuzde(y0);
+  mask.style.width = yuzde(w);
+  mask.style.height = yuzde(h);
+
+  mask.innerHTML = '<button class="qsolution-toggle" type="button" aria-expanded="' + isAcik + '">' +
+    '<span class="qsol-icon">' + (isAcik ? '🙈' : '💡') + '</span> ' +
+    '<span class="qsol-text">' + (isAcik ? 'Çözümü Gizle' : 'Çözümü Göster') + '</span>' +
+    '</button>';
+
+  const btn = mask.querySelector('.qsolution-toggle');
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const rev = mask.classList.toggle('revealed');
+    btn.setAttribute('aria-expanded', rev ? 'true' : 'false');
+    mask.querySelector('.qsol-icon').textContent = rev ? '🙈' : '💡';
+    mask.querySelector('.qsol-text').textContent = rev ? 'Çözümü Gizle' : 'Çözümü Göster';
+  });
+
+  container.appendChild(mask);
 }
 
 function qzIsaretle(s, h) {
