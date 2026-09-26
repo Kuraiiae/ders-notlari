@@ -113,7 +113,7 @@ def yukle():
                     pq[n] = {h: [round(v, 4) for v in c[h]] for h in SIKLAR if h in c}
             if pq:
                 choices[p] = pq
-            if e.get("qs"):
+            if key == "turkce-cikmis" and e.get("qs"):
                 solutions[p] = [int(n) for n in e["qs"]]
         if sayfalar:
             out[key] = {"pages": sayfalar, "keys": anahtarlar, "choices": choices, "qs": solutions}
