@@ -352,7 +352,7 @@ def wrap_html(page_num, title, body_content):
 <body>
 <div class="page">
   {body_content}
-  <div class="footer-page">UniNote {page_num}</div>
+  <div class="footer-page">{page_num}</div>
 </div>
 </body>
 </html>

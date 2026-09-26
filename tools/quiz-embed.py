@@ -103,6 +103,7 @@ def yukle():
                 anahtarlar[p] = m
         # secenek koordinatlari (c)
         choices = {}
+        solutions = {}
         for p, e in (d[key].get("pages") or {}).items():
             pq = {}
             for q in e.get("q", []):
@@ -112,8 +113,10 @@ def yukle():
                     pq[n] = {h: [round(v, 4) for v in c[h]] for h in SIKLAR if h in c}
             if pq:
                 choices[p] = pq
+            if e.get("qs"):
+                solutions[p] = [int(n) for n in e["qs"]]
         if sayfalar:
-            out[key] = {"pages": sayfalar, "keys": anahtarlar, "choices": choices}
+            out[key] = {"pages": sayfalar, "keys": anahtarlar, "choices": choices, "qs": solutions}
     return out, atilan, yuva
 
 

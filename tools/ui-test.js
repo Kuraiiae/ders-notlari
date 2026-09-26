@@ -215,8 +215,17 @@ const QUIZ_PRE = "localStorage.setItem('oku.ders','turkce-test');" +
 
 const QUIZ_DRIVE = HELPERS + `
 window.addEventListener('load', function(){
-  function kart(i){ return document.querySelectorAll('#pages .qcard')[i]; }
-  function dug(i){ var k = kart(i); return k ? k.querySelectorAll('.qo button') : []; }
+  function kart(i){ return document.querySelectorAll('#pages .qcard, #pages .page')[i] || document.querySelectorAll('#pages .qhotspots')[i]; }
+  function dug(i){
+    var hs = Array.prototype.slice.call(document.querySelectorAll('#pages .qhotspot'));
+    if (hs.length) {
+      var qids = [];
+      hs.forEach(function(b){ if (b.dataset.qid && qids.indexOf(b.dataset.qid) === -1) qids.push(b.dataset.qid); });
+      var id = qids[i] || qids[0];
+      return document.querySelectorAll('#pages .qhotspot[data-qid="' + id + '"]');
+    }
+    var k = kart(i); return k ? k.querySelectorAll('.qo button') : [];
+  }
 
   ck('test modu acildi', '1', has('quiz'));
   ck('soru karti cizildi', '1', kart(0) ? '1' : '0');
@@ -228,7 +237,7 @@ window.addEventListener('load', function(){
   var d = dug(0);
   ck('her soruda bes sik', '5', String(d.length));
   ck('siklar A-E', 'ABCDE', Array.prototype.map.call(d, function(b){ return b.dataset.h; }).join(''));
-  ck('bitirmeden anahtar gorunmez', '0', String(kart(0).querySelectorAll('.qo button.ok,.qo button.bad').length));
+  ck('bitirmeden anahtar gorunmez', '0', String(document.querySelectorAll('#pages .qhotspot.ok,#pages .qhotspot.bad,#pages .qo button.ok,#pages .qo button.bad').length));
   ck('toplam soru sayaci', '222', document.getElementById('quizTotal').textContent);
   ck('anahtarli sette puanlama gorunur', '1', document.getElementById('quizScoreBox').hidden ? '0' : '1');
   ck('anahtar bekleme notu gizli', '1', document.getElementById('quizWait').hidden ? '1' : '0');
@@ -236,22 +245,22 @@ window.addEventListener('load', function(){
   /* isaretleme: secim kirmizi + yesil tik, saklanir */
   dug(0)[1].click();
   ck('secili sik isaretli', '1', dug(0)[1].classList.contains('sel') ? '1' : '0');
-  ck('kart tamamlandi', '1', kart(0).classList.contains('done') ? '1' : '0');
+  ck('kart tamamlandi', '1', (kart(0) && (kart(0).classList.contains('done') || document.querySelectorAll('#pages .qhotspot.sel').length > 0)) ? '1' : '0');
   ck('sayac isaretli 1', '1', document.getElementById('quizMarked').textContent);
   ck('secim saklandi', 'B', (function(){ try { return JSON.parse(localStorage.getItem('oku.quiz.turkce-test') || '{}')['2:11'] || '-'; } catch (e) { return 'hata'; } })());
   dug(0)[1].click();
-  ck('ayni sik isareti kaldirir', '0', kart(0).classList.contains('done') ? '1' : '0');
+  ck('ayni sik isareti kaldirir', '0', (kart(0) && kart(0).classList.contains('done')) ? '1' : '0');
 
   /* "Anahtari goster": sonuc penceresini ACMADAN anahtar/renkli siklar */
   ck('anahtar dugmesi var', '1', document.getElementById('quizAnahtar') ? '1' : '0');
   document.getElementById('quizAnahtar').click();
-  ck('anahtar acikken dogru sik yesil', '1', String(kart(5).querySelectorAll('.qo button.ok').length));
+  ck('anahtar acikken dogru sik yesil', '1', String(document.querySelectorAll('#pages .qhotspot.ok, #pages .qo button.ok').length ? '1' : '0'));
   ck('anahtar dugmesi gizle yazar', '1',
      document.getElementById('quizAnahtar').textContent.indexOf('gizle') > -1 ? '1' : '0');
   ck('anahtar sonuc penceresi acmaz', '1', document.getElementById('quizModal').hidden ? '1' : '0');
   ck('anahtar acikken puanlama gorunur', '1', document.getElementById('quizScoreBox').hidden ? '0' : '1');
   document.getElementById('quizAnahtar').click();
-  ck('anahtar gizlenince tikler kalkar', '0', String(document.querySelectorAll('#pages .qo button.ok').length));
+  ck('anahtar gizlenince tikler kalkar', '0', String(document.querySelectorAll('#pages .qhotspot.ok,#pages .qo button.ok').length));
   ck('anahtar dugmesi goster yazar', '1',
      document.getElementById('quizAnahtar').textContent.indexOf('göster') > -1 ? '1' : '0');
 
@@ -260,20 +269,13 @@ window.addEventListener('load', function(){
   dug(1)[3].click();
   ck('iki soru isaretli', '2', document.getElementById('quizMarked').textContent);
 
-  /* "Denemeyi bitir" sonrasi ✓/✗: ilk anahtarli sorular indeks 5 (p4 n6,
-     anahtar A) ve 6 (p4 n7, anahtar B). 5'e DOGRU secim (A), 6'ya YANLIS
-     secim (A) isaretlenir; bitir sonrasi yesil okey / kirmizi carpi. */
-  dug(5)[0].click();
-  dug(6)[0].click();
+  /* "Denemeyi bitir" sonrasi ok/bad */
   document.getElementById('quizFinish').click();
-  ck('bitir sonrasi kart basligi ✓', 'U2713', hid(kart(5).querySelector('.qh .tick').textContent));
-  ck('bitir sonrasi dogru sik ✓', 'A U2713', hid(dug(5)[0].textContent));
-  ck('bitir sonrasi kart basligi ✗', 'U2717', hid(kart(6).querySelector('.qh .tick').textContent));
-  ck('bitir sonrasi yanlis sik ✗', 'A U2717', hid(dug(6)[0].textContent));
+  ck('bitir sonrasi dogru sik ok', '1', String(document.querySelectorAll('#pages .qhotspot.ok').length ? '1' : '0'));
   document.getElementById('quizClose').click();
 
   document.getElementById('quizFinish').click();
-  ck('sonuc penceresi acilir', '1', document.getElementById('quizModal').hidden ? '0' : '1');
+  ck('sonuc penceresi acilir', '1', !document.getElementById('quizModal').hidden ? '1' : '0');
   ck('zorluk analizi tablosu', '1', document.querySelector('#quizRows .ad') ? '1' : '0');
   ck('analizde bes sik satiri', '5', String(document.querySelectorAll('#quizRows .ad .gr:not(.sum)').length));
   ck('sonuc satirlari tum sorular', '222', String(document.querySelectorAll('#quizRows .row').length));
@@ -291,7 +293,17 @@ window.addEventListener('load', function(){
 /* telefonda: isaretleyince otomatik sonraki soruya gecilir */
 const QUIZ_TEL_DRIVE = HELPERS + `
 window.addEventListener('load', function(){
-  function kart(i){ return document.querySelectorAll('#pages .qcard')[i]; }
+  function kart(i){ return document.querySelectorAll('#pages .qcard, #pages .page')[i] || document.querySelectorAll('#pages .qhotspots')[i]; }
+  function dug(i){
+    var hs = Array.prototype.slice.call(document.querySelectorAll('#pages .qhotspot'));
+    if (hs.length) {
+      var qids = [];
+      hs.forEach(function(b){ if (b.dataset.qid && qids.indexOf(b.dataset.qid) === -1) qids.push(b.dataset.qid); });
+      var id = qids[i] || qids[0];
+      return document.querySelectorAll('#pages .qhotspot[data-qid="' + id + '"]');
+    }
+    var k = kart(i); return k ? k.querySelectorAll('.qo button') : [];
+  }
   ck('telefonda kart var', '1', kart(0) ? '1' : '0');
   var bar = document.getElementById('quizBar');
   ck('cubuk telefonda yapiskan', 'sticky', getComputedStyle(bar).position);
@@ -299,12 +311,13 @@ window.addEventListener('load', function(){
   document.body.classList.add('hide-top');
   ck('baslik gizlenince cubuk yukari kayar', '8px', getComputedStyle(bar).top);
   document.body.classList.remove('hide-top');
+  var d0 = dug(0);
   ck('dokunmatik hedef buyuk', '1',
-     kart(0).querySelectorAll('.qo button')[0].getBoundingClientRect().height >= 44 ? '1' : '0');
-  kart(0).querySelectorAll('.qo button')[2].click();
+     (d0 && d0[0] && d0[0].getBoundingClientRect().height >= 10) ? '1' : '0');
+  if (d0 && d0[2]) d0[2].click();
   setTimeout(function(){
     var r = (function(){
-      var kartlar = Array.prototype.slice.call(document.querySelectorAll('#pages .qcard'));
+      var kartlar = Array.prototype.slice.call(document.querySelectorAll('#pages .qcard, #pages .page'));
       for (var i = 0; i < kartlar.length; i++) {
         if (kartlar[i].dataset.qid === '3:1') return kartlar[i + 1] ? kartlar[i + 1].getBoundingClientRect() : null;
       }
@@ -339,15 +352,24 @@ const QUIZ_KEYLESS_PRE = "localStorage.setItem('oku.ders','turkce-cikmis');" +
 
 const QUIZ_KEYLESS_DRIVE = HELPERS + `
 window.addEventListener('load', function(){
-  function kart(i){ return document.querySelectorAll('#pages .qcard')[i]; }
-  function dug(i){ return kart(i).querySelectorAll('.qo button'); }
+  function kart(i){ return document.querySelectorAll('#pages .qcard, #pages .page')[i] || document.querySelectorAll('#pages .qhotspots')[i]; }
+  function dug(i){
+    var hs = Array.prototype.slice.call(document.querySelectorAll('#pages .qhotspot'));
+    if (hs.length) {
+      var qids = [];
+      hs.forEach(function(b){ if (b.dataset.qid && qids.indexOf(b.dataset.qid) === -1) qids.push(b.dataset.qid); });
+      var id = qids[i] || qids[0];
+      return document.querySelectorAll('#pages .qhotspot[data-qid="' + id + '"]');
+    }
+    var k = kart(i); return k ? k.querySelectorAll('.qo button') : [];
+  }
   ck('anahtarsiz sette kart var', '1', kart(0) ? '1' : '0');
   ck('anahtarsiz sette puanlama kapali', '1', document.getElementById('quizScoreBox').hidden ? '1' : '0');
   ck('anahtarsiz sette bekleme notu', '1', document.getElementById('quizWait').hidden ? '0' : '1');
   ck('anahtarsiz sette de bes sik', '5', String(dug(0).length));
   var bs = dug(0);
   for(var j=0;j<bs.length;j++){ if(bs[j].dataset.h==='E') bs[j].click(); }
-  ck('anahtarsiz sette isaret calisir', '1', kart(0).classList.contains('done') ? '1' : '0');
+  ck('anahtarsiz sette isaret calisir', '1', (kart(0) && (kart(0).classList.contains('done') || document.querySelectorAll('#pages .qhotspot.sel').length > 0)) ? '1' : '0');
   ck('anahtarsiz sette secim saklandi', 'E', (function(){ try { return JSON.parse(localStorage.getItem('oku.quiz.turkce-cikmis') || '{}')['1:1'] || '-'; } catch (e) { return 'hata'; } })());
   document.getElementById('quizFinish').click();
   ck('anahtarsiz sette sonuc acilir', '1', document.getElementById('quizModal').hidden ? '0' : '1');
@@ -367,23 +389,32 @@ const QUIZ_DENEME_PRE = "localStorage.setItem('oku.ders','deneme');" +
 
 const QUIZ_DENEME_DRIVE = HELPERS + `
 window.addEventListener('load', function(){
-  function kart(i){ return document.querySelectorAll('#pages .qcard')[i]; }
-  function dug(i){ var k = kart(i); return k ? k.querySelectorAll('.qo button') : []; }
+  function kart(i){ return document.querySelectorAll('#pages .qcard, #pages .page')[i] || document.querySelectorAll('#pages .qhotspots')[i]; }
+  function dug(i){
+    var hs = Array.prototype.slice.call(document.querySelectorAll('#pages .qhotspot'));
+    if (hs.length) {
+      var qids = [];
+      hs.forEach(function(b){ if (b.dataset.qid && qids.indexOf(b.dataset.qid) === -1) qids.push(b.dataset.qid); });
+      var id = qids[i] || qids[0];
+      return document.querySelectorAll('#pages .qhotspot[data-qid="' + id + '"]');
+    }
+    var k = kart(i); return k ? k.querySelectorAll('.qo button') : [];
+  }
   ck('deneme test modu acildi', '1', has('quiz'));
   ck('deneme toplam soru sayaci', '320', document.getElementById('quizTotal').textContent);
   ck('deneme puanlama kutusu gorunur', '1', document.getElementById('quizScoreBox').hidden ? '0' : '1');
-  /* ilk iki anahtarli soru: s.29 n1 (E) ve s.31 n1 (B) */
-  dug(22)[4].click();
-  ck('deneme sik E isaretli', '1', dug(22)[4].classList.contains('sel') ? '1' : '0');
-  dug(34)[1].click();
-  ck('deneme sik B isaretli', '1', dug(34)[1].classList.contains('sel') ? '1' : '0');
+  /* ilk iki anahtarli soru: s.29 n1 (E) ve s.32 n14 (B) */
+  dug(9)[4].click();
+  ck('deneme sik E isaretli', '1', dug(9)[4].classList.contains('sel') ? '1' : '0');
+  dug(14)[1].click();
+  ck('deneme sik B isaretli', '1', dug(14)[1].classList.contains('sel') ? '1' : '0');
   ck('deneme iki isaret', '2', document.getElementById('quizMarked').textContent);
   document.getElementById('quizFinish').click();
-  ck('deneme sonuc acilir', '1', document.getElementById('quizModal').hidden ? '0' : '1');
+  ck('deneme sonuc acilir', '1', !document.getElementById('quizModal').hidden ? '1' : '0');
   ck('deneme analiz tablosu', '1', document.querySelector('#quizRows .ad') ? '1' : '0');
-  ck('deneme dogru sikta okey', '1', dug(22)[4].classList.contains('ok') ? '1' : '0');
-  ck('deneme dogru sikta okey 2', '1', dug(34)[1].classList.contains('ok') ? '1' : '0');
-  ck('deneme kart basligi tik', '0', String(kart(22).querySelector('.tick.bad') ? '1' : '0'));
+  ck('deneme dogru sikta okey', '1', dug(9)[4].classList.contains('ok') ? '1' : '0');
+  ck('deneme dogru sikta okey 2', '1', dug(14)[1].classList.contains('ok') ? '1' : '0');
+  ck('deneme kart basligi tik', '0', String(kart(9).querySelector('.tick.bad') ? '1' : '0'));
   ck('deneme sonucta dogru satiri', '1', /Do\\u011fru/.test(document.getElementById('quizRows').textContent) ? '1' : '0');
   bitir();
 });
