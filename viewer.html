@@ -979,7 +979,7 @@ function qzHasSolution(p,n){
     const num=parseInt(n,10);
     if(d.qs[String(p)].some(x=>parseInt(x,10)===num))return true;
   }
-  return true;
+  return false;
 }
 function qzSolutionMaskKoy(container,s,cMap,sorular){
   if(!qzHasSolution(s.p,s.n))return;
@@ -988,7 +988,8 @@ function qzSolutionMaskKoy(container,s,cMap,sorular){
   const sonHarf=harfler[harfler.length-1];
   const sonBox=cMap[sonHarf];
   const y0=sonBox[3]+0.006;
-  let nextTop=0.92;
+  // nextTop=1.0 ile sayfa sonuna uzat → "Cevap:" satırı da maskenin içinde kalır
+  let nextTop=1.0;
   sorular.forEach(other=>{
     if(other.id===s.id)return;
     const oMap=qzChoicesOf(other.p,other.n);

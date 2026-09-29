@@ -413,6 +413,16 @@ html[data-theme="light"] .qsolution-mask.revealed{background:rgba(99,102,241,.04
   box-shadow:0 4px 18px rgba(124,58,237,.55);transition:all .18s ease;pointer-events:auto;user-select:none;font-family:inherit}
 .qsolution-toggle:hover{transform:scale(1.05);box-shadow:0 6px 24px rgba(124,58,237,.75)}
 .qsolution-mask.revealed .qsolution-toggle{background:rgba(34,197,94,.18);color:#16a34a;border:1px solid rgba(34,197,94,.4);box-shadow:none;padding:5px 14px;font-size:11.5px}
+/* yayınevi blur bandı */
+.qpub-mask{position:absolute;left:0;right:0;z-index:6;pointer-events:none;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  background:rgba(15,23,42,.72);border:none}
+html[data-theme="light"] .qpub-mask{background:rgba(240,244,248,.80)}
+/* soru gövdesi (kök metni) blur maskesi */
+.qbody-mask{position:absolute;left:0;right:0;z-index:6;pointer-events:none;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:rgba(10,14,30,.55)}
+html[data-theme="light"] .qbody-mask{background:rgba(240,244,248,.65)}
 .qcard .qo button.sel{background:#ef2b3a;border-color:#ef2b3a;color:#fff;box-shadow:0 0 0 3px rgba(239,43,58,.25)}
 .qcard .qo button.ok{background:#16a34a;border-color:#16a34a;color:#fff}
 .qcard .qo button.bad{background:#ef2b3a;border-color:#ef2b3a;color:#fff}
@@ -1212,14 +1222,20 @@ function bind() {
     }, 120);
   });
 
-  /* tekerlek: ctrl ile yakinlastir, normalde tam sayfa gecisi yap */
+  /* tekerlek: ctrl ile yakinlastir, 'page' modunda sayfa gecisi, diger modlarda normal scroll */
   let wheelAcc = 0, wheelT = null;
   el.stage.addEventListener('wheel', e => {
-    e.preventDefault();
     if (e.ctrlKey) {
+      e.preventDefault();
       zoomStep(e.deltaY < 0 ? 1.1 : 1 / 1.1);
       return;
     }
+    // 'page' modunda sayfa atlama; diger modlarda normal scroll
+    if (state.mode !== 'page') {
+      // Tarayıcının normal scroll davranışına izin ver
+      return;
+    }
+    e.preventDefault();
     wheelAcc += e.deltaY;
     clearTimeout(wheelT);
     wheelT = setTimeout(() => { wheelAcc = 0; }, 120);
@@ -1485,7 +1501,11 @@ function qzOverlayGuncelle() {
         fr.appendChild(btn);
       });
       qzSolutionMaskKoy(fr, s, opts, pageChoices);
+      qzBodyMaskKoy(fr, s, opts);
     });
+
+    // Yayınevi blur bandı — sayfa üst/alt kısmı
+    qzPublisherMaskKoy(fr);
 
     ov.appendChild(fr);
   });
@@ -1574,7 +1594,7 @@ function qzHasSolution(p, n) {
     const num = parseInt(n, 10);
     if (d.qs[String(p)].some(x => parseInt(x, 10) === num)) return true;
   }
-  return true;
+  return false;
 }
 
 function qzSolutionMaskKoy(container, s, cMap, pageChoices) {
@@ -1585,7 +1605,9 @@ function qzSolutionMaskKoy(container, s, cMap, pageChoices) {
   const sonBox = cMap[sonHarf];
   const y0 = sonBox[3] + 0.005;
 
-  let nextTop = 0.92;
+  // nextTop: bir sonraki sorunun başına kadar veya sayfa sonuna (1.0) uzat
+  // Böylece "Cevap: X" satırı da maskenin içinde kalır
+  let nextTop = 1.0;
   Object.keys(pageChoices).forEach(otherNum => {
     if (otherNum === String(s.n)) return;
     const oMap = pageChoices[otherNum];
@@ -1629,6 +1651,42 @@ function qzSolutionMaskKoy(container, s, cMap, pageChoices) {
   });
 
   container.appendChild(mask);
+}
+
+// Yayınevi bandını sayfa üst/alt kısmına blur overlay ile kapat
+function qzPublisherMaskKoy(container) {
+  // Üst bant: 0–8%, Alt bant: 92–100%
+  if (container.querySelector('.qpub-mask')) return; // zaten eklendi
+  const bands = [{top: 0, height: 0.08}, {top: 0.92, height: 0.08}];
+  bands.forEach(b => {
+    const m = document.createElement('div');
+    m.className = 'qpub-mask';
+    m.style.top = (b.top * 100).toFixed(1) + '%';
+    m.style.height = (b.height * 100).toFixed(1) + '%';
+    container.appendChild(m);
+  });
+}
+
+// Soru gövde (kök) metnini blur ile kapat — şıkların başına kadar
+function qzBodyMaskKoy(container, s, cMap) {
+  const harfler = QZ_SIK.filter(h => cMap[h] && cMap[h].length >= 4);
+  if (!harfler.length) return;
+  const firstChoice = harfler[0];
+  const firstBox = cMap[firstChoice];
+  // soru gövdesi koordinatı: s'de b alanı varsa kullan, yoksa tahmini
+  const bodyTop = s.b ? s.b[1] : 0.08;
+  const bodyBot = firstBox[1] - 0.01;
+  if (bodyBot <= bodyTop + 0.02) return; // çok küçükse atla
+
+  const id = 'qbm-' + s.p + '-' + s.n;
+  if (container.querySelector('#' + id)) return;
+
+  const m = document.createElement('div');
+  m.id = id;
+  m.className = 'qbody-mask';
+  m.style.top = (bodyTop * 100).toFixed(1) + '%';
+  m.style.height = ((bodyBot - bodyTop) * 100).toFixed(1) + '%';
+  container.appendChild(m);
 }
 
 function qzIsaretle(s, h) {

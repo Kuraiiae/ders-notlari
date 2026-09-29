@@ -227,18 +227,46 @@
     const selectors = ['.cozum', '.solution', '.cevap-alani', '.answer-box', '.answer-key', '.answer'];
     document.querySelectorAll(selectors.join(',')).forEach(wrapSolutionElement);
 
-    // 2. Metin tabanlı arama ("ÇÖZÜM:" veya "Cevap:" ile başlayan veya içeren kutular)
-    const textPattern = /(ÇÖZÜM|CEVAP|Çözüm|Cevap)\s*:/i;
+    // 2. Metin tabanlı arama — "ÇÖZÜM:" ile başlayan elementler + hemen ardından gelen "Cevap: X" satırı
+    const cozumPattern = /^(ÇÖZÜM|Çözüm|COZUM)\s*:/i;
+    const cevapPattern = /^(CEVAP|Cevap|cevap)\s*:/i;
+
     document.querySelectorAll('p, div, blockquote, li, .quote-box-note').forEach(el => {
       if (el.closest('.dn-solution-wrapper') || el.classList.contains('dn-solution-content')) return;
-      // Yalnızca yaprak düğümler ya da kısa içerikler
       if (el.children.length > 3) return;
       const t = el.textContent.trim();
-      if (textPattern.test(t) && t.length < 900) {
+      if (!cozumPattern.test(t) || t.length > 900) return;
+
+      // Hemen ardından gelen kardeş "Cevap: X" satırını da dahil et
+      const siblings = [el];
+      let next = el.nextElementSibling;
+      while (next && !next.closest('.dn-solution-wrapper')) {
+        const nt = next.textContent.trim();
+        if (cevapPattern.test(nt) && nt.length < 200) {
+          siblings.push(next);
+          next = next.nextElementSibling;
+        } else {
+          break;
+        }
+      }
+
+      if (siblings.length === 1) {
+        wrapSolutionElement(el);
+      } else {
+        wrapSolutionGroup(siblings);
+      }
+    });
+
+    // 3. Tek başına "Cevap: X" satırları (ÇÖZÜM: ile gruplandırılmamışsa)
+    document.querySelectorAll('p, div, li').forEach(el => {
+      if (el.closest('.dn-solution-wrapper') || el.classList.contains('dn-solution-content')) return;
+      const t = el.textContent.trim();
+      if (cevapPattern.test(t) && t.length < 200) {
         wrapSolutionElement(el);
       }
     });
   }
+
 
   function wrapSolutionElement(el) {
     if (el.closest('.dn-solution-wrapper') || el.classList.contains('dn-solution-content')) return;
@@ -284,6 +312,57 @@
       toggleBar.style.display = 'none';
     });
   }
+
+  // Birden fazla elementi (örn. ÇÖZÜM: satırı + Cevap: satırı) tek wrapper'a al
+  function wrapSolutionGroup(elements) {
+    if (!elements.length) return;
+    const first = elements[0];
+    if (first.closest('.dn-solution-wrapper')) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'dn-solution-wrapper';
+
+    const content = document.createElement('div');
+    content.className = 'dn-solution-content dn-hidden';
+
+    const overlay = document.createElement('div');
+    overlay.className = 'dn-solution-overlay';
+    overlay.innerHTML = `
+      <button class="dn-solution-btn" type="button">
+        <span>💡</span><span>Çözümü Göster</span>
+      </button>
+    `;
+
+    const toggleBar = document.createElement('div');
+    toggleBar.className = 'dn-solution-toggle-bar';
+    toggleBar.style.display = 'none';
+    toggleBar.innerHTML = `
+      <button class="dn-solution-mini-btn" type="button">
+        <span>🙈</span><span>Çözümü Gizle</span>
+      </button>
+    `;
+
+    first.parentNode.insertBefore(wrapper, first);
+    wrapper.appendChild(overlay);
+    wrapper.appendChild(content);
+    wrapper.appendChild(toggleBar);
+
+    // Tüm elementleri content'e taşı
+    elements.forEach(el => content.appendChild(el));
+
+    overlay.querySelector('.dn-solution-btn').addEventListener('click', () => {
+      content.classList.remove('dn-hidden');
+      overlay.classList.add('dn-revealed');
+      toggleBar.style.display = 'flex';
+    });
+
+    toggleBar.querySelector('.dn-solution-mini-btn').addEventListener('click', () => {
+      content.classList.add('dn-hidden');
+      overlay.classList.remove('dn-revealed');
+      toggleBar.style.display = 'none';
+    });
+  }
+
 
   /* ─────────────────────────────────────────────────────────────────
      ÖRNEK SORULARI ETKİLEŞİMLİ ŞIKLARA DÖNÜŞTÜR
