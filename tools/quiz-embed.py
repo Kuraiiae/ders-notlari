@@ -104,6 +104,7 @@ def yukle():
         # secenek koordinatlari (c)
         choices = {}
         solutions = {}
+        sols = {}
         for p, e in (d[key].get("pages") or {}).items():
             pq = {}
             for q in e.get("q", []):
@@ -115,8 +116,10 @@ def yukle():
                 choices[p] = pq
             if e.get("qs"):
                 solutions[p] = [int(n) for n in e["qs"]]
+            if e.get("sol"):
+                sols[p] = e["sol"]
         if sayfalar:
-            out[key] = {"pages": sayfalar, "keys": anahtarlar, "choices": choices, "qs": solutions}
+            out[key] = {"pages": sayfalar, "keys": anahtarlar, "choices": choices, "qs": solutions, "sol": sols}
     return out, atilan, yuva
 
 

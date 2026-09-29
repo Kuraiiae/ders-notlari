@@ -465,11 +465,11 @@ def sayfa_html():
 
 STIL = """
 :root{--bg:#0b1020;--panel:#121a30;--stroke:rgba(255,255,255,.1);--text:#eef2ff;--muted:#a8b3d4;
-  --accent:#7c5cff;--accent2:#2ec4b6}
+  --accent:#3b82f6;--accent2:#06b6d4}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:radial-gradient(120% 90% at 12% -10%,rgba(124,92,255,.28),transparent 60%),
-  radial-gradient(90% 80% at 100% 0,rgba(46,196,182,.2),transparent 55%),var(--bg);color:var(--text);
+body{margin:0;background:radial-gradient(120% 90% at 12% -10%,rgba(59,130,246,.28),transparent 60%),
+  radial-gradient(90% 80% at 100% 0,rgba(6,182,212,.2),transparent 55%),var(--bg);color:var(--text);
   font:16px/1.85 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif}
 .wrap{max-width:960px;margin:0 auto;padding:26px 18px 70px}
 header.top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
@@ -487,8 +487,8 @@ h1{font-size:clamp(25px,5.4vw,38px);line-height:1.2;margin:0 0 6px;letter-spacin
 .tag{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--accent2);
   color:#06231f}
 .oz h4{margin:20px 0 8px;font-size:16.5px;color:#fff;padding:8px 13px;border-radius:10px;line-height:1.5}
-.oz h4:nth-of-type(5n+1){background:linear-gradient(90deg,rgba(124,92,255,.28),rgba(124,92,255,.08));border-inline-start:4px solid #7c5cff}
-.oz h4:nth-of-type(5n+2){background:linear-gradient(90deg,rgba(46,196,182,.28),rgba(46,196,182,.08));border-inline-start:4px solid #2ec4b6}
+.oz h4:nth-of-type(5n+1){background:linear-gradient(90deg,rgba(59,130,246,.28),rgba(59,130,246,.08));border-inline-start:4px solid #3b82f6}
+.oz h4:nth-of-type(5n+2){background:linear-gradient(90deg,rgba(6,182,212,.28),rgba(6,182,212,.08));border-inline-start:4px solid #06b6d4}
 .oz h4:nth-of-type(5n+3){background:linear-gradient(90deg,rgba(244,162,97,.30),rgba(244,162,97,.10));border-inline-start:4px solid #f4a261}
 .oz h4:nth-of-type(5n+4){background:linear-gradient(90deg,rgba(255,95,109,.28),rgba(255,95,109,.08));border-inline-start:4px solid #ff5f6d}
 .oz h4:nth-of-type(5n){background:linear-gradient(90deg,rgba(74,125,255,.28),rgba(74,125,255,.08));border-inline-start:4px solid #4a7dff}

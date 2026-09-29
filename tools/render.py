@@ -135,11 +135,11 @@ def main():
         info = render(subject)
         info["color"] = {
             "vatandaslik": "#ff5f6d",
-            "turkce": "#7c5cff",
-            "turkce-test": "#a855f7",
+            "turkce": "#3b82f6",
+            "turkce-test": "#06b6d4",
             "turkce-cikmis": "#f59e0b",
             "tarih": "#f4a261",
-            "cografya": "#2ec4b6",
+            "cografya": "#06b6d4",
             "deneme": "#ef4444",
         }[subject["key"]]
         existing[subject["key"]] = info

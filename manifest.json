@@ -17,7 +17,7 @@
     "pages": 52,
     "w": 1400,
     "h": 1980,
-    "color": "#7c5cff"
+    "color": "#3b82f6"
   },
   {
     "key": "tarih",
@@ -37,7 +37,7 @@
     "pages": 130,
     "w": 1400,
     "h": 2023,
-    "color": "#2ec4b6"
+    "color": "#06b6d4"
   },
   {
     "key": "vatandaslik",
@@ -57,7 +57,7 @@
     "pages": 97,
     "w": 1400,
     "h": 1980,
-    "color": "#a855f7"
+    "color": "#06b6d4"
   },
   {
     "key": "turkce-cikmis",

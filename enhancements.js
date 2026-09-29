@@ -34,9 +34,9 @@
   ───────────────────────────────────────────────────────────────── */
   const BG_COLORS = {
     'default': null,
-    'pastel-blue': '#dbeafe',
-    'soft-beige': '#fdf6ec',
-    'classic-gray': '#f0f2f5',
+    'pastel-blue': '#0b1d33',
+    'soft-beige': '#131a2b',
+    'classic-gray': '#0d1422',
     'night-blue': '#0f172a'
   };
 
@@ -88,20 +88,20 @@
       align-items: center;
       gap: 8px;
       padding: 7px 20px;
-      background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+      background: linear-gradient(135deg, #3b82f6 0%, #3b82f6 100%);
       color: #fff;
       border: none;
       border-radius: 999px;
       font-size: 13.5px;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 4px 18px rgba(124, 58, 237, 0.6);
+      box-shadow: 0 4px 18px rgba(59, 130, 246, 0.6);
       transition: transform 0.18s ease, box-shadow 0.18s ease;
       font-family: inherit;
     }
     .dn-solution-btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 6px 24px rgba(124, 58, 237, 0.8);
+      box-shadow: 0 6px 24px rgba(59, 130, 246, 0.8);
     }
     .dn-solution-toggle-bar {
       margin-top: 6px;
@@ -113,17 +113,17 @@
       align-items: center;
       gap: 6px;
       padding: 4px 12px;
-      background: rgba(124, 92, 255, 0.12);
-      border: 1px solid rgba(124, 92, 255, 0.35);
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.35);
       border-radius: 999px;
-      color: #7c5cff;
+      color: #3b82f6;
       font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.15s ease;
     }
     .dn-solution-mini-btn:hover {
-      background: rgba(124, 92, 255, 0.22);
+      background: rgba(59, 130, 246, 0.22);
     }
 
     /* ─── İnteraktif Şıklar (A, B, C, D, E) ──────────────────── */
@@ -138,10 +138,10 @@
       align-items: center;
       gap: 12px;
       padding: 9px 14px;
-      border: 1.5px solid rgba(124, 92, 255, 0.25);
+      border: 1.5px solid rgba(59, 130, 246, 0.25);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.85);
-      color: #1a1a2e;
+      background: rgba(96, 165, 250, 0.07);
+      color: #e6efff;
       font-size: 16px;
       font-family: inherit;
       cursor: pointer;
@@ -151,8 +151,8 @@
       -webkit-tap-highlight-color: transparent;
     }
     .dn-choice-btn:hover {
-      border-color: #7c5cff;
-      background: rgba(124, 92, 255, 0.10);
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.12);
       transform: translateX(3px);
     }
     .dn-choice-btn.dn-selected {
@@ -164,7 +164,7 @@
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: #7c5cff;
+      background: #3b82f6;
       color: #fff;
       font-size: 13px;
       font-weight: 900;

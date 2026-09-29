@@ -20,7 +20,7 @@ ACCENT = (124, 92, 255)
 TITLE = "KPSS ORTA \u00d6\u011eRET\u0130M"
 TOP = "D\u0130J\u0130TAL K\u00dcT\u00dcPHANE"
 SUB = "639 sayfa \u00b7 Kitap Modu \u00b7 Galeri"
-DOTS = ["#7c5cff", "#f4a261", "#2ec4b6", "#ff5f6d", "#a855f7", "#f59e0b", "#ef4444"]
+DOTS = ["#3b82f6", "#f4a261", "#06b6d4", "#ff5f6d", "#06b6d4", "#f59e0b", "#ef4444"]
 
 
 def fit_font(draw, text, path, start, max_w):
