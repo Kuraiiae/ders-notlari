@@ -704,10 +704,77 @@ window.addEventListener('load', function(){
 });
 `;
 
+/* ---------- OKU (Kitap Modu): Tarih konu ozeti + karsilastirma tablosu ---------- */
+const OKU_TARIH_PRE = "localStorage.setItem('oku.ders','tarih');" +
+  "localStorage.setItem('oku.sayfa.tarih','1');" +
+  "localStorage.setItem('oku.panel.lib','0');";
+
+const OKU_TARIH_DRIVE = HELPERS + `
+window.addEventListener('load', function(){
+  var b = document.getElementById('btnOzet');
+  ck('tarihte ozet butonu gorunur', '1', b && !b.hidden ? '1' : '0');
+  ck('tarih giris karti var', '1', document.querySelector('#pages .intro-card') ? '1' : '0');
+
+  b.click();
+  var dr = document.getElementById('ozDrawer');
+  ck('tarih ozet cekmecesi acilir', '1', dr.hidden ? '0' : '1');
+  ck('tarih ozet basligi renkli', '1', document.querySelector('#ozBody h5.oz-t1') ? '1' : '0');
+  ck('tarih ozetinde 16 bolum', '16', String(document.querySelectorAll('#ozBody details.oz').length));
+
+  /* karsilastirma tablolari: Ilkler, Selcuklu, Vakif, Ezber listesi */
+  var tb = document.querySelectorAll('#ozBody table.ozt');
+  ck('tarih ozetinde 4 tablo', '4', String(tb.length));
+  var selc = tb[1];
+  ck('Selcuklu tablosu 3 sutun', '3', selc ? String(selc.querySelectorAll('thead th').length) : '0');
+  ck('Selcuklu tablosu 7 satir', '7', selc ? String(selc.querySelectorAll('tbody tr').length) : '0');
+  ck('Selcuklu tablosunda Koca Hasan Paşa var', '1',
+     selc && selc.textContent.indexOf('Koca Hasan Paşa') > -1 ? '1' : '0');
+  ck('tablo basliklari dolu', '1',
+     tb[0] && tb[0].querySelectorAll('thead th').length === 2 ? '1' : '0');
+
+  /* tam sayfa linki ders anahtarindan turemeli */
+  ck('tam sayfa linki tarih-ozet.html', '1',
+     dr.querySelector('a[href="tarih-ozet.html"]') ? '1' : '0');
+  ck('turkce linki sizmadi', '0',
+     dr.querySelector('a[href="turkce-ozet.html"]') ? '1' : '0');
+  ck('cekmece aria-labeli ders adi', '1',
+     dr.getAttribute('aria-label').indexOf('Tarih') > -1 ? '1' : '0');
+
+  document.getElementById('ozClose').click();
+  ck('tarih ozet cekmecesi kapanir', '0', dr.classList.contains('show') ? '1' : '0');
+  bitir();
+});
+`;
+
+/* ---------- Bagimsiz ozet sayfalari: dar ekranda yatay tasma olmamali ----------
+   .ozt tablolari min-width kazandigi icin sayfayi genisletmemeli; tasma
+   .tablo icinde yatay kaydirma olarak kalmali. */
+const OZET_SAYFA_DRIVE = HELPERS + `
+window.addEventListener('load', function(){
+  var d = document.documentElement;
+  ck('sayfa yatay tasmasi', '0', String(d.scrollWidth - d.clientWidth));
+  ck('wrap ekrana sigar', '1',
+     String(document.querySelector('.wrap').getBoundingClientRect().width <= d.clientWidth + 1 ? '1' : '0'));
+  var t = document.querySelector('.tablo');
+  if (t) {
+    ck('tablo kendi icinde kaydirilir', '1',
+       String(getComputedStyle(t).overflowX === 'auto' ? '1' : '0'));
+  } else {
+    ck('tablo yok (temmiz)', '1', '1');
+  }
+  bitir();
+});
+`;
+
 /* ---------- kosum ---------- */
 const CASES = [
   { ad: 'OKU masaustu 1440x1000', file: 'oku.html', size: '1440,1000', pre: OKU_PRE, drive: OKU_DRIVE },
   { ad: 'OKU telefon 412x880', file: 'oku.html', size: '412,880', pre: OKU_PRE, drive: OKU_DRIVE },
+  { ad: 'OKU tarih ozeti 1440x1000', file: 'oku.html', size: '1440,1000', pre: OKU_TARIH_PRE, drive: OKU_TARIH_DRIVE },
+  { ad: 'OKU tarih ozeti telefon 412x880', file: 'oku.html', size: '412,880', pre: OKU_TARIH_PRE, drive: OKU_TARIH_DRIVE },
+  { ad: 'OZET turkce sayfasi telefon 412x880', file: 'turkce-ozet.html', size: '412,880', pre: '', drive: OZET_SAYFA_DRIVE },
+  { ad: 'OZET tarih sayfasi telefon 412x880', file: 'tarih-ozet.html', size: '412,880', pre: '', drive: OZET_SAYFA_DRIVE },
+  { ad: 'OZET tarih sayfasi masaustu 1440x1000', file: 'tarih-ozet.html', size: '1440,1000', pre: '', drive: OZET_SAYFA_DRIVE },
   { ad: 'TEST MODU masaustu 1440x1000 (turkce-test)', file: 'oku.html', size: '1440,1000', pre: QUIZ_PRE, drive: QUIZ_DRIVE },
   { ad: 'TEST MODU telefon 412x880 (turkce-test)', file: 'oku.html', size: '412,880', pre: QUIZ_PRE, drive: QUIZ_TEL_DRIVE },
   { ad: 'TEST MODU anahtarsiz set 1440x1000 (turkce-cikmis)', file: 'oku.html', size: '1440,1000', pre: QUIZ_KEYLESS_PRE, drive: QUIZ_KEYLESS_DRIVE, xform: anahtarsizYap },

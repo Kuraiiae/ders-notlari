@@ -55,7 +55,7 @@ for x in missing[:20]:
     print("  -", x)
 print("dersler:", [(s["key"], s["pages"]) for s in manifest])
 
-# --- Konu ozeti: turkce-ozet.html + oku.html icindeki gomulu JSON ---
+# --- Konu ozeti: <ders>-ozet.html + oku.html icindeki gomulu JSON ---
 with open(os.path.join(ROOT, "oku.html"), encoding="utf-8") as f:
     oku = f.read()
 mb = re.search(r"OZET-DATA-BEGIN -->\s*<script[^>]*id=\"ozetData\">(.*?)</script>\s*<!-- OZET-DATA-END",
@@ -63,21 +63,67 @@ mb = re.search(r"OZET-DATA-BEGIN -->\s*<script[^>]*id=\"ozetData\">(.*?)</script
 assert mb, "oku.html icinde ozetData script blogu yok -> python tools/ozet.py"
 ozet = json.loads(mb.group(1))
 assert "turkce" in ozet, "ozet verisi ders anahtariyla sarilmali (turkce)"
+assert "tarih" in ozet, "tarih ozeti gomulu degil -> python tools/ozet.py"
 d = ozet["turkce"]
 assert d["key"] == "turkce", "ozet verisi turkce dersine bagli degil"
 assert len(d["bolumler"]) == 3, "ozet bolum sayisi 3 olmali"
 assert "</script" not in mb.group(1).lower(), "gomulu JSON script etiketini kirabilir"
 assert "<!--" not in mb.group(1), "gomulu JSON icinde HTML yorumu var (JSON.parse kirilir)"
-blok = sum(len(b.get("bloklar") or []) for b in d["bolumler"])
-madde = sum(len(x.get("maddeler") or []) for b in d["bolumler"] for x in (b.get("bloklar") or []))
 if "ozDrawer" not in oku or "ozToggle" not in oku:
     raise AssertionError("oku.html icinde ozet cekmecesi kodu eksik")
+if "ozTable" not in oku:
+    raise AssertionError("oku.html icinde ozTable (karsilastirma tablosu) kodu eksik")
+
+# Her ozetli ders kendi bagimsiz sayfasini uretmis olmali ve ozet cekmecesi
+# icindeki "Tam sayfa ozet" linki sabit kodlanmis olmamali.
+OZET_DERSSLERI = sorted(ozet)
+for key in OZET_DERSSLERI:
+    v = ozet[key]
+    assert v["key"] == key, f"ozet verisi {key} dersine bagli degil"
+    for alan in ("baslik", "ders_adi", "aciklama", "lead", "giris", "not", "vurgu", "bolumler"):
+        assert alan in v, f"{key} ozetinde eksik alan: {alan}"
+    assert v["bolumler"], f"{key} ozetinde bolum yok"
+    p = os.path.join(ROOT, "%s-ozet.html" % key)
+    assert os.path.exists(p), f"{key} icin ozet sayfasi yok: {key}-ozet.html -> python tools/ozet.py"
+    with open(p, encoding="utf-8") as f:
+        s = f.read()
+    assert "__BODY__" not in s, f"{key}-ozet.html sablonu doldurulmamis"
+    assert "<title>" + v["baslik"] + "</title>" in s, f"{key}-ozet.html basligi gomulu ozetle uyusmuyor"
+    assert 'href="oku.html?ders=%s"' % key in s, f"{key}-ozet.html kitap modu linki yanlis"
+    assert "enhancements.js" in s, f"{key}-ozet.html icinde enhancements.js yok"
+    # Blok semasi: her blokta en fazla biri (maddeler / tablo) ve dolu olmali.
+    for b in v["bolumler"]:
+        for x in (b.get("bloklar") or []):
+            assert not (x.get("tablo") and x.get("maddeler")), \
+                f"{key} / {x.get('ad')}: bir blokta hem tablo hem maddeler var"
+            assert x.get("tablo") or x.get("maddeler") or x.get("notlar"), \
+                f"{key} / {x.get('ad')}: bos blok"
+            for t in ([x["tablo"]] if x.get("tablo") else []):
+                assert t["basliklar"] and t["satirlar"], f"{key} / {x.get('ad')}: bos tablo"
+                for r in t["satirlar"]:
+                    assert len(r) == len(t["basliklar"]), \
+                        f"{key} / {x.get('ad')}: tablo satirinda {len(r)} hucre, " \
+                        f"baslikta {len(t['basliklar'])} var"
+
+# --- Tarih ozeti: karsilastirma tablosu + kritik ilkler sayfada gorunmeli ---
+dt = ozet["tarih"]
+assert len(dt["bolumler"]) == 16, "tarih ozeti 15 konu + 1 ezber listesi icermeli"
+tablo_sayi = sum(1 for b in dt["bolumler"] for x in (b.get("bloklar") or []) if x.get("tablo"))
+assert tablo_sayi >= 4, f"tarih ozetinde karsilastirma tablosu yok ({tablo_sayi} adet)"
+with open(os.path.join(ROOT, "tarih-ozet.html"), encoding="utf-8") as f:
+    tsayfa = f.read()
+for anahtar in ("Büyük Selçuklu", "En Kritik Ezber Listesi", "Orhun Yazıtları",
+                "Kapıkulu", "Tımar", "Müsadere", "Balkan Savaşları"):
+    assert anahtar in tsayfa, f"tarih-ozet.html icinde eksik baslik: {anahtar}"
+assert '<table class="ozt">' in tsayfa, "tarih-ozet.html icinde tablo islenmemis"
 
 with open(os.path.join(ROOT, "turkce-ozet.html"), encoding="utf-8") as f:
     sayfa = f.read()
 assert "__BODY__" not in sayfa, "turkce-ozet.html sablonu doldurulmamis"
 for anahtar in ("Ses Bilgisi", "Noktalama", "Fiilimsiler", "Sözel Mant", "Paragraf"):
     assert anahtar in sayfa, f"turkce-ozet.html icinde eksik baslik: {anahtar}"
+blok = sum(len(b.get("bloklar") or []) for b in d["bolumler"])
+madde = sum(len(x.get("maddeler") or []) for b in d["bolumler"] for x in (b.get("bloklar") or []))
 
 # Ayri basliklara bolunmus sozcuk turu / fiilimsi konulari kaybolmasin.
 TUR_BASLIKLARI = ("Sıfat (Ön Ad)", "Zamir (Adıl)", "Zarf (Belirteç)", "Edat (İlgeç)",
@@ -191,17 +237,25 @@ print("test modu: set", len(quiz), "| kartli soru", toplam_soru,
       "| kok metni", sum(len(m) for v in qtext.values() for m in v.values()))
 
 # --- Capraz baglantilar: ozet sayfasi her giris noktasindan erisilebilmeli ---
+# --- Capraz baglantilar: ozet sayfasi her giris noktasindan erisilebilmeli ---
+# oku.html istisna: ozet sayfasi linki sabit kodlu degil, JS ile uretilir
+# (ozSayfaAd(key) -> "<key>-ozet.html"), bu yuzden literal ad yerine uretici
+# isareti aranir.
 BEKLENEN = {
-    "index.html": ("oku.html", "galeri.html", "turkce-ozet.html"),
+    "index.html": ("oku.html", "galeri.html", "turkce-ozet.html", "tarih-ozet.html"),
     "galeri.html": ("index.html", "oku.html", "turkce-ozet.html"),
-    "oku.html": ("galeri.html", "turkce-ozet.html"),
     "turkce-ozet.html": ("oku.html", "index.html"),
+    "tarih-ozet.html": ("oku.html", "index.html"),
 }
 for ad, hedefler in BEKLENEN.items():
     with open(os.path.join(ROOT, ad), encoding="utf-8") as f:
         t = f.read()
     for h in hedefler:
         assert h in t, f"{ad} icinde {h} baglantisi yok"
+assert "ozSayfaAd" in oku, "oku.html ozet sayfasi linki ozSayfaAd(key) ile uretilmeli"
+assert "-ozet.html" in oku, "oku.html ozSayfaAd() icinde '<key>-ozet.html' deseni yok"
+assert "turkce-ozet.html" not in oku, \
+    "oku.html ozet linki yeniden sabit kodlanmis, ozSayfaAd(key) kullanilmali"
 
 # --- Site adi: her giris noktasi ayni adi kullanmali ---
 # Kitaplik adi tek yerden degismedigi icin burada dogrulanir:

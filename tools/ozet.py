@@ -1,28 +1,58 @@
 # -*- coding: utf-8 -*-
-"""KPSS Türkçe konu özetlerinin tek kaynağı.
+"""KPSS konu özetlerinin motoru.
 
-Bu dosya veriyi tutar ve iki yere uygular:
-  1) turkce-ozet.html -> bağımsız çalışma sayfası (yazdırılabilir)
+Bu dosya UYGULAMAYI tutar (HTML üretimi + oku.html'e gömme). Özet VERİSİ
+şu dosyalardadır:
+
+    tools/ozet.py         -> Türkçe   (bu dosyanın kendi VERI sözlüğü)
+    tools/ozet-<ders>.py  -> diğer dersler (tools/ozet-tarih.py gibi)
+
+Hangi derslerin özeti üretileceğini `DERSLER` sözlüğü belirler. Yeni ders
+eklemek için: veri dosyasını yaz + DERSLER'e bir satır ekle.
+
+Çıktılar:
+  1) <ders>-ozet.html  -> bağımsız çalışma sayfası (yazdırılabilir)
   2) oku.html -> <!-- OZET-DATA-BEGIN --> ... <!-- OZET-DATA-END --> arasına gömülen
      JSON; Kitap Modu'ndaki "Özet" çekmecesi (Ö) ve sayfa başı kartı bu veriyi kullanır.
 
-Özet metnini değiştirmek için yalnızca bu dosyayı düzenleyip çalıştırın:
+Özet metnini değiştirmek için:
 
     python tools/ozet.py
-
-Ardından: python tools/check.py
+    python tools/check.py
 """
 import html as H
+import importlib.util
 import json
 import os
+import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OKU = os.path.join(ROOT, "oku.html")
-PAGE = os.path.join(ROOT, "turkce-ozet.html")
 BEGIN = "<!-- OZET-DATA-BEGIN -->"
 END = "<!-- OZET-DATA-END -->"
 
+
+def veri_yukle(dosya_adi):
+    """tools/ozet-<ders>.py içindeki VERI sözlüğünü döndürür.
+
+    Dosya adında tire olduğu için normal `import` çalışmaz; importlib ile
+    dosya yolu üzerinden yüklenir.
+    """
+    yol = os.path.join(ROOT, "tools", dosya_adi)
+    spec = importlib.util.spec_from_file_location(dosya_adi[:-3], yol)
+    if spec is None or spec.loader is None:
+        raise SystemExit("ozet veri dosyasi yuklenemedi: %s" % yol)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m.VERI
+
+
 BASLIK = "KPSS Orta Öğretim"
+DERS_ADI = "Türkçe"
+ACIKLAMA = ("KPSS Türkçe genel tekrar ders notları: dil bilgisi, sözel mantık ve "
+            "paragraf taktikleri.")
+LEAD = ("KPSS Türkçe genel tekrar notları &middot; dil bilgisi, sözel mantık ve "
+        "paragraf taktikleri")
 GIRIS = ("ÖSYM'nin son yıllardaki soru dağılımlarına bakıldığında KPSS Türkçe oturumu "
          "<b>7 adet dil bilgisi sorusu</b> ve geri kalanı <b>anlam/paragraf</b> soruları "
          "üzerine kuruludur.")
@@ -417,12 +447,34 @@ BOLUM1 = {
 }
 
 VERI = {
-    "key": "turkce", "baslik": BASLIK, "giris": GIRIS, "not": NOT, "vurgu": VURGU,
+    "key": "turkce", "baslik": BASLIK, "ders_adi": DERS_ADI, "aciklama": ACIKLAMA,
+    "lead": LEAD, "giris": GIRIS, "not": NOT, "vurgu": VURGU,
     "bolumler": [BOLUM1, BOLUM2, BOLUM3],
 }
 
+# Üretilecek ders özetleri: anahtar = ders anahtarı (manifest.json ile aynı),
+# değer = o dersin VERI sözlüğü. Yeni ders buraya eklenir.
+DERSLER = {
+    "turkce": VERI,
+    "tarih": veri_yukle("ozet-tarih.py"),
+}
+
+
 def notlar_html(ns):
     return "".join('<div class="trick"><b>%s:</b> %s</div>' % (n["tur"], n["d"]) for n in (ns or []))
+
+
+def tablo_html(t):
+    """Karşılaştırma tabloları: {"basliklar": [...], "satirlar": [[...], ...]}"""
+    if not t:
+        return ""
+    h = '<div class="tablo"><table class="ozt"><thead><tr>'
+    for c in t["basliklar"]:
+        h += "<th>%s</th>" % c
+    h += "</tr></thead><tbody>"
+    for r in t["satirlar"]:
+        h += "<tr>" + "".join("<td>%s</td>" % x for x in r) + "</tr>"
+    return h + "</tbody></table></div>"
 
 
 def blok_html(b):
@@ -431,6 +483,8 @@ def blok_html(b):
         h += "<h4>%s</h4>" % b["ad"]
     if b.get("giris"):
         h += "<p>%s</p>" % b["giris"]
+    if b.get("tablo"):
+        h += tablo_html(b["tablo"])
     ms = b.get("maddeler") or []
     if ms:
         h += "<ul>"
@@ -441,16 +495,15 @@ def blok_html(b):
     return h
 
 
-def sayfa_html():
-    v = VERI
+def sayfa_html(v):
     h = ""
     h += '<section class="oz"><h3 class="ozh">Genel Bak\u0131\u015f</h3><p>%s</p>' % v["giris"]
     h += '<div class="chiprow">%s</div>' % "".join(
         '<span class="chip">%s</span>' % x for x in v["vurgu"])
     h += '<div class="trick">%s</div></section>' % v["not"]
-    h += '<div class="chiprow"><a class="chip" href="oku.html?ders=turkce">&#128214; ' \
-         'Türkçe sayfalarını oku</a><a class="chip" href="oku.html?ders=turkce">&#128221; ' \
-         'Kitap Modu\'nda özet</a></div>'
+    h += '<div class="chiprow"><a class="chip" href="oku.html?ders=%(k)s">&#128214; ' \
+         '%(d)s sayfalarını oku</a><a class="chip" href="oku.html?ders=%(k)s">&#128221; ' \
+         'Kitap Modu\'nda özet</a></div>' % {"k": v["key"], "d": v["ders_adi"]}
     for b in v["bolumler"]:
         h += '<section class="oz"><h3 class="ozh"><span class="n">%s</span>%s' % (b["no"], b["ad"])
         if b.get("etiket"):
@@ -464,7 +517,7 @@ def sayfa_html():
     return h
 
 STIL = """
-:root{--bg:#0b1020;--panel:#121a30;--stroke:rgba(255,255,255,.1);--text:#eef2ff;--muted:#a8b3d4;
+:root{--bg:#050b1c;--panel:rgba(96,165,250,.07);--stroke:rgba(96,165,250,.18);--text:#e6efff;--muted:#8ba3c7;
   --accent:#3b82f6;--accent2:#06b6d4}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -498,6 +551,14 @@ h1{font-size:clamp(25px,5.4vw,38px);line-height:1.2;margin:0 0 6px;letter-spacin
 .oz li{margin:10px 0;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.045)}
 .oz li b:first-child,.oz p b:first-child{color:#cfd8ff}
 .oz b,.oz strong{color:var(--text)}
+.tablo{overflow-x:auto;margin:0 0 12px;-webkit-overflow-scrolling:touch}
+.ozt{width:100%;border-collapse:collapse;font-size:14.5px;line-height:1.6;min-width:440px}
+.ozt th,.ozt td{border:1px solid var(--stroke);padding:9px 11px;text-align:left;
+  vertical-align:top;color:var(--muted)}
+.ozt th{background:rgba(59,130,246,.22);color:#fff;font-weight:700;font-size:13.5px;white-space:nowrap}
+.ozt tbody tr:nth-child(even){background:rgba(255,255,255,.035)}
+.ozt tbody tr:hover{background:rgba(6,182,212,.12)}
+.ozt td:first-child{color:#cfd8ff;font-weight:600}
 .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
 .chiprow .chip{cursor:default}
 .trick{border-left:3px solid var(--accent2);background:rgba(255,255,255,.05);border-radius:0 12px 12px 0;
@@ -515,6 +576,8 @@ footer.site{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;color:var(--mut
   .oz{background:#fff;border-color:#ddd;box-shadow:none;break-inside:avoid}
   .oz p,.oz ul,.trick{color:#333}
   .oz b,.oz h4,.ozh{color:#000}
+  .ozt th,.ozt td{color:#333;border-color:#bbb}
+  .ozt th{background:#eee;color:#000}
   header.top,footer.site{display:none}
 }
 """
@@ -524,7 +587,9 @@ TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="KPSS Türkçe genel tekrar ders notları: dil bilgisi, sözel mantık ve paragraf taktikleri.">
+<meta name="color-scheme" content="dark">
+<script>document.documentElement.style.colorScheme='dark';</script>
+<meta name="description" content="__ACIKLAMA__">
 <title>__TITLE__</title>
 <style>__STIL__</style>
 </head>
@@ -532,12 +597,12 @@ TEMPLATE = """<!DOCTYPE html>
 <div class="wrap">
 <header class="top">
 <a class="chip" href="index.html">&#8592; Ana sayfa</a>
-<a class="chip" href="oku.html?ders=turkce">&#128214; Kitap Modu</a>
+<a class="chip" href="oku.html?ders=__DERS__">&#128214; Kitap Modu</a>
 <a class="chip" href="galeri.html">&#9635; Galeri</a>
 <a class="chip" href="javascript:window.print()">&#128424; Yazdır</a>
 </header>
 <h1>__BASLIK__</h1>
-<p class="lead">KPSS Türkçe genel tekrar notları &middot; dil bilgisi, sözel mantık ve paragraf taktikleri</p>
+<p class="lead">__LEAD__</p>
 __BODY__
 <footer class="site">
 <span>Kaynak: kişisel genel tekrar notları</span><span>&middot;</span>
@@ -548,12 +613,23 @@ __BODY__
 </html>
 """
 
-def sayfa_yaz():
+def sayfa_yol(v):
+    return os.path.join(ROOT, "%s-ozet.html" % v["key"])
+
+
+def sayfa_yaz(v):
     html = (TEMPLATE.replace("__STIL__", STIL)
-                    .replace("__TITLE__", BASLIK)
-                    .replace("__BASLIK__", BASLIK)
-                    .replace("__BODY__", sayfa_html()))
-    with open(PAGE, "w", encoding="utf-8", newline="\n") as f:
+                    .replace("__ACIKLAMA__", v["aciklama"])
+                    .replace("__DERS__", v["key"])
+                    .replace("__LEAD__", v["lead"])
+                    .replace("__TITLE__", v["baslik"])
+                    .replace("__BASLIK__", v["baslik"])
+                    .replace("__BODY__", sayfa_html(v)))
+    # enhancements.js (gece modu / odak modu / yayinevi temizligi) her ozet
+    # sayfasinda bulunmali. inject-enhancements.py ile ayni kural, idempotent.
+    if "enhancements.js" not in html and "</body>" in html:
+        html = html.replace("</body>", '  <script src="enhancements.js"></script>\n</body>')
+    with open(sayfa_yol(v), "w", encoding="utf-8", newline="\n") as f:
         f.write(html)
     return len(html)
 
@@ -567,7 +643,7 @@ def oku_enjekte():
     j = t.index(END)
     if t[j - 12:j].strip().endswith("-->") is False and "<script" not in t[i:j]:
         raise SystemExit("oku.html icinde ozetData script blogu bulunamadi")
-    veri = json.dumps({VERI["key"]: VERI}, ensure_ascii=False, indent=1).replace("<", "\\u003c")
+    veri = json.dumps(DERSLER, ensure_ascii=False, indent=1).replace("<", "\\u003c")
     blok = ('\n<script type="application/json" id="ozetData">\n' + veri + '\n</script>\n')
     yeni = t[:i] + blok + t[j:]
     # Eski (bozuk) yerlesimden kalan fazladan </script> varsa temizle.
@@ -583,12 +659,19 @@ def oku_enjekte():
 
 
 def main():
-    n1 = sayfa_yaz()
+    # Bolum adlarindaki ★ gibi karakterler Windows konsoluna (cp1254) sigmaz.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+    for key, v in DERSLER.items():
+        n1 = sayfa_yaz(v)
+        print("%s-ozet.html yazildi (%d karakter)" % (key, n1))
+        print("  bolumler: %s" % ", ".join("%s-%s" % (b["no"], b["ad"]) for b in v["bolumler"]))
+        print("  blok sayisi: %d" % sum(len(b.get("bloklar") or []) for b in v["bolumler"]))
     n2 = oku_enjekte()
-    print("turkce-ozet.html yazildi (%d karakter)" % n1)
     print("oku.html verisi guncellendi (%d karakter)" % n2)
-    print("bolumler: %s" % ", ".join("%s-%s" % (b["no"], b["ad"]) for b in VERI["bolumler"]))
-    print("blok sayisi: %d" % sum(len(b.get("bloklar") or []) for b in VERI["bolumler"]))
+    print("gomulu dersler: %s" % ", ".join(DERSLER))
 
 
 if __name__ == "__main__":

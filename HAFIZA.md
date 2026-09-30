@@ -21,3 +21,19 @@ IS B (Tek Koyu Tema) TAMAM: 175/175 HTML'de FOUC, mor (7c5cff/6366f1/rgba124) re
 ### [2026-09-29 19:44] opencode / ilerleme
 Kontrast-final tamamlandi: 4 kural uygulandi (169/168/168/168 dosya), kapsayici override eklendi (tip3=20 dosya card-box, tip4=40 dosya card-box+note-callout). Yedek: C:\Users\KURAI\AppData\Local\Temp\opencode\dn-kontrast-final-yedek-2026-09-29. .table-col-left/right dokunulmadi, #111 reziduel yok, LF+BOM korundu. Betik: C:\Users\KURAI\AppData\Local\Temp\opencode\kontrast-final.py (--dry/--apply).
 
+
+### [2026-09-29 19:54] opencode / ilerleme
+IS A+B tamam, commit ae77f02 push edildi ve GitHub Pages canli dogrulandi (index/page_99/viewer: koyu+mavi tema, mor=0, maske motoru d.sol, FOUC korumasi). Ek duzeltmeler: viewer img ustu serit koyu, page_1 base bullet acik mavi, manifest.json+tools/* (app.js, oku.js, ozet.py, render.py, make-cover.py) mor/teal set renkleri mavi ailesine cevrildi. tools/app.js+oku.js gitignore'da (HEAD'de yok), deploy yuzeyine dahil degil.
+
+
+### [2026-09-30] opencode / karar
+Tarih konu ozeti eklendi ve ozet motoru "cok dersli" hale getirildi. Yeni dosya tools/ozet-tarih.py (SADE veri: 16 bolum / 49 blok / 4 tablo / 112 madde). tools/ozet.py artik sadece UYGULAMA: DERSLER = {"turkce": VERI, "tarih": veri_yukle("ozet-tarih.py")}; veri_yukle() importlib kullanir cunku dosya adi tireli ve normal import calismaz. Yeni ders eklemek = veri dosyasi yaz + DERSLER'e satir ekle. Blok semasina "tablo" alani eklendi ({"basliklar":[...],"satirlar":[[...]]}) -> .ozt; .tablo{overflow-x:auto} sarmalayici sayfayi genisletmiyor (olculdu: 412px'te tasma 0px).
+
+
+### [2026-09-30] opencode / hata
+ONCEDEN VAR olan bir drift bulundu ve duzeltildi: commit ae77f02 turkce-ozet.html'i elle koyu-mavi palete + color-scheme meta + enhancements.js cevirmis, ama tools/ozet.py bunu bilmiyordu. Yani "python tools/ozet.py" calistirmak turkce-ozet.html'in temasini GERI ALIYORDU. Duzeltme: koyu palet STIL'e, color-scheme TEMPLATE'a, enhancements.js enjeksiyonu sayfa_yaz()'a alindi -> uretec tek kaynak. inject-enhancements.py glob'u 'turkce-ozet.html' -> '*-ozet.html' yapildi. Ders: uretilen HTML'e elle tema/eklenti ekleme; ozet.py'den gecir.
+
+
+### [2026-09-30] opencode / ilerleme
+oku.html'deki "Tam sayfa ozet" linki artik sabit kodlu degil: ozSayfaAd(key) -> key+'-ozet.html'. ozBlockHTML'a ozTable() eklendi (cekmece icinde tablo cizimi), aria-label da d.ders_adi'na baglandi. index.html ozet bolumu "Konu ozetleri" olarak iki derse acildi. check.py cok dersli: her ozetli ders icin sayfa varligi, sema butunlugu (bir blokta hem tablo hem maddeler olamaz), tablo hucre/sutun tutarliligi, kitap modu linki, enhancements varligi. ui-test.js'e 37 yeni kontrol (tarih ozeti masaustu+telefon, ozet sayfasi tasma olcumu): 212 -> 249 gecti. 9 basarisiz kontrol OLDUGU GIBI (onceki commit'lerden, bu isin disinda) - kanit: git stash ile baseline 212/9 ayni.
+

@@ -2,7 +2,10 @@ import glob
 import os
 
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-files = glob.glob(os.path.join(root, 'page_*.html')) + [os.path.join(root, 'turkce-ozet.html')]
+# turkce-ozet.html yerine *-ozet.html: ozet.py her ders icin <ders>-ozet.html
+# uretir, yeni ders eklenince bu glob onu da otomatik kapsar.
+files = (glob.glob(os.path.join(root, 'page_*.html'))
+         + glob.glob(os.path.join(root, '*-ozet.html')))
 injected = 0
 
 for fpath in files:

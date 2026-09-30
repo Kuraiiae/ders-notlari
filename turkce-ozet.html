@@ -42,6 +42,14 @@ h1{font-size:clamp(25px,5.4vw,38px);line-height:1.2;margin:0 0 6px;letter-spacin
 .oz li{margin:10px 0;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.045)}
 .oz li b:first-child,.oz p b:first-child{color:#cfd8ff}
 .oz b,.oz strong{color:var(--text)}
+.tablo{overflow-x:auto;margin:0 0 12px;-webkit-overflow-scrolling:touch}
+.ozt{width:100%;border-collapse:collapse;font-size:14.5px;line-height:1.6;min-width:440px}
+.ozt th,.ozt td{border:1px solid var(--stroke);padding:9px 11px;text-align:left;
+  vertical-align:top;color:var(--muted)}
+.ozt th{background:rgba(59,130,246,.22);color:#fff;font-weight:700;font-size:13.5px;white-space:nowrap}
+.ozt tbody tr:nth-child(even){background:rgba(255,255,255,.035)}
+.ozt tbody tr:hover{background:rgba(6,182,212,.12)}
+.ozt td:first-child{color:#cfd8ff;font-weight:600}
 .chiprow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
 .chiprow .chip{cursor:default}
 .trick{border-left:3px solid var(--accent2);background:rgba(255,255,255,.05);border-radius:0 12px 12px 0;
@@ -59,6 +67,8 @@ footer.site{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;color:var(--mut
   .oz{background:#fff;border-color:#ddd;box-shadow:none;break-inside:avoid}
   .oz p,.oz ul,.trick{color:#333}
   .oz b,.oz h4,.ozh{color:#000}
+  .ozt th,.ozt td{color:#333;border-color:#bbb}
+  .ozt th{background:#eee;color:#000}
   header.top,footer.site{display:none}
 }
 </style>
