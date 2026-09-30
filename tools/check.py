@@ -236,6 +236,35 @@ print("test modu: set", len(quiz), "| kartli soru", toplam_soru,
       "| anahtar", sum(len(m) for v in quiz.values() for m in v["keys"].values()),
       "| kok metni", sum(len(m) for v in qtext.values() for m in v.values()))
 
+# --- Cevap anahtari: iki kaynak, 10 celiski (UYARI, hata degil) -------------
+# Cevap anahtari iki yerde tutuluyor:
+#   tools/quiz-keys.json  -> 702 kayit (TAM)  -> quiz-embed.py bunu gomulur
+#   quiz-data.json k[]    -> 159 kayit (KISMI) -> HICBIR YERDE OKUNMAZ
+# Ortusen kayitlarin bir kismi celisiliyor. Hangisinin dogru oldugu ancak
+# kaynak PDF'e bakilarak anlasilir (PDF'ler diskte degil), bu yuzden burada
+# yalnizca RAPORLANIR, duzeltilmez. Karar: dokunma, isaretle.
+# Bkz. docs/superpowers/specs/...-design.md bolum 3.4
+celiski = []
+for key, v in kaynak.items():
+    gomulu = ((anahtar.get(key) or {}))
+    for p, e in (v.get("pages") or {}).items():
+        for kayit in (e.get("k") or []):
+            n = str(kayit["n"])
+            harf = (gomulu.get(p) or {}).get(n)
+            if harf is not None and str(harf).strip().upper() != kayit["a"]:
+                celiski.append((key, p, n, kayit["a"], str(harf).strip().upper()))
+if celiski:
+    print()
+    print("!! UYARI - cevap anahtari celiskisi (%d adet, DUZELTILMEDI):" % len(celiski))
+    print("   %-14s %-6s %-6s %-18s %s" % ("set", "sayfa", "soru",
+                                          "quiz-data.json k", "quiz-keys.json"))
+    for key, p, n, a, b in celiski:
+        print("   %-14s %-6s %-6s %-18s %s" % (key, p, n, a, b))
+    print("   -> Uygulama quiz-keys.json'i kullanir. Dogru kaynak PDF'e")
+    print("      bakilarak belirlenmeli; bkz. spec bolum 3.4.")
+else:
+    print("cevap anahtari celiskisi: yok")
+
 # --- Capraz baglantilar: ozet sayfasi her giris noktasindan erisilebilmeli ---
 # --- Capraz baglantilar: ozet sayfasi her giris noktasindan erisilebilmeli ---
 # oku.html istisna: ozet sayfasi linki sabit kodlu degil, JS ile uretilir
