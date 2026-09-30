@@ -128,9 +128,8 @@
         var sonrakiTop = Math.max(0, bant[s + 1].top - bant[s + 1].dy);
         y1 = Math.min(1, Math.max(bant[s].bot + bant[s].dy, sonrakiTop - 0.002));
       } else if (isTekSutun && s > 0) {
-        /* Son sik (E): onceki basin buyuklugunu ornek alarak genislet */
-        var oncekiH = c.h[bant[s - 1].idx[0]] || (bant[s].bot - bant[s].top + 2 * DY);
-        y1 = Math.min(1, Math.max(y0 + oncekiH, bant[s].bot + bant[s].dy));
+        /* Son sik: kendi alt sinirini (metin kapsamasini) koru, yapay buyutme */
+        y1 = Math.min(1, Math.max(bant[s].bot + bant[s].dy, y0 + 0.015));
       } else {
         y1 = Math.min(1, Math.max(y0 + 0.008, bant[s].bot + bant[s].dy));
       }
