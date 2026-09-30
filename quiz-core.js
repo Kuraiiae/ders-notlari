@@ -142,9 +142,43 @@
     return c;
   }
 
+  /* Yayinevi bandi.
+     ONCEDEN (galeri.html) her sayfanin ust/alt %7'si KOR olarak kapatiliyordu:
+     [{top:0,height:0.07},{top:0.93,height:0.07}]. Bu bir yayinevi bandi degil,
+     sayfanin %14'unun icerikten bagimsiz olarak gizlenmesiydi — sayfa
+     numarasi, kesik metin, bazen soru metni.
+     Artik yalnizca GERCEKTEN veride tanimli dikdortgen kapanir.
+     Veri yoksa (pub alani quiz-data.json'da YOK) HICBIR sey kapatilmaz. */
+  function yayineviMaskKoy(container, dikdortgenler) {
+    if (!container || !container.ownerDocument) return;
+    var liste = dikdortgenler || [];
+    for (var i = 0; i < liste.length; i++) {
+      var d = liste[i];
+      if (!d || d.length < 4) continue;
+      var x0 = klamp(d[0]);
+      var y0 = klamp(d[1]);
+      var x1 = klamp(d[2], x0);
+      var y1 = klamp(d[3], y0);
+      if (x1 <= x0 || y1 <= y0) continue;          /* bos alan -> maske uretilmez */
+      /* ayni dikdortgen icin ikinci kez maske ekleme */
+      if (container.querySelector &&
+          container.querySelector('.qpub-mask[data-pubidx="' + i + '"]')) continue;
+      var el = container.ownerDocument.createElement('div');
+      el.className = 'qpub-mask';
+      el.style.position = 'absolute';
+      el.style.left = (x0 * 100).toFixed(2) + '%';
+      el.style.top = (y0 * 100).toFixed(2) + '%';
+      el.style.width = ((x1 - x0) * 100).toFixed(2) + '%';
+      el.style.height = ((y1 - y0) * 100).toFixed(2) + '%';
+      el.setAttribute('data-pubidx', String(i));
+      container.appendChild(el);
+    }
+  }
+
   return {
     hizalaSiklar: hizalaSiklar,
     soruyuKoru: soruyuKoru,
+    yayineviMaskKoy: yayineviMaskKoy,
     SABIT: { GAP: GAP, OUT: OUT, DY: DY, SATIR_TOL: SATIR_TOL, MINW: MINW }
   };
 });

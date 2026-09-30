@@ -636,6 +636,7 @@ html[data-theme="light"] .qsolution-mask.revealed{background:rgba(59,130,246,.04
   </div>
   <button class="fab-main" id="fabMain" title="Yardımcı menü" aria-expanded="false">?</button>
 </div>
+<script src="quiz-core.js"></script>
 <script>
 /* Veri dogrudan gomulu: dosya yerelden (file://) acildiginda fetch/CORS calismaz. */
 const LIBRARY = [
@@ -1643,16 +1644,14 @@ function qzSolutionMaskKoy(container, s, cMap, pageChoices) {
 
 // Yayınevi bandını sayfa üst/alt kısmına TAM olarak kapat (blur değil, opak örtü)
 function qzPublisherMaskKoy(container) {
-  // Üst bant: 0–7%, Alt bant: 93–100%
-  if (container.querySelector && container.querySelector('.qpub-mask')) return;
-  const bands = [{top: 0, height: 0.07}, {top: 0.93, height: 0.07}];
-  bands.forEach(b => {
-    const m = document.createElement('div');
-    m.className = 'qpub-mask';
-    m.style.top = (b.top * 100).toFixed(1) + '%';
-    m.style.height = (b.height * 100).toFixed(1) + '%';
-    container.appendChild(m);
-  });
+  // Yayinevi bandi: yalnizca GERCEKTEN tanimli dikdortgenler kapatilir.
+  // Onceki surum her sayfanin ust/alt %7'sini kor kapatiyordu — bu bir yayinevi
+  // bandi degil, sayfanin %14'unun icerikten bagimsiz gizlenmesiydi.
+  // quiz-data.json'da 'pub' alani YOK -> liste her zaman bos -> hicbir sey ortulmez.
+  const veri = QZ_DATA || (QZ_DATA = qzJson('quizData'));
+  const d = (veri && veri[state.key]) || null;
+  const liste = (d && d.pub && d.pub[String(state.page)]) || [];
+  QuizCore.yayineviMaskKoy(container, liste);
 }
 
 function qzIsaretle(s, h) {

@@ -230,5 +230,72 @@ test('soruyuKoru determinizm', () => {
   assert.strictEqual(JSON.stringify(K(m, e)), JSON.stringify(K(m, e)));
 });
 
+console.log('--- yayineviMaskKoy ---');
+/* Tarayici olmadan test edilebilmesi icin minimum sahte konteyner.
+   yayineviMaskKoy yalnizca ownerDocument.createElement ve appendChild
+   kullandigi icin bu yeterlidir. */
+function sahteKonteyner() {
+  const k = {
+    children: [],
+    /* yalnizca yayineviMaskKoy'un kullandigi bicimi taklit eder:
+       .qpub-mask[data-pubidx="N"] */
+    querySelector: sel => {
+      const m = /^(\.[\w-]+)\[data-pubidx="(\d+)"\]$/.exec(sel);
+      if (!m) return null;
+      return k.children.find(c => c.className.indexOf(m[1].slice(1)) > -1 &&
+                                c._at['data-pubidx'] === m[2]) || null;
+    },
+    appendChild: c => k.children.push(c)
+  };
+  k.ownerDocument = {
+    createElement: () => ({
+      className: '', style: {}, _at: {},
+      setAttribute(a, v) { this._at[a] = v; }
+    })
+  };
+  return k;
+}
+
+test('bos dikdortgen listesinde hicbir maske eklemez (K4 regresyon)', () => {
+  const k = sahteKonteyner();
+  QuizCore.yayineviMaskKoy(k, []);
+  QuizCore.yayineviMaskKoy(k, null);
+  QuizCore.yayineviMaskKoy(k, undefined);
+  assert.strictEqual(k.children.length, 0, 'bos listeden maske uretilmemeli');
+});
+
+test('verilen dikdortgen icin tam bir .qpub-mask divi ekler', () => {
+  const k = sahteKonteyner();
+  QuizCore.yayineviMaskKoy(k, [[0, 0, 1, 0.07]]);
+  assert.strictEqual(k.children.length, 1);
+  const m = k.children[0];
+  assert.ok(m.className.indexOf('qpub-mask') > -1, 'sinif adi qpub-mask olmali: ' + m.className);
+  assert.strictEqual(m.style.top, '0.00%');
+  assert.strictEqual(m.style.height, '7.00%');
+  assert.strictEqual(m.style.left, '0.00%');
+  assert.strictEqual(m.style.width, '100.00%');
+});
+
+test('cagirmak iki kez ayni maskeyi eklemez (idempotent)', () => {
+  const k = sahteKonteyner();
+  QuizCore.yayineviMaskKoy(k, [[0, 0, 1, 0.07]]);
+  QuizCore.yayineviMaskKoy(k, [[0, 0, 1, 0.07]]);
+  assert.strictEqual(k.children.length, 1, 'ikinci cagri eklememeli');
+});
+
+test('ayri dikdortgenler ayri maske uretir', () => {
+  const k = sahteKonteyner();
+  QuizCore.yayineviMaskKoy(k, [[0, 0, 1, 0.07], [0, 0.93, 1, 1]]);
+  assert.strictEqual(k.children.length, 2, 'iki dikdortgen -> iki maske');
+  assert.strictEqual(k.children[1].style.top, '93.00%');
+});
+
+test('bozuk / sifir alanli dikdortgen atlanir', () => {
+  const k = sahteKonteyner();
+  QuizCore.yayineviMaskKoy(k, [null, [0.1], [0.2, 0.3, 0.2, 0.4], [0.5, 0.6, 0.5, 0.6], [0.1, 0.2, 0.3, 0.4]]);
+  assert.strictEqual(k.children.length, 1, 'yalnizca gecerli tek dikdortgen maske uretmeli');
+  assert.strictEqual(k.children[0].style.left, '10.00%');
+});
+
 console.log('\nSONUC: ' + gecti + ' gecti, ' + kaldi + ' basarisiz');
 process.exit(kaldi ? 1 : 0);
