@@ -303,3 +303,29 @@ assert "<h1>" + d["baslik"] + "</h1>" in sayfa, \
 
 print("ozet: bolum", len(d["bolumler"]), "| blok", blok, "| madde", madde,
       "| sayfa karakter", len(sayfa), "| site adi", SITE_ADI)
+
+# --- quiz-core.js butunlugu (K5) -------------------------------------------
+# Sik kutulari hizalamasi, soru korumasi ve yayinevi bandi ONCE uc modda
+# ayri ayri kopyalandiydi; kopyalar birbirinden ayri evrilmisti (K5).
+# Artik ucu de quiz-core.js'e bagli. Asagidaki denetimler, bir kopya geri
+# geldiginde veya cekirdek dosya eksik kaldiginda yakalar.
+CEKIRDEK = os.path.join(ROOT, "quiz-core.js")
+assert os.path.exists(CEKIRDEK), "quiz-core.js yok -> simetri/cekim tek kaynaginiz kalmamis"
+with open(CEKIRDEK, encoding="utf-8") as f:
+    cek = f.read()
+for parca in ("hizalaSiklar", "soruyuKoru", "yayineviMaskKoy", "module.exports"):
+    assert parca in cek, f"quiz-core.js icinde {parca} yok"
+
+# Uc mod da cekirdegi yuklemeli ve kendi kopyasini SILMIS olmali.
+for ad, metin in (("oku.html", oku), ("viewer.html", izl), ("galeri.html", gal)):
+    assert metin.count('src="quiz-core.js"') == 1, \
+        f"{ad} icinde quiz-core.js etiketi tam 1 kez olmali (bulunan: {metin.count(chr(34).join(['src=', 'quiz-core.js', '']))})"
+    assert metin.count("QuizCore.hizalaSiklar") == 1, \
+        f"{ad} icinde QuizCore.hizalaSiklar cagrisi tam 1 kez olmali"
+    assert "qzHotHiza" not in metin, \
+        f"{ad} icinde qzHotHiza kaldi -> uc mod tek kaynaga baglanmamis (K5)"
+    # Cekirdek, kendisini kullanan koddan ONCE yuklenmelidir.
+    i_cek = metin.find('src="quiz-core.js"')
+    i_kul = metin.find("QuizCore.hizalaSiklar")
+    assert 0 <= i_cek < i_kul, f"{ad}: quiz-core.js kullanimdan sonra yukleniyor"
+print("quiz-core: 3 mod bagli | fonksiyon 3/3 | kopya qzHotHiza 0/3")

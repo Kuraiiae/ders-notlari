@@ -81,10 +81,35 @@ function checks(file, size, pre, drive, xform) {
     .split('~~').map(l => l.split('|'));
 }
 
+/* RAPOR kayitlari icin: beklenen alan "RAPOR" ise deger ornek (rapor)
+   alanindadir. ck() cagirisinda rp() bunu ayrica uretir. */
+
+
 /* ---------- ortak test yardimcilari (sayfaya enjekte edilir) ---------- */
 const HELPERS = `
 var out = [];
-function ck(ad, beklenen, gercek){ out.push(ad + '|' + beklenen + '|' + gercek); }
+/* DIKKAT: satir protokolu "ad|beklenen|gercek" ve kayitlar "~~" ile birlestirilir.
+   ad veya degerlerin icinde "|" veya "~~" KULLANILAMAZ; ayirici yerine " :: "
+   veya " -> " kullan. (Bunu ihlal eden bir kontrol, gercek degeri sessizce
+   kirpar ve yesil gorunurdu.) */
+function ck(ad, beklenen, gercek){
+  var a = String(ad), b = String(beklenen), c = String(gercek);
+  if (a.indexOf('|') > -1 || b.indexOf('|') > -1 || c.indexOf('|') > -1 ||
+      a.indexOf('~~') > -1 || b.indexOf('~~') > -1 || c.indexOf('~~') > -1)
+    throw new Error('ck degerinde ayirici karakter: ' + a);
+  out.push(a + '|' + b + '|' + c);
+}
+/* Sadece RAPOR: gecmek zorunda degildir, degeri sadece okunur. Kanit
+   metni "beklenen" alanina konur, boylece asiri denetim yapmaz. */
+function rp(ad, metin){
+  var a = String(ad), t = String(metin === undefined ? 'yok' : metin);
+  if (a.indexOf('|') > -1 || t.indexOf('|') > -1 ||
+      a.indexOf('~~') > -1 || t.indexOf('~~') > -1)
+    throw new Error('rp degerinde ayirici karakter: ' + a);
+  /* "RAPOR" beklenen alanina yazilir; deger ornek alaninda kalir.
+     bitir() bunlari gecmis/failmis saymaz. */
+  out.push(a + '|RAPOR|' + t);
+}
 function has(c){ return document.body.classList.contains(c) ? '1' : '0'; }
 function okEdge(panelId){
   var p = document.getElementById(panelId);
@@ -94,7 +119,15 @@ function okMid(panelId){
   var r = document.getElementById(panelId).getBoundingClientRect();
   return Math.round(r.top + r.height / 2) + 'px';
 }
-function bitir(){ document.documentElement.setAttribute('data-testlog', out.join('~~')); }
+/* Kayit: "gecti" | "kaldi" | "rapor".
+   "rapor" SADECE olcumdir; gecmis/failmis sayilmaz, gostergebilir.
+   Kanit metni icin: beklenen alanine konur, boylece asiri denetim yapmaz. */
+function bitir(){
+  var g = out.filter(function(s){ return s.indexOf('|RAPOR|') < 0; });
+  var r = out.filter(function(s){ return s.indexOf('|RAPOR|') > -1; });
+  document.documentElement.setAttribute(
+    'data-testlog', g.join('~~') + (r.length ? '~~RAPOR~~' + r.join('~~') : ''));
+}
 /* isaret karsilastirmasi: ✓/✗ karakterleri hem dogrudan hem kod yaninda
    (\u2713) gelebilir; ikisini de ayni etikete cevirir. */
 function hid(x){ return String(x).replace(/\u2713/g,'U2713').replace(/\u2717/g,'U2717'); }
@@ -766,6 +799,196 @@ window.addEventListener('load', function(){
 });
 `;
 
+/* ---------- SIMETRI: kutularin olcekleri gercek DOM'dan (K2 + K4) ----------
+   Amac: algoritma qz-core.test.js'te ve verify-layout.js'de dogrulandi ama
+   bunlar NORMALIZE koordinatlar uzerinde calisir. Burada tarayicinin
+   gercekte cizdigi PIKSEL olculur: CSS yuvarlama, zoom ve transform
+   etkileri yakalanir.
+
+   KAPSAM: yalnizca oku.html test modu. Sayfa gorseli uzerine cizilen
+   hotspot'lar (.qhotspot) yalnizca orada uretilir; viewer.html ve
+   galeri.html test modunda KART modu (.qo button) kullanir, gorsu ustu
+   hotspot uretmez. Uc mod ayni cekirdegi (QuizCore.hizalaSiklar)
+   kullandigi icin normalize duzeydeki denetim 702 soruda
+   verify-layout.js ile yapilir; buradaki ek deger tarayici olcusudur.
+
+   SERT SINIRLAR (gecmek ZORUNDA):
+     - ust uste binme 0
+     - yayinevi bandi 0  (K4)
+     - sayfa disi kutu sayisi ve 8px ustu genislik farki sayisi: BILINEN
+       bozuk veri sayisiyla esit olmali.
+
+   NEDEN "8px" BIR ESIK DEGIL: bazi sorularda iki sik AYNIsI satirda
+   olsa da FARKLI sutunlardadir. turkce-test s.23 s.7 ornegi:
+     A  x 0.5526-0.6441  (sol sutun)
+     B  x 0.6903-0.9290  (sag sutun)
+   A'yi B kadar genisletmek B'nin metnini keser; daraltmak A'ninkini keser.
+   "Tam esit genislik" ve "metni tam kapsama" bu yerlesimde MATEMATISEL
+   OLARAK BIRLIKTE MUMKUN DEGILDIR (spec bolum 7). Bu yuzden 8px bir
+   GECIT degil, sadece bir OLÇUMdur; regresyon korumasini sayim denetimi
+   saglar.
+
+   BILINEN BOZUK VERI: quiz-data.json'da 2 sorunun koordinatlari sayfa
+   disinda (turkce-test s.50 s.3, deneme s.27 s.3). Bu sette 1 tanesi
+   gorunur. Duzeltilirse veya yeni bozulma olursa sayim kontrolu kirmizi
+   verir -> sessizce gecmis olmaz.
+*/
+const SIMETRI_DRIVE = HELPERS + `
+window.addEventListener('load', function(){
+  var hs = Array.prototype.slice.call(document.querySelectorAll('#pages .qhotspot'));
+  ck('simetri: hotspot var', '1', hs.length ? '1' : '0');
+  if (!hs.length) { bitir(); return; }
+
+  /* Her hotspot icin kendi sorusu, kendi sayfa kabu (en yakin konumlu ata)
+     ve kendi kutusu. Sayfa kabu SORU BASINA degil HOTSPOT BASINA cozulur:
+     cok sayfa ayni anda cizili olabilir; tek referans tum sayfalara
+     uygulanirsa her sey "tasmis" sayilir. */
+  function kapu(b){
+    var n = b.parentElement;
+    while (n && n !== document.body){
+      var cs = getComputedStyle(n);
+      if (cs.position === 'relative' || cs.position === 'absolute') return n;
+      n = n.parentElement;
+    }
+    return b.parentElement;
+  }
+  function yaz(xs){ return xs.map(function(x){
+    return x.h + '@' + Math.round(x.r.left) + ',' + Math.round(x.r.top)
+         + ' ' + Math.round(x.r.width) + 'x' + Math.round(x.r.height); }).join(' '); }
+
+  var sira = [], g = {};
+  hs.forEach(function(b){
+    var id = b.dataset.qid || 'qid-yok';
+    if (!g[id]) { g[id] = []; sira.push(id); }
+    g[id].push({ r: b.getBoundingClientRect(), h: b.dataset.h || '?', kapu: kapu(b) });
+  });
+  ck('simetri: soru gruplari bulundu', '1', String(sira.length ? '1' : '0'));
+
+  /* Sorulari ikiye ayir: GECERLI (tum kutulari kendi sayfa kabulun icinde)
+     ve BOZUK VERI (en az biri disarda -> kaynak veri hatasi). */
+  var gecerli = [], bozuk = [], bozukKanit = '';
+  sira.forEach(function(id){
+    var q = g[id], kotu = null;
+    q.forEach(function(x){
+      if (kotu) return;
+      var k = x.kapu.getBoundingClientRect();
+      if (x.r.left < k.left - 1 || x.r.right > k.right + 1 ||
+          x.r.top < k.top - 1 || x.r.bottom > k.bottom + 1) kotu = x;
+    });
+    if (kotu) {
+      bozuk.push(id);
+      if (!bozukKanit) {
+        var kk = kotu.kapu.getBoundingClientRect();
+        bozukKanit = id + ' ' + kotu.h +
+          ' box=[' + [kotu.r.left, kotu.r.top, kotu.r.right, kotu.r.bottom].map(Math.round).join(',') + ']' +
+          ' sayfa=[' + [kk.left, kk.top, kk.right, kk.bottom].map(Math.round).join(',') + ']';
+      }
+    } else gecerli.push(id);
+  });
+  /* SERT: sayim bilinen bozuk veri degerine esit olmali. */
+  ck('simetri: sayfa disi kutu sayisi (bilinen bozuk veri)', '1', String(bozuk.length));
+  rp('simetri: bozuk veri kaniti', bozukKanit);
+
+  if (!gecerli.length) {
+    ck('simetri: soru ici ust uste binme yok', '0', '0');
+    ck('simetri: yeni genislik ihlali yok', '0', '0');
+    ck('simetri: bilinen cift sutun sayisi', '1', '0');
+    rp('simetri: genislik kaniti', 'yok');
+    rp('simetri: olculen en buyuk sapma', '0.0');
+    ck('simetri: yayinevi bandi yok', '0', String(document.querySelectorAll('.qpub-mask').length));
+    bitir(); return;
+  }
+
+  /* --- SERT: ust uste binme (ayni soru icinde) --- */
+  var binme = 0, kotu = [];
+  gecerli.forEach(function(id){
+    var q = g[id];
+    for (var i = 0; i < q.length; i++)
+      for (var j = i + 1; j < q.length; j++){
+        var a = q[i].r, b = q[j].r;
+        var ox = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+        var oy = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+        if (ox > 0.5 && oy > 0.5) {
+          binme++;
+          kotu.push(id + ' ' + q[i].h + '/' + q[j].h + ' ' + ox.toFixed(1) + 'x' + oy.toFixed(1) + 'px');
+        }
+      }
+  });
+  ck('simetri: soru ici ust uste binme yok', '0',
+     binme ? binme + ' -> ' + kotu.slice(0, 3).join(' ; ') : '0');
+
+  /* --- OLÇÜM: satir ici genislik farki --- */
+  var enSapma = 0, sapmaKanit = '', sapmali = 0, sapmaliIdler = [];
+  gecerli.forEach(function(id){
+    var bant = {}, enBuSoru = 0;
+    g[id].forEach(function(x){
+      var k = Math.round(x.r.top / 2) * 2;    /* ~2px tolerans */
+      (bant[k] = bant[k] || []).push(x);
+    });
+    Object.keys(bant).forEach(function(k){
+      var q = bant[k];
+      if (q.length < 2) return;
+      var ws = q.map(function(x){ return x.r.width; });
+      var d = Math.max.apply(null, ws) - Math.min.apply(null, ws);
+      /* SORU BASINA sayilir: ayni sorunun 5 bandi olsa bile tek sorudur.
+         Aksi halde 5x1 duzende 5 band x 4 soru = 20 "soru" sanilir. */
+      if (d > 8 && d > enBuSoru) { enBuSoru = d; }
+      if (d > enSapma) { enSapma = d; sapmaKanit = id + ' bant@' + k + ' :: ' + yaz(q); }
+    });
+    if (enBuSoru > 0) { sapmali++; sapmaliIdler.push(id); }
+  });
+  /* SERT: regresyon korumasi.
+     Bilinen, KARSILANILAMAZ durumlar acikca listelenir; kontrol yalnizca
+     LISTEDE OLMAYAN ihlalleri sayar. Boylece:
+       - algoritma kotulesirse  -> yeni soru kirazim listeye girer -> KALDI
+       - kaynak veri duzeltilirse -> eski kayit listeden dusulur -> GECTI
+     Sabit sayiya karsilastirmak ikisini de yanlis kilar: duzeltilince
+     kontrol kirilir (yanlis alarm), kotulesince de "bilinen" sanilir.
+     SATIR SAYISI degil SORU SAYISI karsilastirilir. */
+  var BILINEN_CIFT_SUTUN = { '23:7': 1 };   /* A sol sutun, B sag sutun */
+  var yeni = [];
+  sapmaliIdler.forEach(function(id){
+    if (!BILINEN_CIFT_SUTUN[id]) yeni.push(id);
+  });
+  ck('simetri: yeni genislik ihlali yok', '0',
+     yeni.length ? yeni.length + ' -> ' + yeni.join(' ') : '0');
+  ck('simetri: bilinen cift sutun sayisi', String(Object.keys(BILINEN_CIFT_SUTUN).length),
+     String(sapmaliIdler.filter(function(id){ return BILINEN_CIFT_SUTUN[id]; }).length));
+  rp('simetri: genislik kaniti', sapmaKanit);
+  /* RAPOR: saf olcum, esik uygulanmaz. */
+  rp('simetri: olculen en buyuk sapma', enSapma.toFixed(1) + 'px');
+
+  /* --- SERT: yayinevi bandi icerik gizlememeli (K4) --- */
+  ck('simetri: yayinevi bandi yok', '0', String(document.querySelectorAll('.qpub-mask').length));
+
+  bitir();
+});
+`;
+
+/* ---------- K5 butunluk korumasi (uc mod tek cekirdekte) ----------
+   qzHotHiza uc dosyada AYRI AYRI kopyalandiydi ve kopyalar birbirinden
+   ayri evrilmisti. Artik ucu de QuizCore.hizalaSiklar'i kullanmali.
+   Bu kontrol, bir kopya geri gelirse yakalar. */
+const K5_DRIVE = HELPERS + `
+window.addEventListener('load', function(){
+  ck('k5: quiz-core.js yuklendi', '1', (typeof QuizCore === 'object' ? '1' : '0'));
+  ck('k5: hizalaSiklar var', 'function', (typeof QuizCore.hizalaSiklar));
+  ck('k5: soruyuKoru var', 'function', (typeof QuizCore.soruyuKoru));
+  ck('k5: yayineviMaskKoy var', 'function', (typeof QuizCore.yayineviMaskKoy));
+  /* Saf cikti: girdi degismezse ayni sonuc. */
+  var kutu = [[0.10,0.20,0.20,0.23],[0.24,0.20,0.34,0.23],[0.38,0.20,0.48,0.23]];
+  var r1 = QuizCore.hizalaSiklar(kutu);
+  var r2 = QuizCore.hizalaSiklar(kutu);
+  ck('k5: cikti birebir ayni', '1', (JSON.stringify(r1) === JSON.stringify(r2) ? '1' : '0'));
+  var fark = Math.abs(r1.w[0] - r1.w[1]);
+  ck('k5: ayni satirda esit genislik', '0.000001', (fark < 1e-6 ? '0.000001' : String(fark)));
+  /* Girdi KUTELERININ tamamini kapsamali (metin kesilmemeli). */
+  var kapsam = (r1.x0[0] <= kutu[0][0] + 1e-9) && (r1.x0[0]+r1.w[0] >= kutu[0][2] - 1e-9);
+  ck('k5: metni tam kapsar', '1', (kapsam ? '1' : '0'));
+  bitir();
+});
+`;
+
 /* ---------- kosum ---------- */
 const CASES = [
   { ad: 'OKU masaustu 1440x1000', file: 'oku.html', size: '1440,1000', pre: OKU_PRE, drive: OKU_DRIVE },
@@ -785,18 +1008,31 @@ const CASES = [
   { ad: 'GALERI test modu deneme 1440x1000', file: 'galeri.html', size: '1440,1000', pre: GALERI_QUIZ_PRE, drive: GALERI_QUIZ_DRIVE },
   { ad: 'GALERI test modu deneme telefon 412x880', file: 'galeri.html', size: '412,880', pre: GALERI_QUIZ_PRE, drive: GALERI_QUIZ_DRIVE },
   { ad: 'GALERI telefon 412x880', file: 'galeri.html', size: '412,880', pre: GALERI_PRE, drive: GALERI_DRIVE },
+  { ad: 'SIMETRI oku test modu 1440x1000', file: 'oku.html', size: '1440,1000', pre: QUIZ_PRE, drive: SIMETRI_DRIVE },
+  { ad: 'K5 oku cekirdek', file: 'oku.html', size: '1440,1000', pre: QUIZ_PRE, drive: K5_DRIVE },
+  { ad: 'K5 viewer cekirdek', file: 'viewer.html', size: '1440,1000', pre: VIEWER_PRE, drive: K5_DRIVE },
+  { ad: 'K5 galeri cekirdek', file: 'galeri.html', size: '1440,1000', pre: GALERI_QUIZ_PRE, drive: K5_DRIVE },
 ];
 
-let gecen = 0, kalan = 0;
+let gecen = 0, kalan = 0, rapor = 0;
 CASES.forEach(c => {
   console.log('=== ' + c.ad + ' ===');
   checks(c.file, c.size, c.pre, c.drive, c.xform).forEach(r => {
     const ad = r[0], beklenen = r[1], gercek = r[2];
+    /* RAPOR kayitlari olcumdur: gecmis/failmis SAYILMAZ, yalnizca
+       gosterilir. Kanit metni beklenen alanindadir; bu yuzden
+       asiri denetim yapilmaz. */
+    if (beklenen === 'RAPOR') {
+      rapor++;
+      console.log('  RAPOR  ' + ad + ': ' + gercek);
+      return;
+    }
     const ok = beklenen === gercek;
     ok ? gecen++ : kalan++;
     console.log('  ' + (ok ? 'GECTI' : 'KALDI') + '  ' + ad +
       (ok ? '' : '   (beklenen: ' + beklenen + ' | gercek: ' + gercek + ')'));
   });
 });
-console.log('\nSONUC: ' + gecen + ' gecti, ' + kalan + ' basarisiz');
+console.log('\nSONUC: ' + gecen + ' gecti, ' + kalan + ' basarisiz' +
+  (rapor ? ', ' + rapor + ' rapor' : ''));
 process.exit(kalan ? 1 : 0);
