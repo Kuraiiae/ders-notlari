@@ -28,6 +28,38 @@
     return Math.min(1, Math.max(0, v));
   }
 
+  var KENAR = 0.04;   /* sayfa ust/alt guvenlik bandi */
+  var MIN_Y = 0.01;   /* bu yuksekligin altinda maske uretilmez */
+
+  /* [x0,y0,x1,y1] maske + engel listesi -> kirpilmis maske | null.
+     SORU METNI HICBIR ZAMAN GIZLENMEZ: yalnizca dikey serit kirpilir.
+     Engel maskenin icinde tamamen kaliyorsa maske bolunmez (kirpma yalnizca
+     kenarlardan olur) — cozum blogu bu durumda da gizlenir. */
+  function soruyuKoru(mask, engeller) {
+    if (!mask || mask.length < 4) return null;
+    var x0 = klamp(mask[0]);
+    var y0 = klamp(mask[1]);
+    var x1 = klamp(mask[2], x0);
+    var y1 = klamp(mask[3], y0);
+    if (y1 < y0) { var t = y0; y0 = y1; y1 = t; }
+    var liste = engeller || [];
+    for (var i = 0; i < liste.length; i++) {
+      var e = liste[i];
+      if (!e || e.length < 4) continue;
+      /* yalnizca yatayda kesisen engel maskeyi kirpar */
+      if (Math.min(x1, klamp(e[2])) - Math.max(x0, klamp(e[0])) <= 0) continue;
+      var e0 = klamp(e[1]);
+      var e1 = klamp(e[3], e0);
+      if (e1 <= y0 || e0 >= y1) continue;
+      if (e1 > y0 && e1 <= y1) y0 = e1;   /* soru metni ustte bitti -> maskenin ustunu kirp */
+      if (e0 < y1 && e0 >= y0) y1 = e0;   /* soru metni asagida basliyor -> maskenin altini kirp */
+    }
+    y0 = Math.max(y0, KENAR);
+    y1 = Math.min(y1, 1 - KENAR);
+    if (y1 - y0 < MIN_Y) return null;
+    return [x0, y0, x1, y1];
+  }
+
   /* rows: [[x0,y0,x1,y1], ...] -> {x0[],y0[],w[],h[],satir} */
   function hizalaSiklar(rows) {
     var n = rows && rows.length ? rows.length : 0;
@@ -112,6 +144,7 @@
 
   return {
     hizalaSiklar: hizalaSiklar,
+    soruyuKoru: soruyuKoru,
     SABIT: { GAP: GAP, OUT: OUT, DY: DY, SATIR_TOL: SATIR_TOL, MINW: MINW }
   };
 });

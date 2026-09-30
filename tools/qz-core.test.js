@@ -160,5 +160,75 @@ test('konum sirasi giris sirasi korunur: A sol en solda', () => {
   assert.ok(Math.abs(d.x0[0] - d.x0[4]) < 1e-9, 'dikeyde hepsi ayni sol kenarda');
 });
 
+console.log('--- soruyuKoru ---');
+const K = QuizCore.soruyuKoru;
+
+test('engelle kesismeyen maske degismez', () => {
+  const m = [0.1, 0.3, 0.5, 0.5];
+  const r = K(m, [[0.1, 0.7, 0.5, 0.75]]);
+  assert.deepStrictEqual(r, m, 'kesisim yoksa aynen donmeli');
+});
+
+test('soru koku maskenin ustune biniyor: ust kirpilir', () => {
+  const r = K([0.1, 0.3, 0.5, 0.5], [[0.1, 0.25, 0.5, 0.35]]);
+  assert.ok(Math.abs(r[1] - 0.35) < 1e-9, 'y0 kirpilmadi: ' + r[1]);
+  assert.ok(Math.abs(r[3] - 0.5) < 1e-9, 'y1 bozulmadi: ' + r[3]);
+});
+
+test('soru koku maskenin altina biniyor: alt kirpilir', () => {
+  const r = K([0.1, 0.3, 0.5, 0.5], [[0.1, 0.45, 0.5, 0.55]]);
+  assert.ok(Math.abs(r[3] - 0.45) < 1e-9, 'y1 kirpilmadi: ' + r[3]);
+});
+
+test('iki engel: ust ve alt birlikte kirpilir', () => {
+  const r = K([0.1, 0.3, 0.5, 0.5], [[0.1, 0.2, 0.5, 0.32], [0.1, 0.48, 0.5, 0.6]]);
+  assert.ok(Math.abs(r[1] - 0.32) < 1e-9, 'y0: ' + r[1]);
+  assert.ok(Math.abs(r[3] - 0.48) < 1e-9, 'y1: ' + r[3]);
+});
+
+test('iki engel maskeyi her iki yandan sıkıştırıp kapatırsa maske üretilmez', () => {
+  /* maske 0.300-0.315 (ince blok). Ust engel 0.31'e, alt engel 0.312'ye
+     kirpar -> kalan 0.002 < MIN_Y (0.01) -> null */
+  const r = K([0.1, 0.300, 0.5, 0.315], [[0.1, 0.2, 0.5, 0.31], [0.1, 0.312, 0.5, 0.4]]);
+  assert.strictEqual(r, null, 'maske kisismaliysa null donmeli');
+});
+
+test('maskenin icinde kalan soru metni maskenin ustunu kendine kirpar', () => {
+  /* Soru kökü 0.38-0.42, maske 0.30-0.50. SORU METNI HICBIR ZAMAN
+     ORTULMEMELI: maske 0.42'den baslar. 0.30-0.38 araligi cozum blogu
+     olsa da soruyu korumak icin acik birakilir (guvenli / fail-safe yon). */
+  const r = K([0.1, 0.3, 0.5, 0.5], [[0.2, 0.38, 0.4, 0.42]]);
+  assert.ok(Math.abs(r[1] - 0.42) < 1e-9, 'y0 soru kokune kirpilmeli: ' + r[1]);
+  assert.ok(Math.abs(r[3] - 0.5) < 1e-9, 'y1 bozulmamali: ' + r[3]);
+});
+
+test('soru metni maskenin ustundeyse maske kirpilmaz', () => {
+  const m = [0.1, 0.3, 0.5, 0.5];
+  assert.deepStrictEqual(K(m, [[0.2, 0.20, 0.4, 0.28]]), m, 'disaridaki soru maskeyi etkilememeli');
+});
+
+test('gecersiz maske (null / eksik kutu) null doner', () => {
+  assert.strictEqual(K(null, []), null);
+  assert.strictEqual(K([0.1, 0.3], []), null);
+});
+
+test('sayfa kenari: maske %4 ust/alt bandina tasamaz', () => {
+  const r = K([0.1, 0.0, 0.5, 0.5], []);
+  assert.ok(r[1] >= 0.04 - 1e-9, 'ust kenar %4 altina inmemeli: ' + r[1]);
+  const r2 = K([0.1, 0.5, 0.5, 1.0], []);
+  assert.ok(r2[3] <= 0.96 + 1e-9, 'alt kenar %4 ustu cikmamali: ' + r2[3]);
+});
+
+test('x ekseni kirpilmez (sadece dikey serit)', () => {
+  const r = K([0.1, 0.3, 0.5, 0.5], [[0.2, 0.32, 0.3, 0.34]]);
+  assert.strictEqual(r[0], 0.1);
+  assert.strictEqual(r[2], 0.5);
+});
+
+test('soruyuKoru determinizm', () => {
+  const m = [0.1, 0.3, 0.5, 0.5], e = [[0.1, 0.2, 0.5, 0.32], [0.1, 0.48, 0.5, 0.6]];
+  assert.strictEqual(JSON.stringify(K(m, e)), JSON.stringify(K(m, e)));
+});
+
 console.log('\nSONUC: ' + gecti + ' gecti, ' + kaldi + ' basarisiz');
 process.exit(kaldi ? 1 : 0);
