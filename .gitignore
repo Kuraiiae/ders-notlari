@@ -22,3 +22,28 @@ _dump_*.html
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# --- YALNIZCA BU MAKINEYE AIT: repoya girmemeli -------------------
+# Bu repo GitHub Pages ile (path: '.') yayinlanir, yani takip edilen
+# HER dosya herkese acik URL'den indirilebilir. Asagidakiler kişisel
+# dosya yolu, yerel arac veya ic not icerdigi icin disarida tutulur.
+
+# Tek tikla git push araci (yerel yol icerir)
+*.bat
+*.cmd
+
+# AI ajanlarinin ortak hafizasi -> F:\- YapayZeka\BRAIN\ekosting\... altinda
+HAFIZA.md
+
+# Ic tasarim notlari / ajan calisma dokumanlari
+docs/superpowers/
+
+# Kaynak PDF yoluna bagli, artik calismayan uretim betikleri
+# (PDF'ler diskte yok; betikler olu kod yolu hardcode ediyor)
+base_renderer.py
+tools/info.py
+tools/render.py
+tools/info_out.txt
+
+# Kaynak PDF'ler (kişisel belge)
+*.pdf
