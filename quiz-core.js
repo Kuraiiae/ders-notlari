@@ -91,7 +91,7 @@
       ns++;
     }
 
-    /* (3) satir bantlari. dikey tasma komsu satira binmemeye kadar kisilir. */
+    /* (3) satir bantlari. */
     var bant = [];
     for (s = 0; s < ns; s++) {
       var idx = [], top = Infinity, bot = -Infinity;
@@ -107,34 +107,66 @@
       if (s < ns - 1) bant[s].dy = Math.min(bant[s].dy, Math.max(0, (bant[s + 1].top - bant[s].bot) / 2));
     }
 
+    /* Tek sutun dikey dizilim (1x5 vb.): tum siklar tek sutunda alt alta ise
+       tum siklar ayni sol kenar ve genisligi alir, alt satirdaki metinler de
+       kapsanacak sekilde dikey genisletilir. */
+    var isTekSutun = (ns > 1 && bant.every(function (bt) { return bt.idx.length === 1; }));
+    var colX0 = 0, colX1 = 0;
+    if (isTekSutun) {
+      colX0 = Math.min.apply(null, b.map(function (x) { return x.x0; }));
+      colX1 = Math.max.apply(null, b.map(function (x) { return x.x1; }));
+    }
+
     /* (4) su-regimi: her satiri metinden akan esit kolonlara bol */
     for (s = 0; s < ns; s++) {
       var row = bant[s].idx.slice().sort(function (p, q) { return b[p].x0 - b[q].x0; });
       m = row.length;
       var y0 = Math.max(0, bant[s].top - bant[s].dy);
-      var y1 = Math.min(1, Math.max(y0 + 0.008, bant[s].bot + bant[s].dy));
-      var sol = b[row[0]].x0, sag = b[row[0]].x1, enGenis = 0;
-      for (k = 0; k < m; k++) {
-        if (b[row[k]].x1 > sag) sag = b[row[k]].x1;
-        if (b[row[k]].x1 - b[row[k]].x0 > enGenis) enGenis = b[row[k]].x1 - b[row[k]].x0;
+      var y1;
+      if (isTekSutun && s < ns - 1) {
+        /* Alt satira kadar olan aciklama/sarilmis metinleri de kapsa */
+        var sonrakiTop = Math.max(0, bant[s + 1].top - bant[s + 1].dy);
+        y1 = Math.min(1, Math.max(bant[s].bot + bant[s].dy, sonrakiTop - 0.002));
+      } else if (isTekSutun && s > 0) {
+        /* Son sik (E): onceki basin buyuklugunu ornek alarak genislet */
+        var oncekiH = c.h[bant[s - 1].idx[0]] || (bant[s].bot - bant[s].top + 2 * DY);
+        y1 = Math.min(1, Math.max(y0 + oncekiH, bant[s].bot + bant[s].dy));
+      } else {
+        y1 = Math.min(1, Math.max(y0 + 0.008, bant[s].bot + bant[s].dy));
       }
-      /* hedef: ideal esit bolme, ama hicbir kutu kendi metninden dar olmaz */
-      var hedef = Math.max((sag - sol + 2 * OUT - (m - 1) * GAP) / m, enGenis);
-      var imlec = sol;
-      for (k = 0; k < m; k++) {
-        var ix = row[k];
-        var x0 = imlec;
-        var x1 = Math.max(x0 + hedef, b[ix].x1);
-        if (k < m - 1) x1 = Math.min(x1, b[row[k + 1]].x0 - GAP);
-        if (x1 < b[ix].x1) x1 = b[ix].x1;      /* kapsama kazanir */
-        if (x1 < x0 + MINW) x1 = x0 + MINW;   /* asla ters/negatif */
-        var solK = Math.min(x0, 1), sagK = Math.min(x1, 1);
-        if (sagK < solK) sagK = solK;
-        c.x0[ix] = solK;
-        c.y0[ix] = y0;
-        c.w[ix] = sagK - solK;
-        c.h[ix] = y1 - y0;
-        imlec = x1 + GAP;
+
+      if (isTekSutun) {
+        var ixTek = row[0];
+        var sK = Math.min(colX0, 1), eK = Math.min(colX1, 1);
+        if (eK < sK) eK = sK;
+        c.x0[ixTek] = sK;
+        c.y0[ixTek] = y0;
+        c.w[ixTek] = eK - sK;
+        c.h[ixTek] = y1 - y0;
+      } else {
+        var sol = b[row[0]].x0, sag = b[row[0]].x1, enGenis = 0;
+        for (k = 0; k < m; k++) {
+          if (b[row[k]].x1 > sag) sag = b[row[k]].x1;
+          if (b[row[k]].x1 - b[row[k]].x0 > enGenis) enGenis = b[row[k]].x1 - b[row[k]].x0;
+        }
+        /* hedef: ideal esit bolme, ama hicbir kutu kendi metninden dar olmaz */
+        var hedef = Math.max((sag - sol + 2 * OUT - (m - 1) * GAP) / m, enGenis);
+        var imlec = sol;
+        for (k = 0; k < m; k++) {
+          var ix = row[k];
+          var x0 = imlec;
+          var x1 = Math.max(x0 + hedef, b[ix].x1);
+          if (k < m - 1) x1 = Math.min(x1, b[row[k + 1]].x0 - GAP);
+          if (x1 < b[ix].x1) x1 = b[ix].x1;      /* kapsama kazanir */
+          if (x1 < x0 + MINW) x1 = x0 + MINW;   /* asla ters/negatif */
+          var solK = Math.min(x0, 1), sagK = Math.min(x1, 1);
+          if (sagK < solK) sagK = solK;
+          c.x0[ix] = solK;
+          c.y0[ix] = y0;
+          c.w[ix] = sagK - solK;
+          c.h[ix] = y1 - y0;
+          imlec = x1 + GAP;
+        }
       }
     }
 

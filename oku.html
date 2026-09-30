@@ -259,12 +259,16 @@ body.quiz .page .qhotspots{display:block}
 /* minik kutularda rozet 12px'in altina duser: harfsiz renkli nokta olur. */
 .qhotspots.qmini .qhotspot{padding-left:8px}
 .qhotspots.qmini .qh-badge{font-size:0!important}
-.qsolution-mask{position:absolute;pointer-events:auto;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px dashed rgba(59,130,246,.5);border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:all .25s ease;overflow:hidden;padding:4px}
-.qsolution-mask:hover{border-color:var(--accent,#3b82f6);background:rgba(15,23,42,.92)}
-.qsolution-mask.revealed{background:rgba(34,197,94,.08);backdrop-filter:none;-webkit-backdrop-filter:none;border:1px dashed rgba(34,197,94,.4);box-shadow:none}
-.qsolution-toggle{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;font-size:12px;font-weight:600;color:#fff;background:linear-gradient(135deg,#3b82f6 0%,#3b82f6 100%);border:none;border-radius:20px;cursor:pointer;box-shadow:0 2px 8px rgba(59,130,246,.4);transition:transform .15s ease,background .2s ease;pointer-events:auto;user-select:none}
-.qsolution-toggle:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(59,130,246,.6)}
-.qsolution-mask.revealed .qsolution-toggle{background:rgba(34,197,94,.2);color:#16a34a;border:1px solid rgba(34,197,94,.4);box-shadow:none}
+.qsolution-mask{position:absolute;pointer-events:auto;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(10,16,32,.85);backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:1.5px solid rgba(59,130,246,.45);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.4),inset 0 0 20px rgba(59,130,246,.1);transition:all .3s cubic-bezier(.22,.75,.25,1);overflow:hidden;padding:6px}
+.qsolution-mask:hover{border-color:var(--accent,#3b82f6);background:rgba(10,16,32,.92);box-shadow:0 12px 40px rgba(59,130,246,.25),inset 0 0 24px rgba(59,130,246,.15)}
+.qsolution-mask.revealed{background:rgba(34,197,94,.05);backdrop-filter:none;-webkit-backdrop-filter:none;border:1.5px dashed rgba(34,197,94,.4);box-shadow:none}
+html[data-theme="sepia"] .qsolution-mask{background:rgba(26,21,16,.85);border-color:rgba(245,158,11,.45)}
+html[data-theme="light"] .qsolution-mask{background:rgba(255,255,255,.88);border-color:rgba(59,130,246,.4);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.qsolution-toggle{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;font-size:12.5px;font-weight:700;letter-spacing:.2px;color:#fff;background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);border:1px solid rgba(255,255,255,.2);border-radius:999px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.4);transition:all .2s ease;pointer-events:auto;user-select:none;font-family:inherit}
+.qsolution-toggle:hover{transform:scale(1.06);box-shadow:0 6px 20px rgba(37,99,235,.6);background:linear-gradient(135deg,#60a5fa 0%,#3b82f6 100%)}
+.qsolution-toggle:active{transform:scale(.97)}
+.qsolution-mask.revealed .qsolution-toggle{background:rgba(34,197,94,.16);color:#16a34a;border:1px solid rgba(34,197,94,.35);box-shadow:none}
+.qsolution-mask.revealed .qsolution-toggle:hover{background:rgba(34,197,94,.26)}
 @media(max-width:760px){
   .qoverlay{width:48px}
   .qstrip{top:70px;padding:5px 2px}
@@ -2326,6 +2330,668 @@ html[data-theme="light"] .oz .ozt th{background:rgba(59,130,246,.16);color:#0f18
         [
          "Avarız",
          "Olağanüstü vergi — II. Bayezid sürekli hale getirdi"
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "cografya": {
+  "key": "cografya",
+  "baslik": "KPSS Orta Öğretim Coğrafya",
+  "ders_adi": "Coğrafya",
+  "aciklama": "KPSS Coğrafya genel tekrar ders notları: Türkiye'nin coğrafi konumu, yer şekilleri, iklim ve bitki örtüsü, nüfus ve yerleşme, tarım, hayvancılık, madenler, sanayi ve ulaşım.",
+  "lead": "KPSS Coğrafya genel tekrar notları &middot; fiziki coğrafya, yer şekilleri, iklim, nüfus, ekonomik coğrafya ve harita taktikleri",
+  "giris": "KPSS Coğrafya oturumunda \u003cb>18 soru\u003c/b> gelmektedir. Soruların yaklaşık \u003cb>6-7 tanesi fiziki coğrafya\u003c/b> (konum, yer şekilleri, iklim, su varlığı), \u003cb>3-4 tanesi beşeri coğrafya\u003c/b> (nüfus, yerleşme, göç) ve \u003cb>7-8 tanesi ekonomik coğrafya\u003c/b> (tarım, hayvancılık, maden, enerji, sanayi, ticaret, ulaşım, turizm) alanlarından oluşur.",
+  "not": "\u003cb>Not:\u003c/b> ÖSYM coğrafya sorularında \u003cb>harita ve dilsiz harita okuma\u003c/b> becerisini doğrudan test eder. Karşılaştırma tabloları ve \u003cb>Kritik Kural\u003c/b> notları doğrudan soru potansiyeli taşır.",
+  "vurgu": [
+   "Coğrafi Konum",
+   "Yer Şekilleri",
+   "İklim ve Bitki",
+   "Nüfus ve Yerleşme",
+   "Tarım ve Hayvancılık",
+   "Maden ve Enerji",
+   "Sanayi ve Ulaşım",
+   "Bölgeler"
+  ],
+  "bolumler": [
+   {
+    "no": "1",
+    "ad": "Türkiye'nin Coğrafi Konumu ve Etkileri",
+    "etiket": "Matematik ve Özel Konum",
+    "giris": "Türkiye \u003cb>36°-42° Kuzey paralelleri\u003c/b> ile \u003cb>26°-45° Doğu meridyenleri\u003c/b> arasında yer alır.",
+    "bloklar": [
+     {
+      "ad": "Matematik (Mutlak) Konum ve Sonuçları",
+      "maddeler": [
+       {
+        "t": "Kuzey Yarımküre ve Orta Kuşak",
+        "d": "Türkiye Yengeç Dönencesi'nin kuzeyindedir. Bu nedenle güneş ışınları hiçbir zaman 90° dik açıyla gelmez, gölge boyu asla sıfır olmaz ve gölge yönü daima kuzeyi gösterir."
+       },
+       {
+        "t": "Dört Mevsim Belirginliği (A-B-C-D Kuralı)",
+        "d": "Orta kuşakta yer almanın 4 temel kanıtı: \u003cb>A\u003c/b>kdeniz iklim kuşağında yer alması, \u003cb>B\u003c/b>atı rüzgarlarının etkisinde olması, \u003cb>C\u003c/b>ephesel (Frontal) yağışların görülmesi, \u003cb>D\u003c/b>ört mevsimin belirgin yaşanması.",
+        "n": [
+         {
+          "tur": "Pratik Yol",
+          "d": "«A-B-C-D» formülü orta kuşağın kesin kanıtıdır; aynı anda farklı mevsim yaşanması ise özel konumdur."
+         }
+        ]
+       },
+       {
+        "t": "Güneyden Kuzeye Değişenler (Enlem Etkisi)",
+        "d": "Güneyden kuzeye gidildikçe: Güneş ışınlarının geliş açısı küçülür, sıcaklık ortalamaları genel olarak azalır, çizgisel hız azalır, yerçekimi artar, alacakaranlık (grup/tan) süresi uzar, denizlerin tuzluluk oranı azalır (Akdeniz %38 > Karadeniz %18)."
+       },
+       {
+        "t": "Bakı Etkisi",
+        "d": "Dönenceler dışında olduğumuz için dağların daima \u003cb>güney yamaçları\u003c/b> güneşe bakar; daha sıcaktır, karlar daha erken erir, tarım üst sınırı ve yerleşme üst sınırı daha yüksektir. (İstisna: Karadeniz'de kışın kuzey yamaç denizellik nedeniyle daha ılık olabilir)."
+       }
+      ]
+     },
+     {
+      "ad": "Özel (Göreceli) Konum ve Sonuçları",
+      "maddeler": [
+       {
+        "t": "Üç Tarafı Denizlerle Çevrili Olma",
+        "d": "Kıyı kesimlerde nemlilik ve yağış fazla, sıcaklık farkları azdır; iç kesimlerde karasallık ve sıcaklık farkları fazladır."
+       },
+       {
+        "t": "Yükselti ve Engebe",
+        "d": "Batıdan doğuya gidildikçe yükselti artar, sıcaklık düşer, karın yerde kalma süresi uzar, tarım ürünlerinin olgunlaşma süresi gecikir."
+       },
+       {
+        "t": "Jeopolitik ve Jeostratejik Konum",
+        "d": "Üç kıtanın (Asya, Avrupa, Afrika) kavşak noktasındadır. İstanbul ve Çanakkale boğazlarına sahiptir, enerji koridoru (transit boru hatları) konumundadır."
+       }
+      ]
+     },
+     {
+      "ad": "Matematik Konum vs Özel Konum Karşılaştırması",
+      "tablo": {
+       "basliklar": [
+        "Özellik",
+        "Konum Türü",
+        "Temel Gerekçe / Açıklama"
+       ],
+       "satirlar": [
+        [
+         "Akdeniz'in Karadeniz'den tuzlu olması",
+         "Matematik Konum",
+         "Enlem, sıcaklık ve buharlaşma farkı"
+        ],
+        [
+         "Aynı anda farklı mevsim özelliklerinin yaşanması",
+         "Özel Konum",
+         "Kısa mesafede yükselti ve yer şekli değişimi"
+        ],
+        [
+         "Gölge yönünün daima kuzeye düşmesi",
+         "Matematik Konum",
+         "Yengeç Dönencesi'nin kuzeyinde yer alma"
+        ],
+        [
+         "Doğu Anadolu'da ürünlerin geç olgunlaşması",
+         "Özel Konum",
+         "Yükseltinin batıdan doğuya artması"
+        ],
+        [
+         "Cephesel (Frontal) yağışların görülmesi",
+         "Matematik Konum",
+         "Orta kuşakta sıcak ve soğuk havanın karşılaşması"
+        ],
+        [
+         "Jeotermal enerji ve sıcak su kaynakları",
+         "Özel Konum",
+         "Genç oluşumlu kırıklı (fay) arazi yapısı"
+        ]
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "no": "2",
+    "ad": "Türkiye'nin Yer Şekilleri ve Jeolojik Yapısı",
+    "etiket": "Fiziki Coğrafya",
+    "giris": "Türkiye, \u003cb>III. Jeolojik Zaman (Tersiyer)\u003c/b> sonu ve \u003cb>IV. Jeolojik Zaman (Kuvaterner)\u003c/b> başında şekillenmiş genç, dinamik ve yüksek bir ülkedir.",
+    "bloklar": [
+     {
+      "ad": "Orojenez (Dağ Oluşumu) ve Dağ Tipleri",
+      "maddeler": [
+       {
+        "t": "Kıvrım Dağları (Alp-Himalaya Kıvrımı)",
+        "d": "Esnek tortul tabakaların sıkışmasıyla oluşur. Yüksekte kalan kubbe kısımlara \u003cb>Antiklinal\u003c/b>, alçakta kalan çanaklara \u003cb>Senklinal\u003c/b> denir. Kuzey Anadolu Dağları (Kaçkar, Canik, Küre, Ilgaz) ve Toroslar (Aladağlar, Bolkarlar, Bey Dağları)."
+       },
+       {
+        "t": "Kırık Dağları (Horst - Graben)",
+        "d": "Sert kütlelerin yan basınçlarla kırılmasıyla oluşur. Yüksekte kalan blok \u003cb>Horst\u003c/b>, çöken çöküntü ovası \u003cb>Graben\u003c/b>'dir. Ege'de yaygındır: Kaz Dağı, Madra, Yunt, Bozdağlar, Aydın Dağları, Menteşe Dağları (Horst); Bakırçay, Gediz, Küçük Menderes, Büyük Menderes (Graben). Hatay'daki Nur (Amanos) Dağları da horsttur."
+       },
+       {
+        "t": "Volkanik Dağlar",
+        "d": "Magmanın yer kabuğundan yüzeye çıkıp katılaşmasıyla oluşur. \u003cb>İç Anadolu:\u003c/b> Erciyes, Hasan Dağı, Melendiz, Karadağ, Karacadağ. \u003cb>Doğu Anadolu:\u003c/b> Ağrı (Büyük/Küçük), Tendürek, Süphan, Nemrut. \u003cb>Güneydoğu:\u003c/b> Karacadağ (Kalkan volkan). \u003cb>Ege:\u003c/b> Kula (Türkiye'nin en genç volkan konileri)."
+       }
+      ]
+     },
+     {
+      "ad": "Platolar ve Oluşum Türleri",
+      "maddeler": [
+       {
+        "t": "Aşınım (Peneplen) Platoları",
+        "d": "Çatalca-Kocaeli Platosu (sanayi, nüfus ve yerleşme en yoğun plato)."
+       },
+       {
+        "t": "Karstik Platolar",
+        "d": "Teke ve Taşeli Platoları (Akdeniz; kireçtaşı arazisi, nüfus seyrek, kıl keçisi yetiştiriciliği)."
+       },
+       {
+        "t": "Volkanik (Lav Örtüsü) Platolar",
+        "d": "Erzurum-Kars ve Ardahan Platoları (yaz yağışları, çernezyom toprak, gür çayırlar, büyükbaş mera hayvancılığı)."
+       },
+       {
+        "t": "Yatay Duruşlu (Tabaka Düzlüğü) Platoları",
+        "d": "İç Anadolu ve Güneydoğu: Haymana, Cihanbeyli, Obruk, Bozok, Uzunyayla, Gaziantep, Şanlıurfa (küçükbaş hayvancılık ve tahıl tarımı)."
+       }
+      ]
+     },
+     {
+      "ad": "Dış Kuvvetler ve Oluşturdukları Yer Şekilleri",
+      "maddeler": [
+       {
+        "t": "Akarsu Aşındırma ve Biriktirme",
+        "d": "Aşındırma: Vadi tipleri (Kanyon, Çentik, Boğaz/Yarma, Tabanlı), Kırgıbayır (Kapadokya), Dev kazanı, Peri bacaları (akarsu + rüzgar + volkanizma). Biriktirme: Delta ovaları (Çukurova, Bafra, Çarşamba, Silifke, Balat, Menemen, Dikili), Birikinti konisi, Dağ eteği ovası."
+       },
+       {
+        "t": "Karstik Şekiller",
+        "d": "Kalker, jips ve kaya tuzu erimesiyle oluşur. Aşındırma: Lapya &gt; Dolin &gt; Uvala &gt; Polye (Gölova: Tefenni, Acıpayam, Korkuteli, Kestel, Elmalı, Muğla). Mağara, Düden, Obruk (Kızılören, Çıralı). Biriktirme: Traverten (Pamukkale), Sarkıt, Dikit, Sütun."
+       },
+       {
+        "t": "Rüzgar Şekilleri",
+        "d": "Bitki örtüsünün cılız, kurak/yarı kurak olduğu İç Anadolu ve Güneydoğu'da etkilidir: Mantarkaya, Tafoni, Yardang, Barkan, Lös."
+       },
+       {
+        "t": "Kıyı Tipleri",
+        "d": "\u003cb>Boyuna Kıyı:\u003c/b> Karadeniz ve Akdeniz (falez çok, kıta sahanlığı dar, koy/körfez az). \u003cb>Enine Kıyı:\u003c/b> Ege (girinti-çıkıntı çok, kıta sahanlığı geniş, delta çok). \u003cb>Ria Tipi:\u003c/b> İstanbul ve Çanakkale boğazları, Haliç. \u003cb>Dalmaçya Tipi:\u003c/b> Kaş-Finike kıyıları. \u003cb>Limanlı Kıyı:\u003c/b> Büyük ve Küçükçekmece."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "no": "3",
+    "ad": "Türkiye'nin İklimi, Sıcaklık, Basınç ve Yağış",
+    "etiket": "İklim Bilgisi",
+    "giris": "Türkiye'de topoğrafik çeşitlilik ve denizellik-karasallık nedeniyle kısa mesafelerde çok farklı iklim tipleri görülür.",
+    "bloklar": [
+     {
+      "ad": "Türkiye'yi Etkileyen Basınç Merkezleri ve Rüzgarlar",
+      "maddeler": [
+       {
+        "t": "Basınç Merkezleri",
+        "d": "\u003cb>Sibirya Termik AYB:\u003c/b> Kışın etkilidir; aşırı soğuk, ayaz ve kar getirir. \u003cb>İzlanda Dinamik AB:\u003c/b> Kışın etkilidir; ılık ve yağışlı hava getirir. \u003cb>Asor Dinamik YB:\u003c/b> Yazın kuraklık ve sıcaklık getirir; kışın ılık hava. \u003cb>Basra Termik AB:\u003c/b> Yazın Güneydoğu'dan sokulur; aşırı sıcaklık, kuraklık ve samyeli rüzgarı getirir."
+       },
+       {
+        "t": "Yerel Rüzgarlar (KAYIP SAKAL)",
+        "d": "Kuzeyden esenler sıcaklığı düşürür: \u003cb>K\u003c/b>arayel (KB), \u003cb>Y\u003c/b>ıldız (K), \u003cb>P\u003c/b>oyraz (KD). Güneyden esenler sıcaklığı artırır: \u003cb>S\u003c/b>amyeli/Keşişleme (GD), \u003cb>K\u003c/b>ıble (G), \u003cb>L\u003c/b>odos (GB - denizciliği olumsuz etkiler, soba zehirlenmelerine yol açar, karları hızlı eritir)."
+       },
+       {
+        "t": "Fön Rüzgarı",
+        "d": "Dağ yamacından aşağı inerken her 100 metrede 1°C ısınan kuru rüzgardır. Karadeniz (Rize'de turunçgil mikroklimaları) ve Toroslar'da etkilidir. Erken erime, çığ ve ürünlerin erken olgunlaşmasına yol açar."
+       }
+      ]
+     },
+     {
+      "ad": "Türkiye'nin 4 Ana İklim Tipi ve Yağış Rejimleri",
+      "tablo": {
+       "basliklar": [
+        "İklim Tipi",
+        "En Fazla Yağış Mevsimi",
+        "Yağış Oluşum Tipi",
+        "Doğal Bitki Örtüsü",
+        "Toprak Türü"
+       ],
+       "satirlar": [
+        [
+         "Karadeniz İklimi",
+         "Sonbahar",
+         "Yamaç (Orografik)",
+         "Geniş ve İğne Yapraklı Orman",
+         "Kahverengi Orman Toprağı"
+        ],
+        [
+         "Akdeniz İklimi",
+         "Kış",
+         "Cephesel (Frontal)",
+         "Maki (Garig / Kızılçam)",
+         "Terra Rossa (Kırmızı Akdeniz)"
+        ],
+        [
+         "İç Anadolu Karasal",
+         "İlkbahar (Kırkikindi)",
+         "Konveksiyonel (Yükselim)",
+         "Bozkır (Step)",
+         "Kestane / Kahverengi Bozkır"
+        ],
+        [
+         "Sert Karasal (Erzurum-Kars)",
+         "Yaz",
+         "Konveksiyonel (Yükselim)",
+         "Dağ Çayırları (Alpin)",
+         "Çernezyom (Kara Toprak)"
+        ]
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "no": "4",
+    "ad": "Nüfus, Yerleşme, Tarım, Hayvancılık ve Madenler",
+    "etiket": "Ekonomik Coğrafya",
+    "giris": "Nüfusun dağılışı sanayi, ticaret, tarım, ulaşım ve iklim koşullarıyla doğrudan ilişkilidir.",
+    "bloklar": [
+     {
+      "ad": "Nüfus Yoğunluğu ve Göç Hareketleri",
+      "maddeler": [
+       {
+        "t": "Tenha (Seyrek) Nüfuslu Alanlar",
+        "d": "\u003cb>Teke ve Taşeli:\u003c/b> Karstik arazi ve engebe. \u003cb>Yıldız Dağları:\u003c/b> Ulaşım yollarına sapa ve dağlık. \u003cb>Hakkari Yöresi:\u003c/b> Aşırı engebe, yükselti ve iklim sertliği. \u003cb>Tuz Gölü Çevresi:\u003c/b> Kuraklık ve yağış azlığı. \u003cb>Sinop Çevresi:\u003c/b> Art bölgesi (hinterland) dağlarla kapalı ve ulaşım zor."
+       },
+       {
+        "t": "Yoğun Nüfuslu Alanlar",
+        "d": "Çatalca-Kocaeli (sanayi ve finans), Ege Kıyıları (tarım ve turizm), Çukurova (tarım ve sanayi), Doğu Karadeniz Kıyı Şeridi (tarım ve denizellik dar alana sıkışmış)."
+       }
+      ]
+     },
+     {
+      "ad": "Kritik Tarım Ürünleri ve Yetişme Alanları",
+      "maddeler": [
+       {
+        "t": "Devlet Kontrolündeki Ürünler",
+        "d": "\u003cb>Pirinç (Çeltik):\u003c/b> Sıtma hastalığı riski nedeniyle yerleşim alanları çevresinde izne bağlıdır. \u003cb>Tütün:\u003c/b> Kaliteyi korumak amacıyla devlet kotasındadır. \u003cb>Şeker Pancarı:\u003c/b> Fabrika kapasitesi ve kota kuralı (çabuk bozulduğu için fabrika yakın kurulur). \u003cb>Haşhaş:\u003c/b> Uyuşturucu yapımı kontrolü (Afyon, Konya çevresi). \u003cb>Kenevir:\u003c/b> Uyuşturucu kontrolü."
+       },
+       {
+        "t": "Üretiminde Dünya Birincisi Olduklarımız",
+        "d": "Fındık (Karadeniz), Kuru İncir (Aydın/Ege), Kuru Kayısı (Malatya), Kiraz, Antep Fıstığı (Güneydoğu)."
+       },
+       {
+        "t": "Zeytin ve Turunçgiller",
+        "d": "Kış ılıklığı ister, don olayına duyarlıdır; Akdeniz, Ege ve Güney Marmara'da yoğundur."
+       }
+      ]
+     },
+     {
+      "ad": "Kritik Madenler ve Enerji Kaynakları",
+      "tablo": {
+       "basliklar": [
+        "Maden / Kaynak",
+        "Önemli Çıkarım Alanları",
+        "İşletme / Tesis",
+        "Kullanım / Not"
+       ],
+       "satirlar": [
+        [
+         "Demir",
+         "Sivas (Divriği), Malatya (Hekimhan, Hasançelebi)",
+         "Karabük, Ereğli, İskenderun",
+         "Ağır sanayinin hammaddesi"
+        ],
+        [
+         "Bakır",
+         "Artvin (Murgul), Kastamonu (Küre), Rize (Çayeli), Elazığ (Maden)",
+         "Samsun (İzabe tesisi), Murgul",
+         "Elektrik-elektronik sanayi"
+        ],
+        [
+         "Boksit (Alüminyum)",
+         "Antalya (Akseki), Konya (Seydişehir)",
+         "Konya Seydişehir Alüminyum Tesisleri",
+         "Hafif metal, uçak ve otomotiv"
+        ],
+        [
+         "Bor Mineralleri",
+         "Balıkesir (Bigadiç), Kütahya (Emet), Bursa (Mustafakemalpaşa), Eskişehir (Kırka)",
+         "Bandırma ve Kırka Bor Tesisleri",
+         "Dünya rezervinin %73'ü Türkiye'dedir"
+        ],
+        [
+         "Krom",
+         "Elazığ (Guleman), Muğla (Fethiye, Köyceğiz)",
+         "Antalya ve Elazığ Ferrokrom Tesisleri",
+         "Çeliğin sertleştirilmesi ve paslanmaz çelik"
+        ],
+        [
+         "Taş Kömürü (I. Zaman)",
+         "Zonguldak, Bartın, Karabük Havzası",
+         "Çatalağzı Termik Santrali",
+         "Demir-çelik eritmede yüksek ısı"
+        ],
+        [
+         "Linyit (III. Zaman)",
+         "Manisa (Soma), Kütahya (Tunçbilek, Tavşanlı, Seyitömer), Kahramanmaraş (Afşin-Elbistan), Muğla (Yatağan)",
+         "Soma, Yatağan, Afşin-Elbistan santralleri",
+         "Türkiye genelinde en yaygın madendir"
+        ],
+        [
+         "Jeotermal Enerji",
+         "Denizli (Sarayköy), Aydın (Germencik), Manisa, Çanakkale",
+         "Sarayköy ve Germencik Santralleri",
+         "Fay hatlarına bağlı sıcak su"
+        ]
+       ]
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "vatandaslik": {
+  "key": "vatandaslik",
+  "baslik": "KPSS Orta Öğretim Vatandaşlık",
+  "ders_adi": "Vatandaşlık",
+  "aciklama": "KPSS Vatandaşlık ve Anayasa Hukuku genel tekrar ders notları: Temel hukuk kavramları, devlet biçimleri, Türk anayasa tarihi, 1982 Anayasası, yasama, yürütme, yargı ve idare hukuku.",
+  "lead": "KPSS Vatandaşlık genel tekrar notları &middot; temel hukuk kavramları, 1982 Anayasası, yasama, yürütme, yargı, idare hukuku ve kritik sınav püf noktaları",
+  "giris": "KPSS Genel Yetenek - Genel Kültür oturumunda \u003cb>9 adet Vatandaşlık\u003c/b> ve \u003cb>6 adet Güncel Bilgiler\u003c/b> olmak üzere toplam \u003cb>15 soru\u003c/b> gelir. Vatandaşlık soruları; Temel Hukuk (2-3 soru), Anayasa Hukuku (3-4 soru) ve İdare Hukuku (2-3 soru) konu dağılımına sahiptir.",
+  "not": "\u003cb>Not:\u003c/b> 2017 Anayasa Değişiklikleri (Cumhurbaşkanlığı Hükümet Sistemi, Başbakanlık ve Bakanlar Kurulu'nun kaldırılması, KHK yerine CBK gelmesi, HSK yapısı, Askeri Yargının kaldırılması) en kritik soru havuzudur.",
+  "vurgu": [
+   "Temel Hukuk",
+   "Anayasa Tarihi",
+   "1982 Anayasası",
+   "Temel Haklar",
+   "Yasama (TBMM)",
+   "Yürütme (CB)",
+   "Yargı Organları",
+   "İdare Hukuku"
+  ],
+  "bolumler": [
+   {
+    "no": "1",
+    "ad": "Temel Hukuk Bilgisi ve Kavramları",
+    "etiket": "Temel Kavramlar",
+    "giris": "Toplumsal düzen kuralları; din, ahlak, görgü ve \u003cb>hukuk kuralları\u003c/b>dır. Hukuk kurallarını diğerlerinden ayıran temel özellik \u003cb>maddi yaptırımlı (devlet gücüyle destekli)\u003c/b> olmasıdır.",
+    "bloklar": [
+     {
+      "ad": "Hukukun Yaptırım (Müeyyide) Türleri",
+      "maddeler": [
+       {
+        "t": "Ceza",
+        "d": "Ceza kanunlarına aykırı fiillere (suçlara) uygulanan yaptırımdır (Hapis cezası, Adli para cezası)."
+       },
+       {
+        "t": "Cebri İcra",
+        "d": "Borcunu veya hukuki yükümlülüğünü rızasıyla yerine getirmeyen kimsenin, devlet zoruyla (icra memurları aracılığıyla) yükümlülüğünü ifa etmesidir."
+       },
+       {
+        "t": "Tazminat",
+        "d": "Hukuka aykırı veya kusurlu bir eylemle başkasına verilen zararın para ile giderilmesidir (Maddi ve Manevi tazminat)."
+       },
+       {
+        "t": "İptal",
+        "d": "Hukuka aykırı olarak yapılan \u003cb>idari işlemlerin\u003c/b> idari yargı (Danıştay, İdare Mahkemesi) kararıyla geçmişe etkili olarak ortadan kaldırılmasıdır."
+       },
+       {
+        "t": "Hükümsüzlük (Geçersizlik)",
+        "d": "Hukuki işlemlerin kanunun öngördüğü kurallara uygun yapılmaması sonucu hukuki sonuç doğurmamasıdır. 4 türe ayrılır: Yokluk, Mutlak Butlan, Nisbi Butlan, Tek Taraflı Bağlamazlık (Askıda Hükümsüzlük)."
+       }
+      ]
+     },
+     {
+      "ad": "Hükümsüzlük Çeşitleri Karşılaştırması",
+      "tablo": {
+       "basliklar": [
+        "Tür",
+        "Tanım ve Gerekçe",
+        "Örnek"
+       ],
+       "satirlar": [
+        [
+         "Yokluk",
+         "Kurucu unsurlardan birinin tamamen eksik olmasıdır; işlem hiç doğmamıştır.",
+         "Resmi evlendirme memuru olmadan yapılan imam nikahı"
+        ],
+        [
+         "Mutlak Butlan",
+         "Kurucu unsur var ama emredici hukuk kuralına, ahlaka veya kamu düzenine aykırıdır.",
+         "Akıl hastası olan birinin evlenmesi ya da amca-yeğen evliliği"
+        ],
+        [
+         "Nisbi Butlan (İptal Edilebilirlik)",
+         "İrade sakatlığı (hata, hile, korkutma) ile yapılan geçerli bir işlemin sonradan iptal ettirilmesidir.",
+         "Korkutularak (tehditle) sözleşme imzalatılması"
+        ],
+        [
+         "Tek Taraflı Bağlamazlık",
+         "Sınırlı ehliyetsizin (küçük/kısıtlı) yasal temsilcisinin izni olmadan tek başına yaptığı borçlandırıcı işlem.",
+         "16 yaşındaki çocuğun veli izni olmadan motosiklet satın alması"
+        ]
+       ]
+      }
+     },
+     {
+      "ad": "Normlar Hiyerarşisi (Kelsen Piramidi)",
+      "maddeler": [
+       {
+        "t": "1. Anayasa",
+        "d": "En üst hukuk normudur. Hiçbir kanun veya düzenleme Anayasaya aykırı olamaz."
+       },
+       {
+        "t": "2. Kanun ve Milletlerarası Antlaşmalar",
+        "d": "Usulüne göre yürürlüğe konulmuş temel hak ve özgürlüklere ilişkin milletlerarası antlaşmalar ile kanunlar çatışırsa antlaşma hükümleri esas alınır."
+       },
+       {
+        "t": "3. Cumhurbaşkanlığı Kararnamesi (CBK)",
+        "d": "Yürütme yetkisine ilişkin konularda çıkarılır. Kanunda açıkça düzenlenen konularda CBK çıkarılamaz; CBK ile kanun çelişirse kanun hükümleri uygulanır."
+       },
+       {
+        "t": "4. Yönetmelik",
+        "d": "Cumhurbaşkanı, bakanlıklar ve kamu tüzel kişileri tarafından kanunların ve CBK'lerin uygulanmasını sağlamak amacıyla çıkarılır."
+       },
+       {
+        "t": "5. Genelge, Tebliğ, Yönerge",
+        "d": "İdarenin iç işleyişini ve uygulamayı yönlendiren adsız düzenleyici işlemlerdir."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "no": "2",
+    "ad": "Türk Anayasa Tarihi ve 1982 Anayasası Temel İlkeleri",
+    "etiket": "Anayasa Tarihi",
+    "giris": "Türk anayasal gelişimi 1808 Sened-i İttifak ile başlamış, ilk yazılı anayasa 1876 Kanun-i Esasi olmuştur.",
+    "bloklar": [
+     {
+      "ad": "Anayasa Tarihimizdeki Kritik İlkler",
+      "maddeler": [
+       {
+        "t": "1808 Sened-i İttifak",
+        "d": "Padişahın (II. Mahmut) yetkilerini ilk kez sınırlandıran belgedir (Anayasa değildir; Magna Carta benzeridir)."
+       },
+       {
+        "t": "1839 Tanzimat Fermanı",
+        "d": "Hukukun üstünlüğü ilkesi ilk kez kabul edilmiştir. Can, mal, ırz güvenliği güvenceye alınmıştır."
+       },
+       {
+        "t": "1876 Kanun-i Esasi",
+        "d": "Türk tarihinin \u003cb>ilk yazılı anayasasıdır\u003c/b>. Meşrutiyet yönetimine geçilmiş, çift meclisli parlamento (Heyet-i Ayan ve Heyet-i Mebusan) kurulmuştur."
+       },
+       {
+        "t": "1921 Anayasası (Teşkilat-ı Esasiye)",
+        "d": "Tek \u003cb>yumuşak ve çerçeve\u003c/b> anayasamızdır. Güçler birliği ve Meclis hükümeti sistemi benimsenmiştir. Yargıdan bahsedilmemiştir."
+       },
+       {
+        "t": "1924 Anayasası",
+        "d": "Karma hükümet sistemi (Meclis hükümeti + Parlamenter sistem) uygulanmıştır. İlk sert ve kazuistik anayasadır. 1928'de 'Devletin dini İslam'dır' ibaresi çıkarılmış, 1934'te kadınlara seçme-seçilme hakkı verilmiş, 1937'de Atatürk ilkeleri anayasaya girmiştir."
+       },
+       {
+        "t": "1961 Anayasası",
+        "d": "En \u003cb>özgürlükçü ve çoğulcu\u003c/b> anayasamızdır. Anayasa Mahkemesi, MGK, DPT kurulmuş; çift meclisli yapı (Millet Meclisi + Cumhuriyet Senatosu) getirilmiştir."
+       },
+       {
+        "t": "1982 Anayasası",
+        "d": "Halen yürürlükte olan, en \u003cb>katı (sert) ve kazuistik\u003c/b> anayasamızdır. Çift meclis kaldırılmış, yürütme güçlendirilmiş, rasyonelleştirilmiş parlamentarizm ve 2017'de Cumhurbaşkanlığı Hükümet Sistemine geçilmiştir."
+       }
+      ]
+     },
+     {
+      "ad": "1982 Anayasası Değiştirilemez İlk 3 Madde",
+      "maddeler": [
+       {
+        "t": "Madde 1",
+        "d": "Türkiye Devleti bir Cumhuriyettir."
+       },
+       {
+        "t": "Madde 2 (Cumhuriyetin Nitelikleri)",
+        "d": "Türkiye Cumhuriyeti; toplumun huzuru, milli dayanışma ve adalet anlayışı içinde, insan haklarına saygılı, Atatürk milliyetçiliğine bağlı, başlangıçta belirtilen temel ilkelere dayanan, demokratik, laik, sosyal ve bir hukuk devletidir."
+       },
+       {
+        "t": "Madde 3 (Devletin Bütünlüğü)",
+        "d": "Türkiye Devleti, ülkesi ve milletiyle bölünmez bir bütündür. Dili Türkçedir. Bayrağı beyaz ay yıldızlı al bayraktır. Milli marşı İstiklal Marşı'dır. Başkenti Ankara'dır."
+       },
+       {
+        "t": "Madde 4",
+        "d": "Anayasanın 1 inci maddesindeki Devletin şeklinin Cumhuriyet olduğu hakkındaki hüküm ile, 2 nci maddesindeki Cumhuriyetin nitelikleri ve 3 üncü maddesi hükümleri değiştirilemez ve değiştirilmesi teklif edilemez."
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "no": "3",
+    "ad": "Devletin Temel Organları: Yasama, Yürütme ve Yargı",
+    "etiket": "Kuvvetler Ayrılığı",
+    "giris": "1982 Anayasası'na göre Yasama yetkisi TBMM'ye, Yürütme yetkisi Cumhurbaşkanına, Yargı yetkisi bağımsız ve tarafsız mahkemelere aittir.",
+    "bloklar": [
+     {
+      "ad": "Yasama: Türkiye Büyük Millet Meclisi (TBMM)",
+      "maddeler": [
+       {
+        "t": "Üye Sayısı ve Seçim Dönemi",
+        "d": "TBMM \u003cb>600 milletvekilinden\u003c/b> oluşur. Genel seçimler \u003cb>5 yılda bir\u003c/b> Cumhurbaşkanı seçimiyle birlikte aynı gün yapılır. Seçilme yaşı \u003cb>18\u003c/b>'dir."
+       },
+       {
+        "t": "TBMM'nin Temel Görev ve Yetkileri",
+        "d": "Kanun koymak, değiştirmek ve kaldırmak; bütçe ve kesinhesap kanun tekliflerini görüşmek ve kabul etmek; para basılmasına ve savaş ilanına karar vermek; milletlerarası antlaşmaların onaylanmasını uygun bulmak; genel ve özel af ilanına karar vermek (üye tamsayısının 3/5 çoğunluğu = 360 milletvekili gerekir)."
+       },
+       {
+        "t": "TBMM Bilgi Edinme ve Denetim Yolları",
+        "d": "\u003cb>Yazılı Soru\u003c/b> (CB yardımcıları ve bakanlara yazılı sorulur, 15 günde cevaplanır), \u003cb>Genel Görüşme\u003c/b>, \u003cb>Meclis Araştırması\u003c/b>, \u003cb>Meclis Soruşturması\u003c/b> (CB yardımcısı ve bakanların görev suçları için; 301 önerge, 360 komisyon, 400 Yüce Divan sevk). Gensoru ve Sözlü Soru 2017'de kaldırılmıştır."
+       }
+      ]
+     },
+     {
+      "ad": "Yürütme: Cumhurbaşkanlığı",
+      "maddeler": [
+       {
+        "t": "Cumhurbaşkanının Nitelikleri ve Seçimi",
+        "d": "40 yaşını doldurmuş, yükseköğrenim mezunu, milletvekili seçilme yeterliliğine sahip Türk vatandaşları arasından halk tarafından 5 yıllığına seçilir. Bir kimse en fazla iki defa seçilebilir (İstisna: İkinci döneminde TBMM seçimleri yenilerse bir kez daha aday olabilir)."
+       },
+       {
+        "t": "Aday Gösterme Şartları",
+        "d": "Siyasi parti grupları (en az 20 milletvekili), en son genel seçimlerde geçerli oyların tek başına veya birlikte en az %5'ini almış siyasi partiler, veya \u003cb>en az 100.000 seçmen\u003c/b> imza ile aday gösterebilir."
+       },
+       {
+        "t": "Cumhurbaşkanlığı Kararnamesi (CBK)",
+        "d": "Cumhurbaşkanı, yürütme yetkisine ilişkin konularda CBK çıkarabilir. Anayasanın ikinci kısmındaki 'Kişi Hakları' ve 'Siyasi Haklar' CBK ile düzenlenemez; yalnızca \u003cb>Sosyal ve Ekonomik Haklar\u003c/b> düzenlenebilir (Olağanüstü Hal CBK'lerinde çekirdek haklar hariç tüm haklar sınırlandırılabilir)."
+       }
+      ]
+     },
+     {
+      "ad": "Yargı Organları ve Yüksek Mahkemeler",
+      "tablo": {
+       "basliklar": [
+        "Yüksek Mahkeme",
+        "Üye Sayısı",
+        "Seçen Makamlar",
+        "Temel Görevi"
+       ],
+       "satirlar": [
+        [
+         "Anayasa Mahkemesi",
+         "15 Üye",
+         "12 Üye Cumhurbaşkanı, 3 Üye TBMM",
+         "Kanunların/CBK'lerin anayasaya uygunluk denetimi, Bireysel Başvuru, Yüce Divan yargılamaları"
+        ],
+        [
+         "Yargıtay",
+         "Daire ve Genel Kurullar",
+         "Üyelerini HSK seçer; Başsavcıyı CB seçer",
+         "Adli yargının (hukuk ve ceza mahkemeleri) en üst temyiz mercidir"
+        ],
+        [
+         "Danıştay",
+         "Daire ve Genel Kurullar",
+         "3/4'ünü HSK, 1/4'ünü Cumhurbaşkanı seçer",
+         "İdari yargının (idare ve vergi mahkemeleri) en üst temyiz mercidir"
+        ],
+        [
+         "Uyuşmazlık Mahkemesi",
+         "1 Başkan + 12 Üye",
+         "Başkanını Anayasa Mahkemesi kendi üyeleri arasından seçer",
+         "Adli ve idari yargı mercileri arasındaki görev ve hüküm uyuşmazlıklarını çözer"
+        ]
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "no": "4",
+    "ad": "İdare Hukuku ve İdari Teşkilat Yapısı",
+    "etiket": "İdare Hukuku",
+    "giris": "Türkiye'nin idari yapısı; \u003cb>merkezden yönetim\u003c/b> ve \u003cb>yerinden yönetim\u003c/b> olmak üzere iki ana kola ayrılır.",
+    "bloklar": [
+     {
+      "ad": "İdarenin Bütünlüğü ve Denetim Araçları",
+      "maddeler": [
+       {
+        "t": "Hiyerarşi (Ast-Üst İlişkisi)",
+        "d": "Aynı kamu tüzel kişiliği içerisindeki üstün asta emir ve talimat verme, işlemini değiştirme, iptal etme yetkisidir (Örnek: Bakan - Müsteşar, Vali - Kaymakam, Rektör - Dekan)."
+       },
+       {
+        "t": "İdari Vesayet",
+        "d": "Farklı kamu tüzel kişilikleri arasındaki denetimdir. Devlet tüzel kişiliğinin, yerinden yönetim kuruluşları üzerindeki kanunla sınırlı hukuka uygunluk denetimidir (Örnek: İçişleri Bakanı'nın belediye başkanını geçici uzaklaştırması, Valinin köy muhtarını denetlemesi)."
+       },
+       {
+        "t": "Yetki Genişliği",
+        "d": "Merkeze danışmadan merkez adına karar alabilme yetkisidir. Anayasamıza göre yetki genişliği \u003cb>yalnızca Valilere\u003c/b> aittir (Kaymakamın yetki genişliği yoktur)."
+       }
+      ]
+     },
+     {
+      "ad": "Türkiye'nin İdari Teşkilat Tablosu",
+      "tablo": {
+       "basliklar": [
+        "Merkezden Yönetim (Başkent Teşkilatı)",
+        "Merkezden Yönetim (Taşra Teşkilatı)",
+        "Mahalli İdareler (Yerel Yerinden)",
+        "Hizmet Yerinden Yönetim Kuruluşları"
+       ],
+       "satirlar": [
+        [
+         "Cumhurbaşkanlığı",
+         "İl Genel İdaresi (Vali, İl İdare Şube Bşk, İl İdare Kurulu)",
+         "İl Özel İdaresi (Vali, İl Genel Meclisi, İl Encümeni)",
+         "Üniversiteler, YÖK, TÜBİTAK"
+        ],
+        [
+         "Bakanlıklar",
+         "İlçe İdaresi (Kaymakam, İlçe İdare Şube Bşk, İlçe İdare Kurulu)",
+         "Belediye İdaresi (Belediye Başkanı, Belediye Meclisi, Belediye Encümeni)",
+         "TRT, TCDD, Karayolları Genel Müd."
+        ],
+        [
+         "Yardımcı Kuruluşlar (Danıştay, Sayıştay, MGK)",
+         "Bucak İdaresi (Uygulamada kaldırıldı)",
+         "Büyükşehir Belediyesi (Büyükşehir Bld Bşk, BB Meclisi, BB Encümeni)",
+         "Meslek Kuruluşları (Barolar, Odalar, TOBB)"
+        ],
+        [
+         "Cumhurbaşkanlığı Politika Kurulları",
+         "Bölge Kuruluşları (GAP, DOKAP vb.)",
+         "Köy İdaresi (Muhtar, İhtiyar Heyeti, Köy Derneği)",
+         "Düzenleyici Kurullar (RTÜK, BDDK, SPK)"
         ]
        ]
       }

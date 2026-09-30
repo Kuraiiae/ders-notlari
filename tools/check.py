@@ -271,10 +271,12 @@ else:
 # (ozSayfaAd(key) -> "<key>-ozet.html"), bu yuzden literal ad yerine uretici
 # isareti aranir.
 BEKLENEN = {
-    "index.html": ("oku.html", "galeri.html", "turkce-ozet.html", "tarih-ozet.html"),
+    "index.html": ("oku.html", "galeri.html", "turkce-ozet.html", "tarih-ozet.html", "cografya-ozet.html", "vatandaslik-ozet.html"),
     "galeri.html": ("index.html", "oku.html", "turkce-ozet.html"),
     "turkce-ozet.html": ("oku.html", "index.html"),
     "tarih-ozet.html": ("oku.html", "index.html"),
+    "cografya-ozet.html": ("oku.html", "index.html"),
+    "vatandaslik-ozet.html": ("oku.html", "index.html"),
 }
 for ad, hedefler in BEKLENEN.items():
     with open(os.path.join(ROOT, ad), encoding="utf-8") as f:

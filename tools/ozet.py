@@ -457,6 +457,8 @@ VERI = {
 DERSLER = {
     "turkce": VERI,
     "tarih": veri_yukle("ozet-tarih.py"),
+    "cografya": veri_yukle("ozet-cografya.py"),
+    "vatandaslik": veri_yukle("ozet-vatandaslik.py"),
 }
 
 

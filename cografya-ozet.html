@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<script>document.documentElement.style.colorScheme='dark';</script>
+<meta name="description" content="KPSS Coğrafya genel tekrar ders notları: Türkiye'nin coğrafi konumu, yer şekilleri, iklim ve bitki örtüsü, nüfus ve yerleşme, tarım, hayvancılık, madenler, sanayi ve ulaşım.">
+<title>KPSS Orta Öğretim Coğrafya</title>
+<style>
+:root{--bg:#050b1c;--panel:rgba(96,165,250,.07);--stroke:rgba(96,165,250,.18);--text:#e6efff;--muted:#8ba3c7;
+  --accent:#3b82f6;--accent2:#06b6d4}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:radial-gradient(120% 90% at 12% -10%,rgba(59,130,246,.28),transparent 60%),
+  radial-gradient(90% 80% at 100% 0,rgba(6,182,212,.2),transparent 55%),var(--bg);color:var(--text);
+  font:16px/1.85 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:26px 18px 70px}
+header.top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.chip{display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 15px;border-radius:999px;
+  border:1px solid var(--stroke);background:rgba(255,255,255,.06);color:var(--text);font-size:13.5px;
+  font-weight:600;text-decoration:none;transition:.2s}
+.chip:hover{border-color:var(--accent);transform:translateY(-1px)}
+h1{font-size:clamp(25px,5.4vw,38px);line-height:1.2;margin:0 0 6px;letter-spacing:-.5px}
+.lead{color:var(--muted);font-size:15.5px;margin:0 0 22px}
+.oz{border:1px solid var(--stroke);border-radius:20px;background:linear-gradient(180deg,rgba(24,32,58,.9),
+  rgba(16,22,42,.9));padding:20px 20px 22px;margin:0 0 16px;box-shadow:0 18px 40px rgba(3,6,18,.45)}
+.ozh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;font-size:clamp(18px,3.4vw,23px)}
+.ozh .n{flex:0 0 34px;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
+  background:var(--accent);font-size:16px;font-weight:800}
+.tag{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--accent2);
+  color:#06231f}
+.oz h4{margin:20px 0 8px;font-size:16.5px;color:#fff;padding:8px 13px;border-radius:10px;line-height:1.5}
+.oz h4:nth-of-type(5n+1){background:linear-gradient(90deg,rgba(59,130,246,.28),rgba(59,130,246,.08));border-inline-start:4px solid #3b82f6}
+.oz h4:nth-of-type(5n+2){background:linear-gradient(90deg,rgba(6,182,212,.28),rgba(6,182,212,.08));border-inline-start:4px solid #06b6d4}
+.oz h4:nth-of-type(5n+3){background:linear-gradient(90deg,rgba(244,162,97,.30),rgba(244,162,97,.10));border-inline-start:4px solid #f4a261}
+.oz h4:nth-of-type(5n+4){background:linear-gradient(90deg,rgba(255,95,109,.28),rgba(255,95,109,.08));border-inline-start:4px solid #ff5f6d}
+.oz h4:nth-of-type(5n){background:linear-gradient(90deg,rgba(74,125,255,.28),rgba(74,125,255,.08));border-inline-start:4px solid #4a7dff}
+.oz h4:first-of-type{margin-top:6px}
+.oz p{margin:0 0 12px;color:var(--muted);line-height:2}
+.oz ul{margin:0;padding-left:20px;color:var(--muted);line-height:2}
+.oz li{margin:10px 0;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.045)}
+.oz li b:first-child,.oz p b:first-child{color:#cfd8ff}
+.oz b,.oz strong{color:var(--text)}
+.tablo{overflow-x:auto;margin:0 0 12px;-webkit-overflow-scrolling:touch}
+.ozt{width:100%;border-collapse:collapse;font-size:14.5px;line-height:1.6;min-width:440px}
+.ozt th,.ozt td{border:1px solid var(--stroke);padding:9px 11px;text-align:left;
+  vertical-align:top;color:var(--muted)}
+.ozt th{background:rgba(59,130,246,.22);color:#fff;font-weight:700;font-size:13.5px;white-space:nowrap}
+.ozt tbody tr:nth-child(even){background:rgba(255,255,255,.035)}
+.ozt tbody tr:hover{background:rgba(6,182,212,.12)}
+.ozt td:first-child{color:#cfd8ff;font-weight:600}
+.chiprow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.chiprow .chip{cursor:default}
+.trick{border-left:3px solid var(--accent2);background:rgba(255,255,255,.05);border-radius:0 12px 12px 0;
+  padding:10px 14px;margin:10px 0;font-size:14.5px;color:var(--muted)}
+.trick b{color:var(--accent2)}
+footer.site{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;color:var(--muted);font-size:12.5px}
+@media(max-width:640px){
+  .wrap{padding:18px 13px 60px}
+  .oz{padding:16px 15px 18px;border-radius:16px}
+  header.top .chip{flex:1 1 auto;justify-content:center}
+  body{font-size:15.5px}
+}
+@media print{
+  body{background:#fff;color:#111}
+  .oz{background:#fff;border-color:#ddd;box-shadow:none;break-inside:avoid}
+  .oz p,.oz ul,.trick{color:#333}
+  .oz b,.oz h4,.ozh{color:#000}
+  .ozt th,.ozt td{color:#333;border-color:#bbb}
+  .ozt th{background:#eee;color:#000}
+  header.top,footer.site{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+<a class="chip" href="index.html">&#8592; Ana sayfa</a>
+<a class="chip" href="oku.html?ders=cografya">&#128214; Kitap Modu</a>
+<a class="chip" href="galeri.html">&#9635; Galeri</a>
+<a class="chip" href="javascript:window.print()">&#128424; Yazdır</a>
+</header>
+<h1>KPSS Orta Öğretim Coğrafya</h1>
+<p class="lead">KPSS Coğrafya genel tekrar notları &middot; fiziki coğrafya, yer şekilleri, iklim, nüfus, ekonomik coğrafya ve harita taktikleri</p>
+<section class="oz"><h3 class="ozh">Genel Bakış</h3><p>KPSS Coğrafya oturumunda <b>18 soru</b> gelmektedir. Soruların yaklaşık <b>6-7 tanesi fiziki coğrafya</b> (konum, yer şekilleri, iklim, su varlığı), <b>3-4 tanesi beşeri coğrafya</b> (nüfus, yerleşme, göç) ve <b>7-8 tanesi ekonomik coğrafya</b> (tarım, hayvancılık, maden, enerji, sanayi, ticaret, ulaşım, turizm) alanlarından oluşur.</p><div class="chiprow"><span class="chip">Coğrafi Konum</span><span class="chip">Yer Şekilleri</span><span class="chip">İklim ve Bitki</span><span class="chip">Nüfus ve Yerleşme</span><span class="chip">Tarım ve Hayvancılık</span><span class="chip">Maden ve Enerji</span><span class="chip">Sanayi ve Ulaşım</span><span class="chip">Bölgeler</span></div><div class="trick"><b>Not:</b> ÖSYM coğrafya sorularında <b>harita ve dilsiz harita okuma</b> becerisini doğrudan test eder. Karşılaştırma tabloları ve <b>Kritik Kural</b> notları doğrudan soru potansiyeli taşır.</div></section><div class="chiprow"><a class="chip" href="oku.html?ders=cografya">&#128214; Coğrafya sayfalarını oku</a><a class="chip" href="oku.html?ders=cografya">&#128221; Kitap Modu'nda özet</a></div><section class="oz"><h3 class="ozh"><span class="n">1</span>Türkiye'nin Coğrafi Konumu ve Etkileri<span class="tag">Matematik ve Özel Konum</span></h3><p>Türkiye <b>36°-42° Kuzey paralelleri</b> ile <b>26°-45° Doğu meridyenleri</b> arasında yer alır.</p><h4>Matematik (Mutlak) Konum ve Sonuçları</h4><ul><li><b>Kuzey Yarımküre ve Orta Kuşak:</b> Türkiye Yengeç Dönencesi'nin kuzeyindedir. Bu nedenle güneş ışınları hiçbir zaman 90° dik açıyla gelmez, gölge boyu asla sıfır olmaz ve gölge yönü daima kuzeyi gösterir.</li><li><b>Dört Mevsim Belirginliği (A-B-C-D Kuralı):</b> Orta kuşakta yer almanın 4 temel kanıtı: <b>A</b>kdeniz iklim kuşağında yer alması, <b>B</b>atı rüzgarlarının etkisinde olması, <b>C</b>ephesel (Frontal) yağışların görülmesi, <b>D</b>ört mevsimin belirgin yaşanması.<div class="trick"><b>Pratik Yol:</b> «A-B-C-D» formülü orta kuşağın kesin kanıtıdır; aynı anda farklı mevsim yaşanması ise özel konumdur.</div></li><li><b>Güneyden Kuzeye Değişenler (Enlem Etkisi):</b> Güneyden kuzeye gidildikçe: Güneş ışınlarının geliş açısı küçülür, sıcaklık ortalamaları genel olarak azalır, çizgisel hız azalır, yerçekimi artar, alacakaranlık (grup/tan) süresi uzar, denizlerin tuzluluk oranı azalır (Akdeniz %38 > Karadeniz %18).</li><li><b>Bakı Etkisi:</b> Dönenceler dışında olduğumuz için dağların daima <b>güney yamaçları</b> güneşe bakar; daha sıcaktır, karlar daha erken erir, tarım üst sınırı ve yerleşme üst sınırı daha yüksektir. (İstisna: Karadeniz'de kışın kuzey yamaç denizellik nedeniyle daha ılık olabilir).</li></ul><h4>Özel (Göreceli) Konum ve Sonuçları</h4><ul><li><b>Üç Tarafı Denizlerle Çevrili Olma:</b> Kıyı kesimlerde nemlilik ve yağış fazla, sıcaklık farkları azdır; iç kesimlerde karasallık ve sıcaklık farkları fazladır.</li><li><b>Yükselti ve Engebe:</b> Batıdan doğuya gidildikçe yükselti artar, sıcaklık düşer, karın yerde kalma süresi uzar, tarım ürünlerinin olgunlaşma süresi gecikir.</li><li><b>Jeopolitik ve Jeostratejik Konum:</b> Üç kıtanın (Asya, Avrupa, Afrika) kavşak noktasındadır. İstanbul ve Çanakkale boğazlarına sahiptir, enerji koridoru (transit boru hatları) konumundadır.</li></ul><h4>Matematik Konum vs Özel Konum Karşılaştırması</h4><div class="tablo"><table class="ozt"><thead><tr><th>Özellik</th><th>Konum Türü</th><th>Temel Gerekçe / Açıklama</th></tr></thead><tbody><tr><td>Akdeniz'in Karadeniz'den tuzlu olması</td><td>Matematik Konum</td><td>Enlem, sıcaklık ve buharlaşma farkı</td></tr><tr><td>Aynı anda farklı mevsim özelliklerinin yaşanması</td><td>Özel Konum</td><td>Kısa mesafede yükselti ve yer şekli değişimi</td></tr><tr><td>Gölge yönünün daima kuzeye düşmesi</td><td>Matematik Konum</td><td>Yengeç Dönencesi'nin kuzeyinde yer alma</td></tr><tr><td>Doğu Anadolu'da ürünlerin geç olgunlaşması</td><td>Özel Konum</td><td>Yükseltinin batıdan doğuya artması</td></tr><tr><td>Cephesel (Frontal) yağışların görülmesi</td><td>Matematik Konum</td><td>Orta kuşakta sıcak ve soğuk havanın karşılaşması</td></tr><tr><td>Jeotermal enerji ve sıcak su kaynakları</td><td>Özel Konum</td><td>Genç oluşumlu kırıklı (fay) arazi yapısı</td></tr></tbody></table></div></section><section class="oz"><h3 class="ozh"><span class="n">2</span>Türkiye'nin Yer Şekilleri ve Jeolojik Yapısı<span class="tag">Fiziki Coğrafya</span></h3><p>Türkiye, <b>III. Jeolojik Zaman (Tersiyer)</b> sonu ve <b>IV. Jeolojik Zaman (Kuvaterner)</b> başında şekillenmiş genç, dinamik ve yüksek bir ülkedir.</p><h4>Orojenez (Dağ Oluşumu) ve Dağ Tipleri</h4><ul><li><b>Kıvrım Dağları (Alp-Himalaya Kıvrımı):</b> Esnek tortul tabakaların sıkışmasıyla oluşur. Yüksekte kalan kubbe kısımlara <b>Antiklinal</b>, alçakta kalan çanaklara <b>Senklinal</b> denir. Kuzey Anadolu Dağları (Kaçkar, Canik, Küre, Ilgaz) ve Toroslar (Aladağlar, Bolkarlar, Bey Dağları).</li><li><b>Kırık Dağları (Horst - Graben):</b> Sert kütlelerin yan basınçlarla kırılmasıyla oluşur. Yüksekte kalan blok <b>Horst</b>, çöken çöküntü ovası <b>Graben</b>'dir. Ege'de yaygındır: Kaz Dağı, Madra, Yunt, Bozdağlar, Aydın Dağları, Menteşe Dağları (Horst); Bakırçay, Gediz, Küçük Menderes, Büyük Menderes (Graben). Hatay'daki Nur (Amanos) Dağları da horsttur.</li><li><b>Volkanik Dağlar:</b> Magmanın yer kabuğundan yüzeye çıkıp katılaşmasıyla oluşur. <b>İç Anadolu:</b> Erciyes, Hasan Dağı, Melendiz, Karadağ, Karacadağ. <b>Doğu Anadolu:</b> Ağrı (Büyük/Küçük), Tendürek, Süphan, Nemrut. <b>Güneydoğu:</b> Karacadağ (Kalkan volkan). <b>Ege:</b> Kula (Türkiye'nin en genç volkan konileri).</li></ul><h4>Platolar ve Oluşum Türleri</h4><ul><li><b>Aşınım (Peneplen) Platoları:</b> Çatalca-Kocaeli Platosu (sanayi, nüfus ve yerleşme en yoğun plato).</li><li><b>Karstik Platolar:</b> Teke ve Taşeli Platoları (Akdeniz; kireçtaşı arazisi, nüfus seyrek, kıl keçisi yetiştiriciliği).</li><li><b>Volkanik (Lav Örtüsü) Platolar:</b> Erzurum-Kars ve Ardahan Platoları (yaz yağışları, çernezyom toprak, gür çayırlar, büyükbaş mera hayvancılığı).</li><li><b>Yatay Duruşlu (Tabaka Düzlüğü) Platoları:</b> İç Anadolu ve Güneydoğu: Haymana, Cihanbeyli, Obruk, Bozok, Uzunyayla, Gaziantep, Şanlıurfa (küçükbaş hayvancılık ve tahıl tarımı).</li></ul><h4>Dış Kuvvetler ve Oluşturdukları Yer Şekilleri</h4><ul><li><b>Akarsu Aşındırma ve Biriktirme:</b> Aşındırma: Vadi tipleri (Kanyon, Çentik, Boğaz/Yarma, Tabanlı), Kırgıbayır (Kapadokya), Dev kazanı, Peri bacaları (akarsu + rüzgar + volkanizma). Biriktirme: Delta ovaları (Çukurova, Bafra, Çarşamba, Silifke, Balat, Menemen, Dikili), Birikinti konisi, Dağ eteği ovası.</li><li><b>Karstik Şekiller:</b> Kalker, jips ve kaya tuzu erimesiyle oluşur. Aşındırma: Lapya &gt; Dolin &gt; Uvala &gt; Polye (Gölova: Tefenni, Acıpayam, Korkuteli, Kestel, Elmalı, Muğla). Mağara, Düden, Obruk (Kızılören, Çıralı). Biriktirme: Traverten (Pamukkale), Sarkıt, Dikit, Sütun.</li><li><b>Rüzgar Şekilleri:</b> Bitki örtüsünün cılız, kurak/yarı kurak olduğu İç Anadolu ve Güneydoğu'da etkilidir: Mantarkaya, Tafoni, Yardang, Barkan, Lös.</li><li><b>Kıyı Tipleri:</b> <b>Boyuna Kıyı:</b> Karadeniz ve Akdeniz (falez çok, kıta sahanlığı dar, koy/körfez az). <b>Enine Kıyı:</b> Ege (girinti-çıkıntı çok, kıta sahanlığı geniş, delta çok). <b>Ria Tipi:</b> İstanbul ve Çanakkale boğazları, Haliç. <b>Dalmaçya Tipi:</b> Kaş-Finike kıyıları. <b>Limanlı Kıyı:</b> Büyük ve Küçükçekmece.</li></ul></section><section class="oz"><h3 class="ozh"><span class="n">3</span>Türkiye'nin İklimi, Sıcaklık, Basınç ve Yağış<span class="tag">İklim Bilgisi</span></h3><p>Türkiye'de topoğrafik çeşitlilik ve denizellik-karasallık nedeniyle kısa mesafelerde çok farklı iklim tipleri görülür.</p><h4>Türkiye'yi Etkileyen Basınç Merkezleri ve Rüzgarlar</h4><ul><li><b>Basınç Merkezleri:</b> <b>Sibirya Termik AYB:</b> Kışın etkilidir; aşırı soğuk, ayaz ve kar getirir. <b>İzlanda Dinamik AB:</b> Kışın etkilidir; ılık ve yağışlı hava getirir. <b>Asor Dinamik YB:</b> Yazın kuraklık ve sıcaklık getirir; kışın ılık hava. <b>Basra Termik AB:</b> Yazın Güneydoğu'dan sokulur; aşırı sıcaklık, kuraklık ve samyeli rüzgarı getirir.</li><li><b>Yerel Rüzgarlar (KAYIP SAKAL):</b> Kuzeyden esenler sıcaklığı düşürür: <b>K</b>arayel (KB), <b>Y</b>ıldız (K), <b>P</b>oyraz (KD). Güneyden esenler sıcaklığı artırır: <b>S</b>amyeli/Keşişleme (GD), <b>K</b>ıble (G), <b>L</b>odos (GB - denizciliği olumsuz etkiler, soba zehirlenmelerine yol açar, karları hızlı eritir).</li><li><b>Fön Rüzgarı:</b> Dağ yamacından aşağı inerken her 100 metrede 1°C ısınan kuru rüzgardır. Karadeniz (Rize'de turunçgil mikroklimaları) ve Toroslar'da etkilidir. Erken erime, çığ ve ürünlerin erken olgunlaşmasına yol açar.</li></ul><h4>Türkiye'nin 4 Ana İklim Tipi ve Yağış Rejimleri</h4><div class="tablo"><table class="ozt"><thead><tr><th>İklim Tipi</th><th>En Fazla Yağış Mevsimi</th><th>Yağış Oluşum Tipi</th><th>Doğal Bitki Örtüsü</th><th>Toprak Türü</th></tr></thead><tbody><tr><td>Karadeniz İklimi</td><td>Sonbahar</td><td>Yamaç (Orografik)</td><td>Geniş ve İğne Yapraklı Orman</td><td>Kahverengi Orman Toprağı</td></tr><tr><td>Akdeniz İklimi</td><td>Kış</td><td>Cephesel (Frontal)</td><td>Maki (Garig / Kızılçam)</td><td>Terra Rossa (Kırmızı Akdeniz)</td></tr><tr><td>İç Anadolu Karasal</td><td>İlkbahar (Kırkikindi)</td><td>Konveksiyonel (Yükselim)</td><td>Bozkır (Step)</td><td>Kestane / Kahverengi Bozkır</td></tr><tr><td>Sert Karasal (Erzurum-Kars)</td><td>Yaz</td><td>Konveksiyonel (Yükselim)</td><td>Dağ Çayırları (Alpin)</td><td>Çernezyom (Kara Toprak)</td></tr></tbody></table></div></section><section class="oz"><h3 class="ozh"><span class="n">4</span>Nüfus, Yerleşme, Tarım, Hayvancılık ve Madenler<span class="tag">Ekonomik Coğrafya</span></h3><p>Nüfusun dağılışı sanayi, ticaret, tarım, ulaşım ve iklim koşullarıyla doğrudan ilişkilidir.</p><h4>Nüfus Yoğunluğu ve Göç Hareketleri</h4><ul><li><b>Tenha (Seyrek) Nüfuslu Alanlar:</b> <b>Teke ve Taşeli:</b> Karstik arazi ve engebe. <b>Yıldız Dağları:</b> Ulaşım yollarına sapa ve dağlık. <b>Hakkari Yöresi:</b> Aşırı engebe, yükselti ve iklim sertliği. <b>Tuz Gölü Çevresi:</b> Kuraklık ve yağış azlığı. <b>Sinop Çevresi:</b> Art bölgesi (hinterland) dağlarla kapalı ve ulaşım zor.</li><li><b>Yoğun Nüfuslu Alanlar:</b> Çatalca-Kocaeli (sanayi ve finans), Ege Kıyıları (tarım ve turizm), Çukurova (tarım ve sanayi), Doğu Karadeniz Kıyı Şeridi (tarım ve denizellik dar alana sıkışmış).</li></ul><h4>Kritik Tarım Ürünleri ve Yetişme Alanları</h4><ul><li><b>Devlet Kontrolündeki Ürünler:</b> <b>Pirinç (Çeltik):</b> Sıtma hastalığı riski nedeniyle yerleşim alanları çevresinde izne bağlıdır. <b>Tütün:</b> Kaliteyi korumak amacıyla devlet kotasındadır. <b>Şeker Pancarı:</b> Fabrika kapasitesi ve kota kuralı (çabuk bozulduğu için fabrika yakın kurulur). <b>Haşhaş:</b> Uyuşturucu yapımı kontrolü (Afyon, Konya çevresi). <b>Kenevir:</b> Uyuşturucu kontrolü.</li><li><b>Üretiminde Dünya Birincisi Olduklarımız:</b> Fındık (Karadeniz), Kuru İncir (Aydın/Ege), Kuru Kayısı (Malatya), Kiraz, Antep Fıstığı (Güneydoğu).</li><li><b>Zeytin ve Turunçgiller:</b> Kış ılıklığı ister, don olayına duyarlıdır; Akdeniz, Ege ve Güney Marmara'da yoğundur.</li></ul><h4>Kritik Madenler ve Enerji Kaynakları</h4><div class="tablo"><table class="ozt"><thead><tr><th>Maden / Kaynak</th><th>Önemli Çıkarım Alanları</th><th>İşletme / Tesis</th><th>Kullanım / Not</th></tr></thead><tbody><tr><td>Demir</td><td>Sivas (Divriği), Malatya (Hekimhan, Hasançelebi)</td><td>Karabük, Ereğli, İskenderun</td><td>Ağır sanayinin hammaddesi</td></tr><tr><td>Bakır</td><td>Artvin (Murgul), Kastamonu (Küre), Rize (Çayeli), Elazığ (Maden)</td><td>Samsun (İzabe tesisi), Murgul</td><td>Elektrik-elektronik sanayi</td></tr><tr><td>Boksit (Alüminyum)</td><td>Antalya (Akseki), Konya (Seydişehir)</td><td>Konya Seydişehir Alüminyum Tesisleri</td><td>Hafif metal, uçak ve otomotiv</td></tr><tr><td>Bor Mineralleri</td><td>Balıkesir (Bigadiç), Kütahya (Emet), Bursa (Mustafakemalpaşa), Eskişehir (Kırka)</td><td>Bandırma ve Kırka Bor Tesisleri</td><td>Dünya rezervinin %73'ü Türkiye'dedir</td></tr><tr><td>Krom</td><td>Elazığ (Guleman), Muğla (Fethiye, Köyceğiz)</td><td>Antalya ve Elazığ Ferrokrom Tesisleri</td><td>Çeliğin sertleştirilmesi ve paslanmaz çelik</td></tr><tr><td>Taş Kömürü (I. Zaman)</td><td>Zonguldak, Bartın, Karabük Havzası</td><td>Çatalağzı Termik Santrali</td><td>Demir-çelik eritmede yüksek ısı</td></tr><tr><td>Linyit (III. Zaman)</td><td>Manisa (Soma), Kütahya (Tunçbilek, Tavşanlı, Seyitömer), Kahramanmaraş (Afşin-Elbistan), Muğla (Yatağan)</td><td>Soma, Yatağan, Afşin-Elbistan santralleri</td><td>Türkiye genelinde en yaygın madendir</td></tr><tr><td>Jeotermal Enerji</td><td>Denizli (Sarayköy), Aydın (Germencik), Manisa, Çanakkale</td><td>Sarayköy ve Germencik Santralleri</td><td>Fay hatlarına bağlı sıcak su</td></tr></tbody></table></div></section>
+<footer class="site">
+<span>Kaynak: kişisel genel tekrar notları</span><span>&middot;</span>
+<span>Kitap Modu'nda <b>&Ouml;</b> tuşuyla aynı özet &ccedil;ekmece olarak a&ccedil;ılır.</span>
+</footer>
+</div>
+  <script src="enhancements.js"></script>
+</body>
+</html>
