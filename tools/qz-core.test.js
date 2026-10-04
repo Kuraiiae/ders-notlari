@@ -230,6 +230,84 @@ test('soruyuKoru determinizm', () => {
   assert.strictEqual(JSON.stringify(K(m, e)), JSON.stringify(K(m, e)));
 });
 
+console.log('--- cizilenSiklar ---');
+const CS = QuizCore.cizilenSiklar;
+
+test('harfMap yoksa bos liste doner', () => {
+  assert.deepStrictEqual(CS(null), []);
+  assert.deepStrictEqual(CS(undefined), []);
+  assert.deepStrictEqual(CS({}), []);
+});
+
+test('eksik/bozuk harf atlanir, sirasi ABCDE', () => {
+  /* yalniz B ve D gecerli: A eksik, E null, C hic tanimli degil */
+  const r = CS({ B: Yatay[1], D: Yatay[3], A: [0.1], E: null });
+  assert.strictEqual(r.length, 2, 'yalnizca B ve D gecerli');
+  assert.ok(r[0][0] < r[1][0], 'B solda, D sagda olmali');
+  /* tam ABCDE girdisinde SIR korunur */
+  const tam = {};
+  Yatay.forEach((b, i) => { tam['ABCDE'[i]] = b; });
+  const s = CS(tam);
+  assert.strictEqual(s.length, 5);
+  for (let i = 1; i < 5; i++) assert.ok(s[i][0] > s[i - 1][0], i + '. kutu sola kaydi');
+});
+
+test('her cikti [x0,y0,x1,y1], aralık disi degil', () => {
+  const cMap = {};
+  Dikey.forEach((b, i) => { cMap['ABCDE'[i]] = b; });
+  const r = CS(cMap);
+  assert.strictEqual(r.length, 5);
+  r.forEach((d, i) => {
+    assert.strictEqual(d.length, 4, i + '. dikdortgen 4 elemanli olmali');
+    assert.ok(d[2] > d[0] && d[3] > d[1], i + '. kutu bos: ' + JSON.stringify(d));
+    assert.ok(d[0] >= -1e-9 && d[1] >= -1e-9, i + '. sol/ust aralik disi');
+    assert.ok(d[2] <= 1 + 1e-9 && d[3] <= 1 + 1e-9, i + '. sag/alt aralik disi');
+  });
+});
+
+test('cizilen kutu ham metni tam kapsar (hicbir metin kesilmez)', () => {
+  const cMap = {};
+  Dikey.forEach((b, i) => { cMap['ABCDE'[i]] = b; });
+  const r = CS(cMap);
+  Dikey.forEach((b, i) => {
+    assert.ok(r[i][0] <= b[0] + 1e-6, i + ' sol kenar metni kesiyor');
+    assert.ok(r[i][1] <= b[1] + 1e-6, i + ' ust kenar metni kesiyor');
+    assert.ok(r[i][2] >= b[2] - 1e-6, i + ' sag kenar metni kesiyor');
+    assert.ok(r[i][3] >= b[3] - 1e-6, i + ' alt kenar metni kesiyor');
+  });
+});
+
+test('ham kutu tabana BUYUTULUR; taban parametresi modunkini yansitir', () => {
+  const dar = [0.5, 0.5, 0.502, 0.504];
+  const varsayilan = CS({ A: dar })[0];
+  assert.ok(varsayilan[2] - varsayilan[0] >= 0.05 - 1e-9, 'varsayilan min genislik yok');
+  assert.ok(varsayilan[3] - varsayilan[1] >= 0.016 - 1e-9, 'varsayilan min yukseklik yok');
+  const oku = CS({ A: dar }, { minW: 0.05, minH: 0.012 })[0];
+  assert.ok(Math.abs((oku[2] - oku[0]) - 0.05) < 1e-9, 'verilen minW kullanilmadi');
+  assert.ok(Math.abs((oku[3] - oku[1]) - 0.012) < 1e-9, 'verilen minH kullanilmadi');
+});
+
+test('HAM koordinat ortusmeyi GORMEZ, cizilen gorur (K7 regresyon kaniti)', () => {
+  /* hizalaSiklar satiri dikeyde DY (0.004) buyutur. Ham E kutusu 0.7727'de
+     baslar; cizilen kutu 0.7687'de baslar. Maske 0.7660-0.7700 araliginda:
+     ham koordinat denetimi "cakisma yok" der, cizilen koordinat 0.0013
+     yakalayan dikdortgeni gosterir. */
+  const ham = Dikey[4];
+  const maske = [0.543, 0.7660, 0.856, 0.7700];
+  const hamCak = Math.min(maske[3], ham[3]) - Math.max(maske[1], ham[1]);
+  const ciz = CS({ E: ham })[0];
+  const cizCak = Math.min(maske[3], ciz[3]) - Math.max(maske[1], ciz[1]);
+  assert.ok(hamCak <= 0, 'ham koordinatta cakisma olmamaliydi, gotu ' + hamCak);
+  assert.ok(cizCak > 0, 'cizilen koordinatta cakisma gorunmeliydi, gotu ' + cizCak);
+  assert.ok(ciz[3] > ham[3], 'cizilen alt kenar haminkinden asagida olmali');
+});
+
+test('cizilenSiklar determinizm', () => {
+  const cMap = {};
+  Yatay.forEach((b, i) => { cMap['ABCDE'[i]] = b; });
+  assert.strictEqual(JSON.stringify(CS(cMap)), JSON.stringify(CS(cMap)));
+});
+
 console.log('--- yayineviMaskKoy ---');
 /* Tarayici olmadan test edilebilmesi icin minimum sahte konteyner.
    yayineviMaskKoy yalnizca ownerDocument.createElement ve appendChild
@@ -295,6 +373,145 @@ test('bozuk / sifir alanli dikdortgen atlanir', () => {
   QuizCore.yayineviMaskKoy(k, [null, [0.1], [0.2, 0.3, 0.2, 0.4], [0.5, 0.6, 0.5, 0.6], [0.1, 0.2, 0.3, 0.4]]);
   assert.strictEqual(k.children.length, 1, 'yalnizca gecerli tek dikdortgen maske uretmeli');
   assert.strictEqual(k.children[0].style.left, '10.00%');
+});
+
+/* --- bindEvents --- */
+console.log('--- bindEvents ---');
+
+/* Yuksek sahte: closest, contains, addEventListener, dataset, querySelector
+   destekleyen bir DOM agaci. */
+function sahteDugum(tag, cls, parent) {
+  const children = [];
+  const el = {
+    tagName: tag,
+    className: cls || '',
+    style: {},
+    dataset: {},
+    textContent: '',
+    children: children,
+    parent: parent || null,
+    _listeners: {},
+    addEventListener(ev, fn) { (this._listeners[ev] = this._listeners[ev] || []).push(fn); },
+    _fire(ev, data) { (this._listeners[ev] || []).forEach(fn => fn(data)); },
+    contains(e) { let c = e; while (c) { if (c === el) return true; c = c.parent; } return false; },
+    closest(sel) {
+      const sels = sel.split(',').map(function(s) { return s.trim(); });
+      let c = el;
+      while (c) {
+        for (let si = 0; si < sels.length; si++) {
+          const s = sels[si];
+          if (s === '.qsolution-toggle' && c._isToggle) return c;
+          if (s === '.qsolution-mask' && c._isMask) return c;
+          if ((s === '.qhotspot' || s === '.qz-hot') && c._isHot) return c;
+        }
+        c = c.parent;
+      }
+      return null;
+    },
+    querySelector(sel) {
+      if (sel === '.qsol-icon') return el._icon || null;
+      if (sel === '.qsol-text') return el._text || null;
+      return null;
+    },
+    setAttribute(a, v) { this._attrs = this._attrs || {}; this._attrs[a] = v; },
+    getAttribute(a) { return this._attrs ? this._attrs[a] : null; }
+  };
+  if (parent) parent.children.push(el);
+  return el;
+}
+
+test('bindEvents kapsayiciya tek dinleyici ekler', () => {
+  const root = sahteDugum('div', '');
+  const sec = { onHotspot() {}, onToggle() {} };
+  const r1 = QuizCore.bindEvents(root, sec);
+  const r2 = QuizCore.bindEvents(root, sec);
+  assert.strictEqual(r1, true, 'ilk cagri true');
+  assert.strictEqual(r2, false, 'ikinci cagri false (idempotent)');
+  assert.strictEqual(root._listeners.click.length, 1, 'tek dinleyici');
+});
+
+test('bindEvents bos / gecersiz kok ile false doner', () => {
+  assert.strictEqual(QuizCore.bindEvents(null, {}), false);
+  assert.strictEqual(QuizCore.bindEvents(undefined, {}), false);
+  assert.strictEqual(QuizCore.bindEvents({ addEventListener: 'x' }, {}), false);
+});
+
+test('hotspot icindeki span’a tiklaninca onHotspot qid ve h ile cagrilir', () => {
+  const root = sahteDugum('div', '');
+  const hot = sahteDugum('button', 'qhotspot', root);
+  hot._isHot = true;
+  hot.dataset = { qid: 'q42', h: 'C' };
+  // span inside hotspot
+  const span = sahteDugum('span', 'qh-badge', hot);
+  let called = false, gotQid, gotH;
+  QuizCore.bindEvents(root, {
+    onHotspot(qid, h) { called = true; gotQid = qid; gotH = h; },
+    onToggle() {}
+  });
+  const ev = { target: span, preventDefault() {}, stopPropagation() {} };
+  root._fire('click', ev);
+  assert.strictEqual(called, true, 'cağrıldı');
+  assert.strictEqual(gotQid, 'q42');
+  assert.strictEqual(gotH, 'C');
+});
+
+test('toggle dugmesine tiklaninca onToggle maskeye cagrilir', () => {
+  const root = sahteDugum('div', '');
+  const mask = sahteDugum('div', 'qsolution-mask', root);
+  mask._isMask = true;
+  const btn = sahteDugum('button', 'qsolution-toggle', mask);
+  btn._isToggle = true;
+  let called = false, gotMask, gotBtn;
+  QuizCore.bindEvents(root, {
+    onHotspot() {},
+    onToggle(m, b) { called = true; gotMask = m; gotBtn = b; }
+  });
+  const ev = { target: btn, preventDefault() {}, stopPropagation() {} };
+  root._fire('click', ev);
+  assert.strictEqual(called, true);
+  assert.strictEqual(gotMask, mask);
+  assert.strictEqual(gotBtn, btn);
+});
+
+test('toggle tiklamasi onHotspot’u tetiklemez', () => {
+  const root = sahteDugum('div', '');
+  const mask = sahteDugum('div', 'qsolution-mask', root);
+  mask._isMask = true;
+  sahteDugum('button', 'qsolution-toggle', mask)._isToggle = true;
+  let hotCount = 0;
+  QuizCore.bindEvents(root, {
+    onHotspot() { hotCount++; },
+    onToggle() {}
+  });
+  root._fire('click', { target: mask.children[0], preventDefault() {}, stopPropagation() {} });
+  assert.strictEqual(hotCount, 0);
+});
+
+test('hotspot tiklamasi stopPropagation cagirir', () => {
+  const root = sahteDugum('div', '');
+  const hot = sahteDugum('button', 'qhotspot', root);
+  hot._isHot = true;
+  hot.dataset = { qid: 'q1', h: 'A' };
+  let stopped = false;
+  QuizCore.bindEvents(root, {
+    onHotspot() {}, onToggle() {}
+  });
+  root._fire('click', { target: hot, preventDefault() {}, stopPropagation() { stopped = true; } });
+  assert.strictEqual(stopped, true);
+});
+
+test('qid veya h eksikse hotspot yok sayilir', () => {
+  const root = sahteDugum('div', '');
+  const hot = sahteDugum('button', 'qhotspot', root);
+  hot._isHot = true;
+  hot.dataset = { qid: 'q1' }; /* h eksik */
+  let called = false;
+  QuizCore.bindEvents(root, {
+    onHotspot() { called = true; },
+    onToggle() {}
+  });
+  root._fire('click', { target: hot, preventDefault() {}, stopPropagation() {} });
+  assert.strictEqual(called, false);
 });
 
 console.log('\nSONUC: ' + gecti + ' gecti, ' + kaldi + ' basarisiz');

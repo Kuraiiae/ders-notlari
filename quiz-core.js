@@ -206,10 +206,93 @@
     }
   }
 
+  /* cizilenSiklar(harfMap, taban) -> [[x0,y0,x1,y1], ...]
+     HAM koordinat DEGIL, modun ekrana CIZDIGI buyutulmus kutuyu dondurur.
+     Neden sart: hizalaSiklar her satir bandini dikeyde DY kadar buyutur ve
+     modlar ayrica taban min genislik/min yukseklik uygular. Ham koordinattan
+     turetilen bir engel, cizilen hotspot'un ALT kenarini icinde birakir —
+     yapisal olarak ortusmeyi GOREMEZ. soruyuKoru'ya verilecek engel listesi
+     budur.
+     harfMap : {A:[x0,y0,x1,y1], ...} (normalize EDILMEMIS olabilir -> klamp)
+     Eksik/bozuk harf ATLANIR; cikti sirasi "ABCDE"dir.
+     taban   : {minW, minH} — modun kullandigi taban. Verilmezse 3 modun en
+     buyugu (minW 0.05 / minH 0.016) kullanilir: guvenli varsayilan. */
+  var HARFLER = ['A', 'B', 'C', 'D', 'E'];
+  var TABAN = { minW: 0.05, minH: 0.016 };
+
+  function cizilenSiklar(harfMap, taban) {
+    var c = [];
+    if (!harfMap) return c;
+    var t = taban || TABAN;
+    var mw = typeof t.minW === 'number' ? t.minW : TABAN.minW;
+    var mh = typeof t.minH === 'number' ? t.minH : TABAN.minH;
+    var rows = [], i;
+    for (i = 0; i < HARFLER.length; i++) {
+      var v = harfMap[HARFLER[i]];
+      if (!v || v.length < 4) continue;        /* eksik harf ATLANIR */
+      rows.push(v);
+    }
+    if (!rows.length) return c;
+    var h = hizalaSiklar(rows);
+    for (i = 0; i < rows.length; i++) {
+      /* modlarla birebir ayni: left=x0, top=y0, w=max(taban,w), h=max(taban,h) */
+      var x0 = klamp(h.x0[i]), y0 = klamp(h.y0[i]);
+      var x1 = klamp(x0 + Math.max(mw, h.w[i]), x0);
+      var y1 = klamp(y0 + Math.max(mh, h.h[i]), y0);
+      c.push([x0, y0, x1, y1]);
+    }
+    return c;
+  }
+
+  /* Tek noktali olay delegasyonu. (root, sec)
+     Neden: hotspot/mask dugmeleri her cizimde YENIDEN olusuyor
+     (oku.html container.innerHTML='' ; galeri.html yeni 'ov'). Elle
+     baglanan her dinleyici o dugmeyle birlikte copur ve ayni mantik
+     N kez baglanmis olur. Delegasyonda tek dinleyici yeter.
+     sec.onHotspot(qid, h, ev, hot)  -> .qhotspot / .qz-hot tiklandi
+     sec.onToggle(mask, btn, ev)     -> .qsolution-toggle tiklandi
+     Idempotent: ayni root'a ikinci cagri sessizce yutar.
+     stopPropagation KORUNUR: viewer.html'te document tiklamasiyla
+     kapanan 'ep' ozet paneli ve oku.html'te kapanan soru secim
+     kutulari bunlara bagli. */
+  var baglananlar = new WeakSet();
+  function bindEvents(root, sec) {
+    if (!root || typeof root.addEventListener !== 'function') return false;
+    if (baglananlar.has(root)) return false;
+    baglananlar.add(root);
+    root.addEventListener('click', function (ev) {
+      var t = ev.target;
+      if (!t || typeof t.closest !== 'function') return;
+      /* 1) cozum maskesi dugmesi: maske, dugmenin ANCESTOR'idir. */
+      var btn = t.closest('.qsolution-toggle');
+      if (btn && root.contains(btn)) {
+        var mask = btn.closest('.qsolution-mask');
+        if (!mask || !root.contains(mask) || typeof sec.onToggle !== 'function') return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        sec.onToggle(mask, btn, ev);
+        return;
+      }
+      /* 2) A-E sik kutusu. */
+      var hot = t.closest('.qhotspot, .qz-hot');
+      if (!hot || !root.contains(hot) || typeof sec.onHotspot !== 'function') return;
+      var d = hot.dataset;
+      var qid = d ? (d.qid || null) : null;
+      var h = d ? (d.h || null) : null;
+      if (!qid || !h) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      sec.onHotspot(qid, h, ev, hot);
+    });
+    return true;
+  }
+
   return {
     hizalaSiklar: hizalaSiklar,
+    cizilenSiklar: cizilenSiklar,
     soruyuKoru: soruyuKoru,
     yayineviMaskKoy: yayineviMaskKoy,
+    bindEvents: bindEvents,
     SABIT: { GAP: GAP, OUT: OUT, DY: DY, SATIR_TOL: SATIR_TOL, MINW: MINW }
   };
 });
