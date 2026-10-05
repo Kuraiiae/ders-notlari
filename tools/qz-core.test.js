@@ -447,5 +447,74 @@ test('qid veya h eksikse hotspot yok sayilir', () => {
   assert.strictEqual(called, false);
 });
 
+/* --- K8: gizleme alani kalmadi, A-E secimi tam (2026-10-05) ---
+   Cozum maskesi + yayinevi bandi kaldirildi; yerine bu dort denetim geldi.
+   Silinen testlerin (5 yayinevi + 2 toggle) yerini alir ve A-E secimini
+   maske olmadan daha genis kapsar. */
+
+test('A-E: ayni sorunun bes sikki de dogru harfle onHotspot cagirir', () => {
+  const root = sahteDugum('div', '');
+  const harfler = ['A', 'B', 'C', 'D', 'E'];
+  const gorus = [];
+  harfler.forEach(h => {
+    const b = sahteDugum('button', 'qhotspot', root);
+    b._isHot = true;
+    b.dataset = { qid: 'q5', h: h };
+    gorus.push(b);
+  });
+  let cagri = 0, sonQid = null, sonH = null;
+  QuizCore.bindEvents(root, {
+    onHotspot(qid, h) { cagri++; sonQid = qid; sonH = h; }
+  });
+  /* Her sik kendi span'ina tiklanir (kullanici harf yazisina basar). */
+  gorus.forEach(b => {
+    const span = sahteDugum('span', 'qh-badge', b);
+    root._fire('click', { target: span, preventDefault() {}, stopPropagation() {} });
+    assert.strictEqual(sonQid, 'q5', 'qid ' + b.dataset.h + ' icin bozuldu');
+    assert.strictEqual(sonH, b.dataset.h, 'harf ' + b.dataset.h + ' yanlis aktarildi');
+  });
+  assert.strictEqual(cagri, 5, 'bes sik de birer kez cagrilmali');
+});
+
+test('A-E: farkli sorularin siklari birbirine karismaz', () => {
+  const root = sahteDugum('div', '');
+  const q3 = sahteDugum('button', 'qhotspot', root);
+  q3._isHot = true; q3.dataset = { qid: 'q3', h: 'C' };
+  const q9 = sahteDugum('button', 'qhotspot', root);
+  q9._isHot = true; q9.dataset = { qid: 'q9', h: 'D' };
+  let cagri = 0, sonQid = null;
+  QuizCore.bindEvents(root, { onHotspot(qid) { cagri++; sonQid = qid; } });
+  root._fire('click', { target: q9, preventDefault() {}, stopPropagation() {} });
+  assert.strictEqual(sonQid, 'q9', 'q9 sikki q3 sanilmamali');
+  assert.strictEqual(cagri, 1, 'bir tıklama tek cagri olmali');
+});
+
+test('hotspot disi tiklamada olay document seviyesine AKTARILIR', () => {
+  /* Bu, maske kolsuz yeni akisin en onemli yan etkisi korumasidir:
+     hotspot DISI bir tiklamada preventDefault/stopPropagation CAGRILMAZ.
+     viewer.html'de document tiklamasiyla kapanan 'ep' ozet paneli ve
+     oku.html'de kapanan soru secim kutulari buna bagli. */
+  const root = sahteDugum('div', '');
+  const yabanci = sahteDugum('div', '', root);
+  let stopped = false, prevented = false;
+  QuizCore.bindEvents(root, { onHotspot() { throw new Error('onHotspot cagrilmamali'); } });
+  root._fire('click', {
+    target: yabanci,
+    preventDefault() { prevented = true; },
+    stopPropagation() { stopped = true; }
+  });
+  assert.strictEqual(stopped, false, 'hotspot disi tiklamada stopPropagation CAGRILMAMALI');
+  assert.strictEqual(prevented, false, 'hotspot disi tiklamada preventDefault CAGRILMAMALI');
+});
+
+test('K8: QuizCore yalnizca beklenen yuzeyi disa acar (maske ureteci yok)', () => {
+  const beklenen = ['cizilenSiklar', 'hizalaSiklar', 'soruyuKoru', 'bindEvents', 'SABIT'];
+  const gercek = Object.keys(QuizCore).sort();
+  assert.strictEqual(gercek.join(','), beklenen.slice().sort().join(','),
+    ' QuizCore export listesi degisti: ' + gercek.join(','));
+  /* Cozum/yayinevi maskesi uretecleri export edilmemeli. */
+  assert.strictEqual(typeof QuizCore.yayineviMaskKoy, 'undefined');
+});
+
 console.log('\nSONUC: ' + gecti + ' gecti, ' + kaldi + ' basarisiz');
 process.exit(kaldi ? 1 : 0);
