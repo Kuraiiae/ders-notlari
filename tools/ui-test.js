@@ -732,6 +732,46 @@ window.addEventListener('load', function(){
     document.getElementById('qzReset').click();
     ck('temizle isaretleri siler', '{}', localStorage.getItem('oku.quiz.deneme'));
     ck('temizle tikleri kaldirir', '0', String(document.querySelectorAll('#qzCards .qcard.done').length));
+
+  /* --- K7: cozum maskesi kendi A-E kutularini YUTMAMALI ---
+     Neden ham koordinatla DENETIM YAPILAMAZ: hizalaSiklar her satir bandini
+     dikeyde DY (0.004) buyutur, modlar ayrica taban min genislik/yukseklik
+     uygular. Ham [x0,y0,x1,y1] uzerinden "cakisma yok" demek cizilen
+     hotspot'un ALT kenarini icinde birakir -> ortusme yapisel olarak
+     GORUNMEZ. Bu yuzden olcum tarayicinin CIZDIGI getBoundingClientRect
+     uzerinden, piksel olarak yapilir. */
+  var kapH = 0;
+  Array.prototype.forEach.call(document.querySelectorAll('.qhotspots, .qz-overlay'), function(k){
+    var h = k.getBoundingClientRect().height;
+    if (h > kapH) kapH = h;
+  });
+  /* Sayfa gorselleri depoda yokken katman 0'a cokebilir; o zaman piksel
+     esigi anlamsizlasir (0.5px = %3). Boyle durumda K7 denetimi ATLANIR
+     ve yalnizca RAPOR yazilir — yanlis kirmizi uretmez. */
+  var olcek = kapH >= 200;
+  var mks = Array.prototype.slice.call(document.querySelectorAll('.qsolution-mask'));
+  var qidYok = 0, kendiCak = 0, enKendi = 0, enKendiKanit = '';
+  mks.forEach(function(mk){
+    var q = mk.dataset.qid;
+    if (!q) { qidYok++; return; }
+    var m = mk.getBoundingClientRect(), oy = 0, en = '';
+    Array.prototype.forEach.call(
+      document.querySelectorAll('.qhotspot[data-qid="' + q + '"], .qz-hot[data-qid="' + q + '"]'),
+      function(h){
+        var r = h.getBoundingClientRect();
+        var a = Math.min(m.right, r.right) - Math.max(m.left, r.left);
+        var b = Math.min(m.bottom, r.bottom) - Math.max(m.top, r.top);
+        if (a > 0.5 && b > 0.5 && b > oy){ oy = b; en = h.dataset.h + '@' + Math.round(r.top) + '+' + Math.round(r.height); }
+      });
+    if (oy > 0){ kendiCak++; if (oy > enKendi){ enKendi = oy; enKendiKanit = q + ' sik ' + en; } }
+  });
+  ck('k7: cozum maskesi soru kimligi tasiyor', '0', String(qidYok));
+  ck('k7: maske kendi siklarini yutmuyor', '0',
+     (olcek && kendiCak) ? kendiCak + ' -> ' + enKendiKanit + ' ' + enKendi.toFixed(1) + 'px' : '0');
+  rp('k7: olculebilir katman yuksekligi (px)', Math.round(kapH) + (olcek ? '' : ' (K7 atlandi)'));
+  rp('k7: cizilen cozum maskesi', String(mks.length));
+  rp('k7: en buyuk kendi-sik ortusme (px)', enKendi.toFixed(1) + ' / ' + enKendiKanit);
+
     bitir();
   }, 900);
 });
@@ -961,6 +1001,45 @@ window.addEventListener('load', function(){
   /* --- SERT: yayinevi bandi icerik gizlememeli (K4) --- */
   ck('simetri: yayinevi bandi yok', '0', String(document.querySelectorAll('.qpub-mask').length));
 
+  /* --- K7: cozum maskesi kendi A-E kutularini YUTMAMALI ---
+     Neden ham koordinatla DENETIM YAPILAMAZ: hizalaSiklar her satir bandini
+     dikeyde DY (0.004) buyutur, modlar ayrica taban min genislik/yukseklik
+     uygular. Ham [x0,y0,x1,y1] uzerinden "cakisma yok" demek cizilen
+     hotspot'un ALT kenarini icinde birakir -> ortusme yapisel olarak
+     GORUNMEZ. Bu yuzden olcum tarayicinin CIZDIGI getBoundingClientRect
+     uzerinden, piksel olarak yapilir. */
+  var kapH = 0;
+  Array.prototype.forEach.call(document.querySelectorAll('.qhotspots, .qz-overlay'), function(k){
+    var h = k.getBoundingClientRect().height;
+    if (h > kapH) kapH = h;
+  });
+  /* Sayfa gorselleri depoda yokken katman 0'a cokebilir; o zaman piksel
+     esigi anlamsizlasir (0.5px = %3). Boyle durumda K7 denetimi ATLANIR
+     ve yalnizca RAPOR yazilir — yanlis kirmizi uretmez. */
+  var olcek = kapH >= 200;
+  var mks = Array.prototype.slice.call(document.querySelectorAll('.qsolution-mask'));
+  var qidYok = 0, kendiCak = 0, enKendi = 0, enKendiKanit = '';
+  mks.forEach(function(mk){
+    var q = mk.dataset.qid;
+    if (!q) { qidYok++; return; }
+    var m = mk.getBoundingClientRect(), oy = 0, en = '';
+    Array.prototype.forEach.call(
+      document.querySelectorAll('.qhotspot[data-qid="' + q + '"], .qz-hot[data-qid="' + q + '"]'),
+      function(h){
+        var r = h.getBoundingClientRect();
+        var a = Math.min(m.right, r.right) - Math.max(m.left, r.left);
+        var b = Math.min(m.bottom, r.bottom) - Math.max(m.top, r.top);
+        if (a > 0.5 && b > 0.5 && b > oy){ oy = b; en = h.dataset.h + '@' + Math.round(r.top) + '+' + Math.round(r.height); }
+      });
+    if (oy > 0){ kendiCak++; if (oy > enKendi){ enKendi = oy; enKendiKanit = q + ' sik ' + en; } }
+  });
+  ck('k7: cozum maskesi soru kimligi tasiyor', '0', String(qidYok));
+  ck('k7: maske kendi siklarini yutmuyor', '0',
+     (olcek && kendiCak) ? kendiCak + ' -> ' + enKendiKanit + ' ' + enKendi.toFixed(1) + 'px' : '0');
+  rp('k7: olculebilir katman yuksekligi (px)', Math.round(kapH) + (olcek ? '' : ' (K7 atlandi)'));
+  rp('k7: cizilen cozum maskesi', String(mks.length));
+  rp('k7: en buyuk kendi-sik ortusme (px)', enKendi.toFixed(1) + ' / ' + enKendiKanit);
+
   bitir();
 });
 `;
@@ -973,6 +1052,7 @@ const K5_DRIVE = HELPERS + `
 window.addEventListener('load', function(){
   ck('k5: quiz-core.js yuklendi', '1', (typeof QuizCore === 'object' ? '1' : '0'));
   ck('k5: hizalaSiklar var', 'function', (typeof QuizCore.hizalaSiklar));
+  ck('k5: cizilenSiklar var', 'function', (typeof QuizCore.cizilenSiklar));
   ck('k5: soruyuKoru var', 'function', (typeof QuizCore.soruyuKoru));
   ck('k5: yayineviMaskKoy var', 'function', (typeof QuizCore.yayineviMaskKoy));
   /* Saf cikti: girdi degismezse ayni sonuc. */
