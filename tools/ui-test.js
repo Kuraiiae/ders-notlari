@@ -855,8 +855,9 @@ window.addEventListener('load', function(){
    SERT SINIRLAR (gecmek ZORUNDA):
      - ust uste binme 0
      - yayinevi bandi 0  (K4)
-     - sayfa disi kutu sayisi ve 8px ustu genislik farki sayisi: BILINEN
-       bozuk veri sayisiyla esit olmali.
+     - sayfa disi kutu sayisi ve 8px ustu genislik farki sayisi 0 OLMALI.
+       (Eskiden "bilinen bozuk veri" kadarina toleransi vardi; asagidaki
+       not ile o veri duzeltildi, tolerans kaldirildi.)
 
    NEDEN "8px" BIR ESIK DEGIL: bazi sorularda iki sik AYNIsI satirda
    olsa da FARKLI sutunlardadir. turkce-test s.23 s.7 ornegi:
@@ -868,10 +869,19 @@ window.addEventListener('load', function(){
    GECIT degil, sadece bir OLÇUMdur; regresyon korumasini sayim denetimi
    saglar.
 
-   BILINEN BOZUK VERI: quiz-data.json'da 2 sorunun koordinatlari sayfa
-   disinda (turkce-test s.50 s.3, deneme s.27 s.3). Bu sette 1 tanesi
-   gorunur. Duzeltilirse veya yeni bozulma olursa sayim kontrolu kirmizi
-   verir -> sessizce gecmis olmaz.
+   BILINEN BOZUK VERI DUZELTILDI (2026-10-05): quiz-data.json'da 2 sorunun
+   koordinatlari sayfa disindaydi ve buraya "bilinen bozuk" diye yazilmissti:
+     1) turkce-test s.50 s.3 — C/D/E kutulari A->B adimiyla (0.3174) sayfa
+        disina ekstrapolasyon edilmis; A/B ise yanlis bir bolgeyi (sol
+        sutundaki "A. İsimlere Gelen Ek Fiiller" basliklarini) gosteriyordu.
+        Cevap anahtari "C" idi ve sayfanin sag sutunundaki 1. ODSM sorusunun
+        ("Aşağıdaki cümlelerin hangisinde eylem, istek kipindedir?") basili
+        cevabi "Cevap:C" ile ayni. Kutular o sorunun gercek A-E metnine
+        yeniden baglandi.
+     2) deneme s.27 s.3 — D (y1=1.0051) ve E (y0=1.0857) sayfa disinda;
+        ayni ekstrapolasyona (adim=0.1020) dayaniyordu. Kaldirildi.
+   Artik sayfa disi kutu YOKTUR, sayim 0 olmalidir. Yeni bozulma olursa
+   bu sayim kirmizi verir -> sessizce gecmis olmaz.
 */
 const SIMETRI_DRIVE = HELPERS + `
 window.addEventListener('load', function(){
@@ -925,8 +935,8 @@ window.addEventListener('load', function(){
       }
     } else gecerli.push(id);
   });
-  /* SERT: sayim bilinen bozuk veri degerine esit olmali. */
-  ck('simetri: sayfa disi kutu sayisi (bilinen bozuk veri)', '1', String(bozuk.length));
+  /* SERT: sayfa disi kutu OLMAMALI (bilinen bozuk veri duzeltildi). */
+  ck('simetri: sayfa disi kutu sayisi (bilinen bozuk veri)', '0', String(bozuk.length));
   rp('simetri: bozuk veri kaniti', bozukKanit);
 
   if (!gecerli.length) {

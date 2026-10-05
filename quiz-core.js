@@ -22,6 +22,7 @@
   var DY = 0.004;         /* satir bandi dikey tasma */
   var SATIR_TOL = 0.006;  /* ayni satir sayma toleransi */
   var MINW = 0.012;       /* bozuk veriye karsi en az genislik */
+  var SATIR_Y = 0.016;    /* bir metin satirinin yuksekligi (olculmus 0.0162) */
 
   function klamp(v, alt) {
     if (typeof v !== 'number' || isNaN(v)) v = alt || 0;
@@ -108,8 +109,19 @@
     }
 
     /* Tek sutun dikey dizilim (1x5 vb.): tum siklar tek sutunda alt alta ise
-       tum siklar ayni sol kenar ve genisligi alir, alt satirdaki metinler de
-       kapsanacak sekilde dikey genisletilir. */
+       tum siklar ayni sol kenar ve genisligi alir.
+
+       DYKARTI 2026-10-05: onceki surum her bantin ALTINI "bir sonraki satirin
+       tepesine kadar" yapay olarak uzatiyordu (satir 126-129:
+       `Math.max(bot + dy, sonrakiTop - 0.002)`). Bu, sik kutusunu altindaki
+       1-3 sibling seklinin USTUNE yaziyordu:
+         turkce-test s.17 q3 -> B kutusu 0.6911-0.7606, gercek "B)" metni
+         0.6951-0.7113. Kutu C/D/E metnini de yutup tiklamayi kendine cekiyor,
+         rozet de metinden ~0.023 asagi kaysiyordu.
+       Ham `c` kutusu zaten sarilmis metnin TAMAMINI icerir (olculmus: s.17 q3
+       E ham kutusu 0.8765-0.9400 = 3.9 satir). Yani bu uzatmanin hicbir
+       gorevi yoktu; yalnizca kayma uretiyordu. Artik kutu kendi satir
+       bandinda kalir. */
     var isTekSutun = (ns > 1 && bant.every(function (bt) { return bt.idx.length === 1; }));
     var colX0 = 0, colX1 = 0;
     if (isTekSutun) {
@@ -123,13 +135,20 @@
       m = row.length;
       var y0 = Math.max(0, bant[s].top - bant[s].dy);
       var y1;
-      if (isTekSutun && s < ns - 1) {
-        /* Alt satira kadar olan aciklama/sarilmis metinleri de kapsa */
-        var sonrakiTop = Math.max(0, bant[s + 1].top - bant[s + 1].dy);
-        y1 = Math.min(1, Math.max(bant[s].bot + bant[s].dy, sonrakiTop - 0.002));
-      } else if (isTekSutun && s > 0) {
-        /* Son sik: kendi alt sinirini (metin kapsamasini) koru, yapay buyutme */
-        y1 = Math.min(1, Math.max(bant[s].bot + bant[s].dy, y0 + 0.015));
+      if (isTekSutun) {
+        /* Dikey tek sutun: kutu kendi satirinda kalir, ama seklin SATIRILMIS
+           devam satiri (parantez icinde aciklama vb.) varsa onu da kapsar.
+           DYKARTI: eski kod burada `sonrakiTop - 0.002`'ye kadar SINIRSIZ
+           uziyordu; aradaki bosluk ne kadar buyukse kutu o kadar asagi
+           iniyor ve alttaki kardes seklin metnini yutup tiklamayi cekiyordu
+           (olculmus: turkce-test s.17 q3 B kutusu kendi metninden 3.5 satir
+           uzun = +0.0533; E kutusu -0.0238).
+           Simdi: en fazla 1 satir kadar (SATIR_Y) uzat, ve ASLA bir sonraki
+           seklin tepesini gecme. Kalibrasyon olculdu: 8 vakada gercek metin
+           alti ham kutudan 0.0124-0.0155 (= 0.5 satir) asagida. */
+        var tavan = bant[s].bot + bant[s].dy + SATIR_Y;
+        if (s < ns - 1) tavan = Math.min(tavan, bant[s + 1].top - bant[s + 1].dy - 0.002);
+        y1 = Math.min(1, Math.max(bant[s].bot + bant[s].dy, tavan));
       } else {
         y1 = Math.min(1, Math.max(y0 + 0.008, bant[s].bot + bant[s].dy));
       }
