@@ -173,39 +173,6 @@
     return c;
   }
 
-  /* Yayinevi bandi.
-     ONCEDEN (galeri.html) her sayfanin ust/alt %7'si KOR olarak kapatiliyordu:
-     [{top:0,height:0.07},{top:0.93,height:0.07}]. Bu bir yayinevi bandi degil,
-     sayfanin %14'unun icerikten bagimsiz olarak gizlenmesiydi — sayfa
-     numarasi, kesik metin, bazen soru metni.
-     Artik yalnizca GERCEKTEN veride tanimli dikdortgen kapanir.
-     Veri yoksa (pub alani quiz-data.json'da YOK) HICBIR sey kapatilmaz. */
-  function yayineviMaskKoy(container, dikdortgenler) {
-    if (!container || !container.ownerDocument) return;
-    var liste = dikdortgenler || [];
-    for (var i = 0; i < liste.length; i++) {
-      var d = liste[i];
-      if (!d || d.length < 4) continue;
-      var x0 = klamp(d[0]);
-      var y0 = klamp(d[1]);
-      var x1 = klamp(d[2], x0);
-      var y1 = klamp(d[3], y0);
-      if (x1 <= x0 || y1 <= y0) continue;          /* bos alan -> maske uretilmez */
-      /* ayni dikdortgen icin ikinci kez maske ekleme */
-      if (container.querySelector &&
-          container.querySelector('.qpub-mask[data-pubidx="' + i + '"]')) continue;
-      var el = container.ownerDocument.createElement('div');
-      el.className = 'qpub-mask';
-      el.style.position = 'absolute';
-      el.style.left = (x0 * 100).toFixed(2) + '%';
-      el.style.top = (y0 * 100).toFixed(2) + '%';
-      el.style.width = ((x1 - x0) * 100).toFixed(2) + '%';
-      el.style.height = ((y1 - y0) * 100).toFixed(2) + '%';
-      el.setAttribute('data-pubidx', String(i));
-      container.appendChild(el);
-    }
-  }
-
   /* cizilenSiklar(harfMap, taban) -> [[x0,y0,x1,y1], ...]
      HAM koordinat DEGIL, modun ekrana CIZDIGI buyutulmus kutuyu dondurur.
      Neden sart: hizalaSiklar her satir bandini dikeyde DY kadar buyutur ve
@@ -245,16 +212,21 @@
   }
 
   /* Tek noktali olay delegasyonu. (root, sec)
-     Neden: hotspot/mask dugmeleri her cizimde YENIDEN olusuyor
+     SADECE A-E sik kutusu: sec.onHotspot(qid, h, ev, hot)
+       -> .qhotspot / .qz-hot tiklandi
+     Neden: hotspot dugmeleri her cizimde YENIDEN olusuyor
      (oku.html container.innerHTML='' ; galeri.html yeni 'ov'). Elle
      baglanan her dinleyici o dugmeyle birlikte copur ve ayni mantik
      N kez baglanmis olur. Delegasyonda tek dinleyici yeter.
-     sec.onHotspot(qid, h, ev, hot)  -> .qhotspot / .qz-hot tiklandi
-     sec.onToggle(mask, btn, ev)     -> .qsolution-toggle tiklandi
      Idempotent: ayni root'a ikinci cagri sessizce yutar.
      stopPropagation KORUNUR: viewer.html'te document tiklamasiyla
      kapanan 'ep' ozet paneli ve oku.html'te kapanan soru secim
-     kutulari bunlara bagli. */
+     kutulari bunlara bagli.
+
+     2026-10-05: cozum maskesi ("Cozumu Goster/Gizle") butonu ve yayinevi
+     bandi kalici olarak kaldirildi — sayfa uzerinde artik HICBIR sey
+     gizlenmiyor, yalnizca A-E secilebilir. Maske-toggle kolu buradan da
+     silindi; sanal dugmeye tiklamak hicbir sey yapmaz. */
   var baglananlar = new WeakSet();
   function bindEvents(root, sec) {
     if (!root || typeof root.addEventListener !== 'function') return false;
@@ -263,17 +235,6 @@
     root.addEventListener('click', function (ev) {
       var t = ev.target;
       if (!t || typeof t.closest !== 'function') return;
-      /* 1) cozum maskesi dugmesi: maske, dugmenin ANCESTOR'idir. */
-      var btn = t.closest('.qsolution-toggle');
-      if (btn && root.contains(btn)) {
-        var mask = btn.closest('.qsolution-mask');
-        if (!mask || !root.contains(mask) || typeof sec.onToggle !== 'function') return;
-        ev.preventDefault();
-        ev.stopPropagation();
-        sec.onToggle(mask, btn, ev);
-        return;
-      }
-      /* 2) A-E sik kutusu. */
       var hot = t.closest('.qhotspot, .qz-hot');
       if (!hot || !root.contains(hot) || typeof sec.onHotspot !== 'function') return;
       var d = hot.dataset;
@@ -291,7 +252,6 @@
     hizalaSiklar: hizalaSiklar,
     cizilenSiklar: cizilenSiklar,
     soruyuKoru: soruyuKoru,
-    yayineviMaskKoy: yayineviMaskKoy,
     bindEvents: bindEvents,
     SABIT: { GAP: GAP, OUT: OUT, DY: DY, SATIR_TOL: SATIR_TOL, MINW: MINW }
   };

@@ -366,14 +366,6 @@ body.light-theme .bottom-down-bar {
   color: var(--text);
   border-color: rgba(0, 0, 0, 0.1);
 }
-body.light-theme .qsolution-mask {
-  background: rgba(240, 244, 248, 0.65);
-  border-color: rgba(99, 102, 241, 0.35);
-}
-body.light-theme .qsolution-mask.revealed {
-  background: rgba(99, 102, 241, 0.05);
-  border-color: rgba(99, 102, 241, 0.25);
-}
 body.light-theme .qz-modal {
   background: rgba(15, 23, 42, 0.45);
 }
@@ -418,16 +410,6 @@ body.quiz .page .qhotspots{display:block}
 .qhotspot.bad .qh-badge{background:linear-gradient(135deg,#ef4444,#dc2626);border-color:#fff;color:#fff;box-shadow:0 2px 8px rgba(239,68,68,.4)}
 .qhotspots.qmini .qhotspot{padding-left:8px}
 .qhotspots.qmini .qh-badge{font-size:0!important}
-.qsolution-mask{position:absolute;pointer-events:auto;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(10,16,32,.85);backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:1.5px solid rgba(59,130,246,.45);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.4),inset 0 0 20px rgba(59,130,246,.1);transition:all .3s cubic-bezier(.22,.75,.25,1);overflow:hidden;padding:6px}
-.qsolution-mask:hover{border-color:var(--accent,#3b82f6);background:rgba(10,16,32,.92);box-shadow:0 12px 40px rgba(59,130,246,.25),inset 0 0 24px rgba(59,130,246,.15)}
-.qsolution-mask.revealed{background:rgba(34,197,94,.05);backdrop-filter:none;-webkit-backdrop-filter:none;border:1.5px dashed rgba(34,197,94,.4);box-shadow:none}
-html[data-theme="sepia"] .qsolution-mask{background:rgba(26,21,16,.85);border-color:rgba(245,158,11,.45)}
-html[data-theme="light"] .qsolution-mask{background:rgba(255,255,255,.88);border-color:rgba(59,130,246,.4);box-shadow:0 8px 30px rgba(0,0,0,.12)}
-.qsolution-toggle{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;font-size:12.5px;font-weight:700;letter-spacing:.2px;color:#fff;background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);border:1px solid rgba(255,255,255,.2);border-radius:999px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.4);transition:all .2s ease;pointer-events:auto;user-select:none;font-family:inherit}
-.qsolution-toggle:hover{transform:scale(1.06);box-shadow:0 6px 20px rgba(37,99,235,.6);background:linear-gradient(135deg,#60a5fa 0%,#3b82f6 100%)}
-.qsolution-toggle:active{transform:scale(.97)}
-.qsolution-mask.revealed .qsolution-toggle{background:rgba(34,197,94,.16);color:#16a34a;border:1px solid rgba(34,197,94,.35);box-shadow:none}
-.qsolution-mask.revealed .qsolution-toggle:hover{background:rgba(34,197,94,.26)}
 .qz-key{margin:0 14px;border:1px solid rgba(247,201,72,.4);border-radius:12px;background:rgba(247,201,72,.07);
   padding:9px 12px;font-size:12px;line-height:1.95;color:var(--text);display:none}
 .qz-key.on{display:block}
@@ -975,70 +957,20 @@ function qzHotDurum(s,h){
   }
   return (v&&h===v)?'sel':'';
 }
-function qzHasSolution(p,n){
-  const d=qzSet();
-  if(!d)return false;
-  if(d.qs&&d.qs[String(p)]){
-    const num=parseInt(n,10);
-    if(d.qs[String(p)].some(x=>parseInt(x,10)===num))return true;
-  }
-  return false;
-}
-function qzSolutionMaskKoy(container,s,cMap,sorular){
-  if(!qzHasSolution(s.p,s.n))return;
-  const d=qzSet();
-  const tablo=d&&d.sol?d.sol[String(s.p)]:null;
-  const box=tablo?tablo[String(s.n)]:null;
-  let y0=box[0],y1=box[1],x0=box[2],x1=box[3];
-  /* COZUM MASKESI CIZILEN A-E KUTULARINI YUTMASIN. Engel listesi HAM
-     koordinat degil CIZILEN buyutulmus kutudur (cizilenSiklar);
-     hizalaSiklar her satiri DY kadar buyuttugu icin ham koordinat
-     ortusmeyi yapisal olarak GOREMEZ. 'sol' sirasi [y0,y1,x0,x1]. */
-  const engeller=QuizCore.cizilenSiklar(cMap,{minW:0.04,minH:0.016});
-  const k=QuizCore.soruyuKoru([x0,y0,x1,y1],engeller);
-  if(!k)return;              /* maske uretilemiyorsa HICBIR SEY basma */
-  x0=k[0];y0=k[1];x1=k[2];y1=k[3];
-  const h=Math.max(0.01,y1-y0);
-  const w=Math.max(0.01,x1-x0);
-  const mask=document.createElement('div');
-  const isAcik=qzGorunur();
-  mask.className='qsolution-mask'+(isAcik?' revealed':'');
-  mask.dataset.qid=s.id;   /* hangi sorunun maskesi (test + tani) */
-  const yuzde=x=>(Math.min(100,Math.max(0,x))*100).toFixed(2)+'%';
-  mask.style.left=yuzde(x0);
-  mask.style.top=yuzde(y0);
-  mask.style.width=yuzde(w);
-  mask.style.height=yuzde(h);
-  mask.innerHTML='<button class="qsolution-toggle" type="button" aria-expanded="'+isAcik+'">'+
-    '<span class="qsol-icon">'+(isAcik?'🙈':'💡')+'</span> '+
-    '<span class="qsol-text">'+(isAcik?'Çözümü Gizle':'Çözümü Göster')+'</span>'+
-    '</button>';
-  container.appendChild(mask);
-  qzDelegasyonKoy(container);
-}
+/* 2026-10-05: cozum maskesi ve yayinevi bandi kalici olarak kaldirildi.
+   Sayfa uzerinde artik HICBIR sey gizlenmiyor; yalnizca A-E secilebilir.
+   Silinenler: cozum maskesi ureteci, yayinevi bandi ureteci ve
+   cozum-varlik sorgulayan yardimci. Artik bunlara degismez. */
+/* Tek noktali olay delegasyonu: SADECE A-E hotspot'lar.
+   bindEvents (WeakSet) kapsayiciya bir kez baglanir. */
 function qzDelegasyonKoy(kutu){
   QuizCore.bindEvents(kutu,{
-    onToggle:function(mask,btn){
-      var rev=mask.classList.toggle('revealed');
-      btn.setAttribute('aria-expanded',rev?'true':'false');
-      var i=mask.querySelector('.qsol-icon'),x=mask.querySelector('.qsol-text');
-      if(i)i.textContent=rev?'🕈':'💡';
-      if(x)x.textContent=rev?'Çözümü Gizle':'Çözümü Göster';
-    },
     onHotspot:function(qid,h){
       if(qzState.bitir||qzState.anahtar)return;
       var s=qzTumu().find(function(x){return x.id===qid;});
       if(s)qzIsaretle(s,h);
     }
   });
-}
-/* Yayinevi bandi (PARCA 3): yalnizca VERDE tanimli dikdortgen kapanir
-   (quiz-data.json 'pub'). Veri yoksa HICBIR sey gizlenmez. */
-function qzPublisherMaskKoy(kutu){
-  const d=qzSet();
-  const p=(kutu&&kutu.dataset)?kutu.dataset.pg:'';
-  const liste=(d&&d.pub&&d.pub[String(p)])||[];
-  QuizCore.yayineviMaskKoy(kutu,liste);
 }
 function qzHotspotKoy(kutu,sorular){
   kutu.innerHTML='';
@@ -1065,9 +997,7 @@ function qzHotspotKoy(kutu,sorular){
       b.innerHTML='<span class="qh-badge">'+h+'</span>';
       kutu.appendChild(b);
     });
-    qzSolutionMaskKoy(kutu,s,cMap,sorular);
   });
-  qzPublisherMaskKoy(kutu);
   qzHotOlcek(kutu);
 }
 /* Sik kutularini AYNI SORU icinde hizala */

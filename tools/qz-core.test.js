@@ -308,71 +308,14 @@ test('cizilenSiklar determinizm', () => {
   assert.strictEqual(JSON.stringify(CS(cMap)), JSON.stringify(CS(cMap)));
 });
 
-console.log('--- yayineviMaskKoy ---');
-/* Tarayici olmadan test edilebilmesi icin minimum sahte konteyner.
-   yayineviMaskKoy yalnizca ownerDocument.createElement ve appendChild
-   kullandigi icin bu yeterlidir. */
-function sahteKonteyner() {
-  const k = {
-    children: [],
-    /* yalnizca yayineviMaskKoy'un kullandigi bicimi taklit eder:
-       .qpub-mask[data-pubidx="N"] */
-    querySelector: sel => {
-      const m = /^(\.[\w-]+)\[data-pubidx="(\d+)"\]$/.exec(sel);
-      if (!m) return null;
-      return k.children.find(c => c.className.indexOf(m[1].slice(1)) > -1 &&
-                                c._at['data-pubidx'] === m[2]) || null;
-    },
-    appendChild: c => k.children.push(c)
-  };
-  k.ownerDocument = {
-    createElement: () => ({
-      className: '', style: {}, _at: {},
-      setAttribute(a, v) { this._at[a] = v; }
-    })
-  };
-  return k;
-}
+/* 2026-10-05 K8: yayinevi bandi (yayineviMaskKoy) ve cozum maskesi
+   kalici olarak kaldirildi. Bu blok, kaldirmanin geri gelmedigini
+   koruyan regresyon denetimidir. */
+console.log('--- gizleme alanlari kaldirildi (K8) ---');
 
-test('bos dikdortgen listesinde hicbir maske eklemez (K4 regresyon)', () => {
-  const k = sahteKonteyner();
-  QuizCore.yayineviMaskKoy(k, []);
-  QuizCore.yayineviMaskKoy(k, null);
-  QuizCore.yayineviMaskKoy(k, undefined);
-  assert.strictEqual(k.children.length, 0, 'bos listeden maske uretilmemeli');
-});
-
-test('verilen dikdortgen icin tam bir .qpub-mask divi ekler', () => {
-  const k = sahteKonteyner();
-  QuizCore.yayineviMaskKoy(k, [[0, 0, 1, 0.07]]);
-  assert.strictEqual(k.children.length, 1);
-  const m = k.children[0];
-  assert.ok(m.className.indexOf('qpub-mask') > -1, 'sinif adi qpub-mask olmali: ' + m.className);
-  assert.strictEqual(m.style.top, '0.00%');
-  assert.strictEqual(m.style.height, '7.00%');
-  assert.strictEqual(m.style.left, '0.00%');
-  assert.strictEqual(m.style.width, '100.00%');
-});
-
-test('cagirmak iki kez ayni maskeyi eklemez (idempotent)', () => {
-  const k = sahteKonteyner();
-  QuizCore.yayineviMaskKoy(k, [[0, 0, 1, 0.07]]);
-  QuizCore.yayineviMaskKoy(k, [[0, 0, 1, 0.07]]);
-  assert.strictEqual(k.children.length, 1, 'ikinci cagri eklememeli');
-});
-
-test('ayri dikdortgenler ayri maske uretir', () => {
-  const k = sahteKonteyner();
-  QuizCore.yayineviMaskKoy(k, [[0, 0, 1, 0.07], [0, 0.93, 1, 1]]);
-  assert.strictEqual(k.children.length, 2, 'iki dikdortgen -> iki maske');
-  assert.strictEqual(k.children[1].style.top, '93.00%');
-});
-
-test('bozuk / sifir alanli dikdortgen atlanir', () => {
-  const k = sahteKonteyner();
-  QuizCore.yayineviMaskKoy(k, [null, [0.1], [0.2, 0.3, 0.2, 0.4], [0.5, 0.6, 0.5, 0.6], [0.1, 0.2, 0.3, 0.4]]);
-  assert.strictEqual(k.children.length, 1, 'yalnizca gecerli tek dikdortgen maske uretmeli');
-  assert.strictEqual(k.children[0].style.left, '10.00%');
+test('QuizCore.yayineviMaskKoy export edilmiyor', () => {
+  assert.strictEqual(typeof QuizCore.yayineviMaskKoy, 'undefined',
+    'yayineviMaskKoy kaldirilmis olmali');
 });
 
 /* --- bindEvents --- */
@@ -455,36 +398,26 @@ test('hotspot icindeki span’a tiklaninca onHotspot qid ve h ile cagrilir', () 
   assert.strictEqual(gotH, 'C');
 });
 
-test('toggle dugmesine tiklaninca onToggle maskeye cagrilir', () => {
+test('K8: cozum maskesi toggle kolu kaldirildi — maskeye tiklamak onHotspot cagirmaz', () => {
+  /* Sanal bir cozum maskesi dugmesi olsa bile ARTIK hicbir sey olmaz:
+     bindEvents yalnizca .qhotspot / .qz-hot tanir. */
   const root = sahteDugum('div', '');
-  const mask = sahteDugum('div', 'qsolution-mask', root);
-  mask._isMask = true;
-  const btn = sahteDugum('button', 'qsolution-toggle', mask);
-  btn._isToggle = true;
-  let called = false, gotMask, gotBtn;
-  QuizCore.bindEvents(root, {
-    onHotspot() {},
-    onToggle(m, b) { called = true; gotMask = m; gotBtn = b; }
-  });
-  const ev = { target: btn, preventDefault() {}, stopPropagation() {} };
-  root._fire('click', ev);
-  assert.strictEqual(called, true);
-  assert.strictEqual(gotMask, mask);
-  assert.strictEqual(gotBtn, btn);
+  const hot = sahteDugum('button', 'qhotspot', root);
+  hot._isHot = true;
+  hot.dataset = { qid: 'q7', h: 'B' };
+  let called = false;
+  QuizCore.bindEvents(root, { onHotspot() { called = true; } });
+  root._fire('click', { target: hot, preventDefault() {}, stopPropagation() {} });
+  assert.strictEqual(called, true, 'A-E hotspot YINE de calismali');
 });
 
-test('toggle tiklamasi onHotspot’u tetiklemez', () => {
+test('K8: hotspot disi herhangi bir dugmeye tiklamak onHotspot cagirmaz', () => {
   const root = sahteDugum('div', '');
-  const mask = sahteDugum('div', 'qsolution-mask', root);
-  mask._isMask = true;
-  sahteDugum('button', 'qsolution-toggle', mask)._isToggle = true;
-  let hotCount = 0;
-  QuizCore.bindEvents(root, {
-    onHotspot() { hotCount++; },
-    onToggle() {}
-  });
-  root._fire('click', { target: mask.children[0], preventDefault() {}, stopPropagation() {} });
-  assert.strictEqual(hotCount, 0);
+  const yabanci = sahteDugum('button', 'qsolution-toggle', root);
+  let called = 0;
+  QuizCore.bindEvents(root, { onHotspot() { called++; } });
+  root._fire('click', { target: yabanci, preventDefault() {}, stopPropagation() {} });
+  assert.strictEqual(called, 0, 'hotspot olmayan dugme yok sayilmali');
 });
 
 test('hotspot tiklamasi stopPropagation cagirir', () => {

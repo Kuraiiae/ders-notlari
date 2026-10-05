@@ -1054,7 +1054,8 @@ window.addEventListener('load', function(){
   ck('k5: hizalaSiklar var', 'function', (typeof QuizCore.hizalaSiklar));
   ck('k5: cizilenSiklar var', 'function', (typeof QuizCore.cizilenSiklar));
   ck('k5: soruyuKoru var', 'function', (typeof QuizCore.soruyuKoru));
-  ck('k5: yayineviMaskKoy var', 'function', (typeof QuizCore.yayineviMaskKoy));
+  /* 2026-10-05: yayinevi bandi kaldirildi -> K8 geri gelirse yakala. */
+  ck('k8: yayineviMaskKoy kaldirildi', 'undefined', (typeof QuizCore.yayineviMaskKoy));
   /* Saf cikti: girdi degismezse ayni sonuc. */
   var kutu = [[0.10,0.20,0.20,0.23],[0.24,0.20,0.34,0.23],[0.38,0.20,0.48,0.23]];
   var r1 = QuizCore.hizalaSiklar(kutu);

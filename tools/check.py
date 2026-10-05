@@ -315,7 +315,7 @@ CEKIRDEK = os.path.join(ROOT, "quiz-core.js")
 assert os.path.exists(CEKIRDEK), "quiz-core.js yok -> simetri/cekim tek kaynaginiz kalmamis"
 with open(CEKIRDEK, encoding="utf-8") as f:
     cek = f.read()
-for parca in ("hizalaSiklar", "cizilenSiklar", "soruyuKoru", "yayineviMaskKoy", "module.exports"):
+for parca in ("hizalaSiklar", "cizilenSiklar", "soruyuKoru", "module.exports"):
     assert parca in cek, f"quiz-core.js icinde {parca} yok"
 
 # Uc mod da cekirdegi yuklemeli ve kendi kopyasini SILMIS olmali.
@@ -324,14 +324,14 @@ for ad, metin in (("oku.html", oku), ("viewer.html", izl), ("galeri.html", gal))
         f"{ad} icinde quiz-core.js etiketi tam 1 kez olmali (bulunan: {metin.count(chr(34).join(['src=', 'quiz-core.js', '']))})"
     assert metin.count("QuizCore.hizalaSiklar") == 1, \
         f"{ad} icinde QuizCore.hizalaSiklar cagrisi tam 1 kez olmali"
-    # K7: cozum maskesi kendi siklarini yutmamali. Bunun icin maske fonksiyonu
-    # CIZILEN buyutulmus kutulari (cizilenSiklar) soruyuKoru'ya vermeli ve
-    # yayinevi bandi uc modda da cekirdekten gelmeli.
-    for cekirdek_fonksiyon in ("QuizCore.cizilenSiklar", "QuizCore.soruyuKoru",
-                               "QuizCore.yayineviMaskKoy"):
-        assert metin.count(cekirdek_fonksiyon) == 1, \
-            f"{ad} icinde {cekirdek_fonksiyon} cagrisi tam 1 kez olmali " \
-            f"(bulunan: {metin.count(cekirdek_fonksiyon)})"
+    # 2026-10-05 K8: cozum maskesi + yayinevi bandi kalici kaldirildi.
+    # Sayfa uzerinde HICBIR sey gizlenmemeli; yalnizca A-E secilebilir.
+    # Bu denetim geri gelirse yakalar — gizleme alani yeniden dogmus olur.
+    for yasak in ("qsolution-mask", "qsolution-toggle", "qsol-icon", "qsol-text",
+                  "SolutionMaskKoy", "PublisherMaskKoy", "yayineviMaskKoy",
+                  "qpub-mask"):
+        assert yasak not in metin, \
+            f"{ad} icinde '{yasak}' var -> cozum/yayinevi gizleme alani geri gelmis"
     assert "qzHotHiza" not in metin, \
         f"{ad} icinde qzHotHiza kaldi -> uc mod tek kaynaga baglanmamis (K5)"
     # Cekirdek, kendisini kullanan koddan ONCE yuklenmelidir.

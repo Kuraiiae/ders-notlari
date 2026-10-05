@@ -256,16 +256,6 @@ body.quiz .page .qhotspots{display:block}
 .qhotspot.bad .qh-badge{background:linear-gradient(135deg,#ef4444,#dc2626);border-color:#fff;color:#fff;box-shadow:0 2px 8px rgba(239,68,68,.4)}
 .qhotspots.qmini .qhotspot{padding-left:8px}
 .qhotspots.qmini .qh-badge{font-size:0!important}
-.qsolution-mask{position:absolute;pointer-events:auto;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(10,16,32,.85);backdrop-filter:blur(14px) saturate(180%);-webkit-backdrop-filter:blur(14px) saturate(180%);border:1.5px solid rgba(59,130,246,.45);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.4),inset 0 0 20px rgba(59,130,246,.1);transition:all .3s cubic-bezier(.22,.75,.25,1);overflow:hidden;padding:6px}
-.qsolution-mask:hover{border-color:var(--accent,#3b82f6);background:rgba(10,16,32,.92);box-shadow:0 12px 40px rgba(59,130,246,.25),inset 0 0 24px rgba(59,130,246,.15)}
-.qsolution-mask.revealed{background:rgba(34,197,94,.05);backdrop-filter:none;-webkit-backdrop-filter:none;border:1.5px dashed rgba(34,197,94,.4);box-shadow:none}
-html[data-theme="sepia"] .qsolution-mask{background:rgba(26,21,16,.85);border-color:rgba(245,158,11,.45)}
-html[data-theme="light"] .qsolution-mask{background:rgba(255,255,255,.88);border-color:rgba(59,130,246,.4);box-shadow:0 8px 30px rgba(0,0,0,.12)}
-.qsolution-toggle{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;font-size:12.5px;font-weight:700;letter-spacing:.2px;color:#fff;background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);border:1px solid rgba(255,255,255,.2);border-radius:999px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.4);transition:all .2s ease;pointer-events:auto;user-select:none;font-family:inherit}
-.qsolution-toggle:hover{transform:scale(1.06);box-shadow:0 6px 20px rgba(37,99,235,.6);background:linear-gradient(135deg,#60a5fa 0%,#3b82f6 100%)}
-.qsolution-toggle:active{transform:scale(.97)}
-.qsolution-mask.revealed .qsolution-toggle{background:rgba(34,197,94,.16);color:#16a34a;border:1px solid rgba(34,197,94,.35);box-shadow:none}
-.qsolution-mask.revealed .qsolution-toggle:hover{background:rgba(34,197,94,.26)}
 @media(max-width:760px){
   .qoverlay{width:48px}
   .qstrip{top:70px;padding:5px 2px}
@@ -3575,12 +3565,6 @@ function qzHotOlcek(kap) {
    dizilenler ESIT UST KENAR + ESIT YUKSEKLIK alir. Yukseklik satir araligindan
    (pitch) buyuk secilmez, boylece A) B) C) D) E) kutulari hicbir zaman ust uste
    binmez ve harfler tam hizada durur. Cikti: {x0,y0,w,h}. */
-function quizHasSolution(p, n) {
-  const d = quizDataOf();
-  if (!d || !d.qs || !d.qs[String(p)]) return false;
-  const num = parseInt(n, 10);
-  return d.qs[String(p)].some(x => parseInt(x, 10) === num);
-}
 
 let quizYanlisIdx = 0;
 function quizYanlisSorulari() {
@@ -3619,70 +3603,17 @@ function quizSonrakiBos() {
   quizGit(next.id);
 }
 
-/* Yayinevi bandi (PARCA 3): yalnizca VERDE tanimli dikdortgen kapanir
-   (quiz-data.json 'pub'). Veri yoksa HICBIR sey gizlenmez — sayfanin
-   ust/alt %7'sini kor kapatmak yayinevi bandi degil, icerigin %14'unu
-   icerikten bagimsiz gizlemektir. Galeri modu (qzPublisherMaskKoy) ayni
-   isi yapiyor; bu iki modda eksikti. */
-function quizPublisherMaskKoy(container) {
-  const d = quizDataOf();
-  const p = (container && container.dataset) ? container.dataset.qhpage : '';
-  const liste = (d && d.pub && d.pub[String(p)]) || [];
-  QuizCore.yayineviMaskKoy(container, liste);
-}
-
-function quizSolutionMaskKoy(container, s, cMap, sorular) {
-  if (!quizHasSolution(s.p, s.n)) return;
-  const d = quizDataOf();
-  const tablo = d && d.sol ? d.sol[String(s.p)] : null;
-  const box = tablo ? tablo[String(s.n)] : null;
-  if (!box || box.length < 4) return;
-  let y0 = box[0], y1 = box[1], x0 = box[2], x1 = box[3];
-  /* COZUM MASKESI CIZILEN A-E KUTULARINI YUTMASIN.
-     Engel listesi HAM koordinat degil CIZILEN buyutulmus kutudur
-     (cizilenSiklar): hizalaSiklar her satir bandini dikeyde DY
-     kadar buyuttugu icin ham koordinattan turetilen engel, cizilen
-     hotspot'un ALT kenarini icinde birakir ve ortusme yapisal olarak
-     GORUNMEZ. 'sol' alani sirasi [y0,y1,x0,x1] — DEGISTIRILMEZ. */
-  const engeller = QuizCore.cizilenSiklar(cMap, { minW: 0.05, minH: 0.012 });
-  const k = QuizCore.soruyuKoru([x0, y0, x1, y1], engeller);
-  if (!k) return;              /* maske uretilemiyorsa HICBIR SEY basma */
-  x0 = k[0]; y0 = k[1]; x1 = k[2]; y1 = k[3];
-  const h = Math.max(0.01, y1 - y0);
-  const w = Math.max(0.01, x1 - x0);
-
-  const mask = document.createElement('div');
-  const isAcik = quizGorunur();
-  mask.className = 'qsolution-mask' + (isAcik ? ' revealed' : '');
-  mask.dataset.qid = s.id;   /* hangi sorunun maskesi (test + tani) */
-  const yuzde = x => (Math.min(100, Math.max(0, x)) * 100).toFixed(2) + '%';
-  mask.style.left = yuzde(x0);
-  mask.style.top = yuzde(y0);
-  mask.style.width = yuzde(w);
-  mask.style.height = yuzde(h);
-
-  mask.innerHTML = '<button class="qsolution-toggle" type="button" aria-expanded="' + isAcik + '">' +
-    '<span class="qsol-icon">' + (isAcik ? '🙈' : '💡') + '</span> ' +
-    '<span class="qsol-text">' + (isAcik ? 'Çözümü Gizle' : 'Çözümü Göster') + '</span>' +
-    '</button>';
-
-  container.appendChild(mask);
-  quizDelegasyonKoy(container);
-}
-
-/* Tek noktali olay delegasyonu: cozum maskesi toggle + A-E hotspot'lar.
-   quizSolutionMaskKoy ve quizHotspotsKoy her cizimde container.innerHTML=''
-   yapar; per-element listener'lar her seferinde yeniden baglanirdi.
-   bindEvents'inki (WeakSet) sadece bir kez calisir. */
+/* 2026-10-05: cozum maskesi ve yayinevi bandi kalici olarak kaldirildi.
+   Sayfa uzerinde artik HICBIR sey gizlenmiyor; yalnizca A-E secilebilir.
+   Silinenler: cozum maskesi ureteci, yayinevi bandi ureteci ve
+   cozum-varlik sorgulayan yardimci. Artik bunlara degismez. */
+/* Tek noktali olay delegasyonu: SADECE A-E hotspot'lar.
+   quizHotspotsKoy her cizimde container.innerHTML='' yapar; per-element
+   listener'lar her seferinde yeniden baglanirdi. bindEvents'inki (WeakSet)
+   sadece bir kez calisir.
+   2026-10-05: cozum maskesi toggle kolu (onToggle) kaldirildi. */
 function quizDelegasyonKoy(container) {
   QuizCore.bindEvents(container, {
-    onToggle: (mask, btn) => {
-      const rev = mask.classList.toggle('revealed');
-      btn.setAttribute('aria-expanded', rev ? 'true' : 'false');
-      const i = mask.querySelector('.qsol-icon'), x = mask.querySelector('.qsol-text');
-      if (i) i.textContent = rev ? '🕈' : '💡';
-      if (x) x.textContent = rev ? 'Çözümü Gizle' : 'Çözümü Göster';
-    },
     onHotspot: (qid, h) => {
       if (quizState.bitir || quizState.anahtar) return;
       const s = quizSorulari().find(x => x.id === qid);
@@ -3729,9 +3660,7 @@ function quizHotspotsKoy(container, sorular) {
       hs.innerHTML = '<span class="qh-badge">' + h + '</span>';
       container.appendChild(hs);
     });
-    quizSolutionMaskKoy(container, s, cMap, sorular);
   });
-  quizPublisherMaskKoy(container);
   /* rozet olcusunu GERCEK kutu yuksekliklerinden yeniden olc (qzHotOlcek, kutu
      eklenmeden once cagrildiginda tahmin kullanirdi). */
   qzHotOlcek(container);
