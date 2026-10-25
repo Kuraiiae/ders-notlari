@@ -271,7 +271,7 @@ window.addEventListener('load', function(){
   ck('her soruda bes sik', '5', String(d.length));
   ck('siklar A-E', 'ABCDE', Array.prototype.map.call(d, function(b){ return b.dataset.h; }).join(''));
   ck('bitirmeden anahtar gorunmez', '0', String(document.querySelectorAll('#pages .qhotspot.ok,#pages .qhotspot.bad,#pages .qo button.ok,#pages .qo button.bad').length));
-  ck('toplam soru sayaci', '222', document.getElementById('quizTotal').textContent);
+  ck('toplam soru sayaci', '228', document.getElementById('quizTotal').textContent);
   ck('anahtarli sette puanlama gorunur', '1', document.getElementById('quizScoreBox').hidden ? '0' : '1');
   ck('anahtar bekleme notu gizli', '1', document.getElementById('quizWait').hidden ? '1' : '0');
 
@@ -311,7 +311,7 @@ window.addEventListener('load', function(){
   ck('sonuc penceresi acilir', '1', !document.getElementById('quizModal').hidden ? '1' : '0');
   ck('zorluk analizi tablosu', '1', document.querySelector('#quizRows .ad') ? '1' : '0');
   ck('analizde bes sik satiri', '5', String(document.querySelectorAll('#quizRows .ad .gr:not(.sum)').length));
-  ck('sonuc satirlari tum sorular', '222', String(document.querySelectorAll('#quizRows .row').length));
+  ck('sonuc satirlari tum sorular', '228', String(document.querySelectorAll('#quizRows .row').length));
   ck('sonuc satirinda sik ozeti', '1', String(document.querySelectorAll('#quizRows .row .a').length ? '1' : '0'));
   ck('dogru/yanlis isareti var', '1', String(/Dogru|Yanlis|Bo\u015f/.test(document.getElementById('quizRows').textContent) ? '1' : '0'));
   document.getElementById('quizClose').click();
@@ -436,17 +436,21 @@ window.addEventListener('load', function(){
   ck('deneme test modu acildi', '1', has('quiz'));
   ck('deneme toplam soru sayaci', '320', document.getElementById('quizTotal').textContent);
   ck('deneme puanlama kutusu gorunur', '1', document.getElementById('quizScoreBox').hidden ? '0' : '1');
-  /* ilk iki anahtarli soru: s.29 n1 (E) ve s.32 n14 (B) */
-  dug(9)[4].click();
-  ck('deneme sik E isaretli', '1', dug(9)[4].classList.contains('sel') ? '1' : '0');
-  dug(14)[1].click();
-  ck('deneme sik B isaretli', '1', dug(14)[1].classList.contains('sel') ? '1' : '0');
+  /* ilk iki anahtarli soru: s.29 n1 (E) ve s.32 n10 (B) */
+  var d1 = document.querySelectorAll('#pages .qhotspot[data-qid="29:1"]');
+  var d2 = document.querySelectorAll('#pages .qhotspot[data-qid="32:10"]');
+  if (!d1.length) d1 = dug(9);
+  if (!d2.length) d2 = dug(14);
+  d1[4].click();
+  ck('deneme sik E isaretli', '1', d1[4].classList.contains('sel') ? '1' : '0');
+  d2[1].click();
+  ck('deneme sik B isaretli', '1', d2[1].classList.contains('sel') ? '1' : '0');
   ck('deneme iki isaret', '2', document.getElementById('quizMarked').textContent);
   document.getElementById('quizFinish').click();
   ck('deneme sonuc acilir', '1', !document.getElementById('quizModal').hidden ? '1' : '0');
   ck('deneme analiz tablosu', '1', document.querySelector('#quizRows .ad') ? '1' : '0');
-  ck('deneme dogru sikta okey', '1', dug(9)[4].classList.contains('ok') ? '1' : '0');
-  ck('deneme dogru sikta okey 2', '1', dug(14)[1].classList.contains('ok') ? '1' : '0');
+  ck('deneme dogru sikta okey', '1', d1[4].classList.contains('ok') ? '1' : '0');
+  ck('deneme dogru sikta okey 2', '1', d2[1].classList.contains('ok') ? '1' : '0');
   ck('deneme kart basligi tik', '0', String(kart(9).querySelector('.tick.bad') ? '1' : '0'));
   ck('deneme sonucta dogru satiri', '1', /Do\\u011fru/.test(document.getElementById('quizRows').textContent) ? '1' : '0');
   bitir();

@@ -103,6 +103,13 @@
       }
       bant.push({ idx: idx, top: top, bot: bot, dy: DY });
     }
+    for (s = 0; s < ns - 1; s++) {
+      if (bant[s].bot >= bant[s + 1].top) {
+        var mid = (bant[s].bot + bant[s + 1].top) / 2;
+        bant[s].bot = Math.max(bant[s].top + 0.003, mid - 0.0005);
+        bant[s + 1].top = Math.min(bant[s + 1].bot - 0.003, mid + 0.0005);
+      }
+    }
     for (s = 0; s < ns; s++) {
       if (s > 0) bant[s].dy = Math.min(bant[s].dy, Math.max(0, (bant[s].top - bant[s - 1].bot) / 2));
       if (s < ns - 1) bant[s].dy = Math.min(bant[s].dy, Math.max(0, (bant[s + 1].top - bant[s].bot) / 2));
@@ -146,9 +153,9 @@
            Simdi: en fazla 1 satir kadar (SATIR_Y) uzat, ve ASLA bir sonraki
            seklin tepesini gecme. Kalibrasyon olculdu: 8 vakada gercek metin
            alti ham kutudan 0.0124-0.0155 (= 0.5 satir) asagida. */
-        var tavan = bant[s].bot + bant[s].dy + SATIR_Y;
-        if (s < ns - 1) tavan = Math.min(tavan, bant[s + 1].top - bant[s + 1].dy - 0.002);
-        y1 = Math.min(1, Math.max(bant[s].bot + bant[s].dy, tavan));
+        var tavan = (s < ns - 1) ? Math.max(y0 + 0.006, bant[s + 1].top - bant[s + 1].dy - 0.001) : 1;
+        y1 = Math.min(1, Math.min(bant[s].bot + bant[s].dy + SATIR_Y, tavan));
+        if (y1 <= y0 + 0.004) y1 = Math.min(1, y0 + 0.006);
       } else {
         y1 = Math.min(1, Math.max(y0 + 0.008, bant[s].bot + bant[s].dy));
       }
@@ -184,8 +191,7 @@
           c.w[ix] = sagK - solK;
           c.h[ix] = y1 - y0;
           imlec = x1 + GAP;
-        }
-      }
+        }      }
     }
 
     c.satir = ns > 1 ? sId : null;
